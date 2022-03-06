@@ -100,12 +100,10 @@
 		
 		function winresult(white,black){
 			var result = document.getElementById('result');
-			if((white == 0 || black == 0) || (black+white == 64)){
-				var resmess = black > white ? "黒の勝ち": "白の勝ち";
-				var resmess = black == white ? "引き分け": resmess;
-				result.innerHTML = resmess;
-				game = false;
-			}
+			var resmess = black > white ? "黒の勝ち": "白の勝ち";
+			var resmess = black == white ? "引き分け": resmess;
+			result.innerHTML = resmess;
+			game = false;
 		}
 		
 		var canvas;
@@ -177,6 +175,11 @@
 
 	    function putStone(x, y, type) {
 	        context.beginPath();
+	        if(turn == "black" && type == 4){
+	        	return;
+	        }else if(turn == "white" && type == 3){
+	        	return;
+	        }
 	        var stonex = block * x;
 	        var stoney = block * y;
 	        context.arc(stonex + block / 2, stoney + block / 2, 15, 0 * Math.PI / 180, 360 * Math.PI / 180, false);
