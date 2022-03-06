@@ -1,0 +1,226 @@
+<html lang="ja">
+
+<head>
+<meta charset="UTF-8" name="viewport" content="width=device-width">
+<title>オセロゲーム</title>
+<link href="/favicon.ico" rel="icon"/>
+<style type="text/css">
+#main {
+		margin:0px;
+        width: 300px;
+        height: 500px;
+        transform-origin:0px 0px;
+    }
+</style>
+</head>
+	<script type="text/javascript">
+		//let ws = new WebSocket('ws://lalalasyun.com/websocket/sample');
+		let ws = new WebSocket('wss://othellojp.herokuapp.com/sample');
+		var result = document.getElementById('result');
+		let turn;
+		var gameturn = true;
+		var game = false;
+		
+		
+		function stoneClick(x,y) {
+			if(game && gameturn){
+				ws.send("coord," + x + "," + y);
+			}
+		}
+		
+		function start(){
+			initStone();
+			ws.send("start");
+		}
+		
+		ws.onmessage = function(receive) {
+			console.log(receive.data);
+			var result = document.getElementById('result');
+			var black = document.getElementById("black");
+			var white = document.getElementById("white");
+			var ary = receive.data.split(',');
+			var command = ary[0];
+			
+			switch (command) {
+			case "stone":
+				result.innerHTML = "";
+				game = true;
+				initStone();
+				var stone = ary[1].split('');
+				var cntblack = 0;
+				var cntwhite = 0;
+				var cntputblack = 0;
+				var cntputwhite = 0;
+				for(var i = 0;i < 8;i++){
+					for(var n = 0;n < 8;n++){
+						var index = (8*i) + n;
+						var type = Number(stone[index]);
+						putStone(i,n,type);
+						
+						switch (type){
+						case 1:
+							cntwhite++;
+							break;
+						case 2:
+							cntblack++;
+							break;
+						case 3:
+							cntputblack++;
+							break;
+						case 4:
+							cntputwhite++;
+							break;
+						}
+					}
+				}
+				var cntput = cntputblack + cntputwhite;
+				gameturn = (cntputblack > cntputwhite ? "black": "white") == turn ? true : false;
+				var turnmess = gameturn ? "あなた" : "相手";
+				result.innerHTML = turnmess + "のターン";
+				if(cntput == 0){
+					gameturn = true;
+					result.innerHTML = "パス";
+				}
+				winresult(cntwhite,cntblack);
+				black.innerHTML = cntblack;
+				white.innerHTML = cntwhite;
+				break;
+			case "turn":
+				turn = ary[1];
+				break;
+			case "end":
+				var cntwhite = Number(white.innerHTML);
+				var cntblack = Number(black.innerHTML);
+				winresult(cntwhite,cntblack);
+				break;
+			}	
+		}
+		
+		function winresult(white,black){
+			var result = document.getElementById('result');
+			if((white == 0 || black == 0) || (black+white == 64)){
+				var resmess = black > white ? "黒の勝ち": "白の勝ち";
+				var resmess = black == white ? "引き分け": resmess;
+				result.innerHTML = resmess;
+				game = false;
+			}
+		}
+		
+		var canvas;
+	    var context;
+	    var block = 300 / 8;
+	    var size;
+	    function sample() {
+	        canvas = document.getElementById('othello');
+	        changesize();
+			
+	        if (canvas.getContext) {
+	            context = canvas.getContext('2d');
+	            initStone();
+	        }
+
+	        canvas.addEventListener("click", e => {
+	            const rect = e.target.getBoundingClientRect();
+
+	            // ブラウザ上での座標を求める
+	            const viewX = e.clientX - rect.left,
+	                viewY = e.clientY - rect.top;
+
+	            // 表示サイズとキャンバスの実サイズの比率を求める
+	            const scaleWidth = canvas.clientWidth / canvas.width * size,
+	                scaleHeight = canvas.clientHeight / canvas.height * size;
+
+	            // ブラウザ上でのクリック座標をキャンバス上に変換
+	            const canvasX = Math.floor(viewX / scaleWidth),
+	                canvasY = Math.floor(viewY / scaleHeight);
+
+	            var x = Math.floor(canvasX / block);
+	            var y = Math.floor(canvasY / block);
+	            
+	            stoneClick(x,y);
+	            console.log(x);
+	            console.log(y);
+	        });
+	    }
+	    
+	    function changesize() {
+	    	var main = document.getElementById('main');
+			var wsize = screen.width;
+			size =  wsize / 300 ;
+			if(size < 2){
+				main.style.transform = "scale(" + size + ")";
+			}else{
+				size = 2;
+				main.style.transform = "scale(" + size + ")";
+			}
+			console.log(size);
+		}
+	    
+	    function initStone(){
+	    	context.beginPath();
+	    	context.fillStyle = 'green';
+            context.fillRect(0, 0, 300, 300);
+
+            for (var i = 0; i < 9; i++) {
+                var move = block * i;
+                context.strokeStyle = 'black';
+                context.lineWidth = 2;
+                
+                context.moveTo(move, 0);
+                context.lineTo(move, 300);
+                context.stroke();
+
+                context.moveTo(0, move);
+                context.lineTo(300, move);
+                context.stroke();
+            }
+	    }
+
+	    function putStone(x, y, type) {
+	        context.beginPath();
+	        var stonex = block * x;
+	        var stoney = block * y;
+	        context.arc(stonex + block / 2, stoney + block / 2, 15, 0 * Math.PI / 180, 360 * Math.PI / 180, false);
+	        switch (type) {
+	            case 0:
+	            	return false;
+	                break;
+	            case 1:
+	                context.fillStyle = 'white';
+	                context.fill();
+	                break;
+	            case 2:
+	                context.fillStyle = 'black';
+	                
+	                context.fill();
+	                break;
+	            case 3:
+	            	context.strokeStyle = 'black';
+	            	context.lineWidth = 2 ;
+	            	context.stroke() ;
+	            	break;
+	            case 4:
+	            	context.strokeStyle = 'white';
+	            	context.lineWidth = 2;
+	            	context.stroke();
+	            	break;
+	            default:
+	            	return false;
+	            	break;
+	        }
+	        
+	    }
+
+	    
+	</script>
+	
+<body id="main"onload="sample()">
+    <canvas id="othello" width="300px" height="300px"></canvas>
+    <br>
+    <button onclick="start()">スタート</button>
+    黒:<a id="black"></a>
+    白:<a id="white"></a>
+    <a id="result"></a>
+</body>
+
+</html>
