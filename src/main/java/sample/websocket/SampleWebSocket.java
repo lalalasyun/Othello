@@ -2,6 +2,7 @@ package sample.websocket;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
@@ -61,6 +62,8 @@ public class SampleWebSocket {
 			room.timer();
 			if (room.isEmpty()) {
 				room.setAI(true);
+				Thread.sleep(100);
+				room.sendMessage(getResult());
 			}
 			break;
 		case "coord":
@@ -83,9 +86,13 @@ public class SampleWebSocket {
 				room.sendMessage("stone," + stone);
 			}
 			if (!game.isGame()) {
+				addResult(game.judge());
 				Thread.sleep(100);
 				room.sendMessage("end");
-				addResult(game.judge());
+				if(room.isAI()) {
+					Thread.sleep(100);
+					room.sendMessage(getResult());
+				}
 			}
 			break;
 		}
@@ -99,6 +106,27 @@ public class SampleWebSocket {
 			}
 		}
 		return null;
+	}
+	
+	public String getResult() throws SQLException {
+		Connection con = getConnection();
+		Statement st = con.createStatement();
+		
+		String sql ="select count(*) as \"count\" from result where result = 'win' union ALL select count(*) from result where result = 'lose' union ALL select count(*) from result where result = 'draw';";
+		ResultSet resultSet = st.executeQuery(sql);
+		int playcount = 0;
+		int[] count = new int[3];
+		int index = 0;
+		while (resultSet.next()) {
+		    count[index] = resultSet.getInt("count");
+		    playcount += count[index];
+		    index++;
+		}
+		double rate = (double)count[0] / playcount;
+		rate = ((double)Math.round(rate * 100))/100;
+		st.close();
+	    con.close();
+	    return "rate,AI勝率"  + rate + "% win:" + count[0] + " lose:" + count[1] + " draw:" + count[2];
 	}
 
 	public void addResult(String str) throws SQLException {

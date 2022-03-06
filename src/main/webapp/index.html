@@ -17,6 +17,7 @@
 		//let ws = new WebSocket('ws://lalalasyun.com/websocket/sample');
 		let ws = new WebSocket('wss://othellojp.herokuapp.com/sample');
 		var result = document.getElementById('result');
+		var rate = document.getElementById('rate');
 		let turn;
 		var gameturn = true;
 		var game = false;
@@ -86,6 +87,9 @@
 			case "turn":
 				turn = ary[1];
 				break;
+			case "rate":
+				rate.innerHTML = ary[1];
+				break;
 			case "end":
 				var cntwhite = Number(white.innerHTML);
 				var cntblack = Number(black.innerHTML);
@@ -136,8 +140,6 @@
 	            var y = Math.floor(canvasY / block);
 	            
 	            stoneClick(x,y);
-	            console.log(x);
-	            console.log(y);
 	        });
 	    }
 	    
@@ -151,7 +153,6 @@
 				size = 2;
 				main.style.transform = "scale(" + size + ")";
 			}
-			console.log(size);
 		}
 	    
 	    function initStone(){
@@ -219,6 +220,8 @@
     黒:<a id="black"></a>
     白:<a id="white"></a>
     <a id="result"></a>
+    <br>
+    <a id="AIrate"></a>
 </body>
 
 </html>
