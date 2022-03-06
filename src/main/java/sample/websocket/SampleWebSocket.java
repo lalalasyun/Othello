@@ -123,7 +123,7 @@ public class SampleWebSocket {
 		    index++;
 		}
 		double rate = (double)count[0] / playcount;
-		rate = ((double)Math.round(rate * 100))/10000;
+		rate = ((double)Math.round(rate * 100));
 		st.close();
 	    con.close();
 	    return "rate,AI勝率"  + rate + "% win:" + count[0] + " lose:" + count[1] + " draw:" + count[2];
