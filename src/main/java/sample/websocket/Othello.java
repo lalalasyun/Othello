@@ -92,7 +92,7 @@ public class Othello {
 		String str = "";
 		if(point[1] == point[2]) {
 			str = "draw";
-		}else if(point[1] > point[2]){
+		}else if(point[1] < point[2]){
 			str = "lose";
 		}else {
 			str = "win";
