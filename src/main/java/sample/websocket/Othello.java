@@ -82,6 +82,21 @@ public class Othello {
 		}
 		return cnt;
 	}
+	
+	// 勝敗
+	String judge() {
+		int point[] = count(oth);
+		String str = "";
+		if(point[1] == point[2]) {
+			str = "draw";
+		}else if(point[1] > point[2]){
+			str = "lose";
+		}else {
+			str = "win";
+		}
+		
+		return str;
+	}
 
 	// 検索
 	void search(int cnt, int[][] oth) {

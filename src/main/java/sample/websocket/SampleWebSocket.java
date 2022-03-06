@@ -1,5 +1,11 @@
 package sample.websocket;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,13 +42,13 @@ public class SampleWebSocket {
 		Room getroom = getRoom(session);
 		getroom.removeSession(session);
 		getroom.setAI(false);
-		if(getroom.removeRoom()) {
+		if (getroom.removeRoom()) {
 			roomlist.remove(getroom);
 		}
 	}
 
 	@OnMessage
-	public void broadcast(String message, Session session) throws Exception{
+	public void broadcast(String message, Session session) throws Exception {
 		String str[] = message.split(",");
 		String stone;
 		Room room = getRoom(session);
@@ -53,32 +59,33 @@ public class SampleWebSocket {
 			stone = game.othello();
 			room.sendMessage("stone," + stone);
 			room.timer();
-			if(room.isEmpty()) {
+			if (room.isEmpty()) {
 				room.setAI(true);
 			}
 			break;
 		case "coord":
-			if(!room.isTurn(session)) {
+			if (!room.isTurn(session)) {
 				break;
 			}
 			int x = Integer.parseInt(str[1]);
 			int y = Integer.parseInt(str[2]);
-			
+
 			boolean ret = game.place(x, y);
-			if(!ret) {
+			if (!ret) {
 				break;
 			}
 			stone = game.othello();
 			room.sendMessage("stone," + stone);
-			if(room.isAI()) {
+			if (room.isAI()) {
 				Thread.sleep(500);
 				game.othelloAI();
 				stone = game.othello();
 				room.sendMessage("stone," + stone);
 			}
-			if(!game.isGame()) {
+			if (!game.isGame()) {
 				Thread.sleep(100);
 				room.sendMessage("end");
+				addResult(game.judge());
 			}
 			break;
 		}
@@ -93,8 +100,35 @@ public class SampleWebSocket {
 		}
 		return null;
 	}
-	
-	
-	
+
+	public void addResult(String str) throws SQLException {
+		Connection con = getConnection();
+		Statement st = con.createStatement();
+		LocalDateTime datetime = LocalDateTime.now();
+		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String time = datetime.format(f);
+		String result = str;
+		String sql = "INSERT INTO result(playdate,result) values('" + time + "','" + result + "');";
+		System.out.println(sql);
+		st.execute(sql);
+	    st.close();
+	    con.close();
+	}
+
+	public Connection getConnection() {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection(
+					"jdbc:mysql://us-cdbr-east-05.cleardb.net/heroku_dc2e2b62c172679", "bfa96589068399", "f5a637d7");
+
+			return con;
+
+		} catch (ClassNotFoundException e) {
+			System.out.println("ドライバを読み込めませんでした " + e);
+		} catch (SQLException e) {
+			System.out.println("データベース接続エラー" + e);
+		}
+		return null;
+	}
 
 }
