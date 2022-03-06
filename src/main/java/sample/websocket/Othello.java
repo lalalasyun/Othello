@@ -453,7 +453,7 @@ public class Othello {
 				}
 			}
 		}
-		if(count(oth)[0] == 64) {
+		if(count(oth)[0] == 0) {
 			game = false;
 		}
 
