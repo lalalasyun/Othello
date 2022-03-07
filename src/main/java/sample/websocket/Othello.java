@@ -54,6 +54,9 @@ public class Othello {
 
 		if (oth[x][y] == 3 || oth[x][y] == 4) {
 			put(x, y, cnt, oth);
+			if(count(oth)[0] == 0) {
+				game = false;
+			}
 			cnt++;
 			return true;
 		} else {
@@ -453,9 +456,7 @@ public class Othello {
 				}
 			}
 		}
-		if(count(oth)[0] == 0) {
-			game = false;
-		}
+		
 
 	}
 

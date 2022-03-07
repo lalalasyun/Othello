@@ -80,7 +80,7 @@ public class SampleWebSocket {
 			stone = game.othello();
 			room.sendMessage("stone," + stone);
 			if (room.isAI()) {
-				Thread.sleep(500);
+				Thread.sleep(300);
 				game.othelloAI();
 				stone = game.othello();
 				room.sendMessage("stone," + stone);
