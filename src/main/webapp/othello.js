@@ -3,9 +3,11 @@ var ws = new WebSocket('wss://othellojp.herokuapp.com/othello');
 var turn;
 var gameturn = true;
 var game = false;
-var onlinemode = false;
 var cntblack = 0;
 var cntwhite = 0;
+var user1;
+var user2;
+
 var result;
 var black;
 var white;
@@ -15,6 +17,10 @@ var userlog;
 var userid;
 var userpass;
 var form;
+var username1;
+var username2;
+var userrate1;
+var userrate2;
 
 function load() {
 	result = document.getElementById('result');
@@ -26,6 +32,10 @@ function load() {
 	userid = document.getElementById("id");
 	userpass = document.getElementById("pass");
 	form = document.getElementById('form');
+	username1 = document.getElementById('username1');
+	username2 = document.getElementById('username2');
+	userrate1 = document.getElementById('userrate1');
+	userrate2 = document.getElementById('userrate2');
 }
 
 function stoneClick(x, y) {
@@ -44,10 +54,6 @@ function startbtn() {
 		initStone();
 		return;
 	}
-	start.innerHTML = "リセット";
-	userlog.innerHTML = "";
-	onlinemode = false;
-	initStone();
 	ws.send("start");
 }
 
@@ -58,7 +64,6 @@ function online() {
 	if (!start.disabled) {
 		result.innerHTML = "プレイヤーを待っています";
 		start.disabled = true;
-		onlinemode = true;
 		ws.send("online");
 		rate.hidden = true;
 		black.innerHTML = "";
@@ -67,7 +72,6 @@ function online() {
 		rate.hidden = false;
 		result.innerHTML = "";
 		start.disabled = false;
-		onlinemode = false;
 		ws.send("offline");
 	}
 }
@@ -76,9 +80,9 @@ function login() {
 	if (game) {
 		return;
 	}
-	userlog.value = "";
-	userid.value = "";
-	userpass.value = "";
+	userlog.innerHTML = "";
+	userid.innerHTML = "";
+	userpass.innerHTML = "";
 	form.hidden = form.hidden ? false : true;
 }
 
@@ -145,7 +149,11 @@ ws.onmessage = function (receive) {
 			turn = ary[1];
 			break;
 		case "matching":
-			if (onlinemode) {
+			user1 = ary[1];
+			user2 = ary[2];
+			username1.innerHTML = user1;
+			username2.innerHTML = user2;
+			if (!game) {
 				start.disabled = false;
 				game = true;
 				result.innerHTML = "プレイヤーが見つかりました";
@@ -171,6 +179,9 @@ ws.onmessage = function (receive) {
 		case "start":
 			game = true;
 			result.innerHTML = "";
+			start.innerHTML = "リセット";
+			userlog.innerHTML = "";
+			initStone();
 			break;
 		case "end":
 			winresult();
@@ -267,7 +278,6 @@ function putStone(x, y, type) {
 	switch (type) {
 		case 0:
 			return false;
-			break;
 		case 1:
 			context.fillStyle = 'white';
 			context.fill();
@@ -289,7 +299,6 @@ function putStone(x, y, type) {
 			break;
 		default:
 			return false;
-			break;
 	}
 
 }

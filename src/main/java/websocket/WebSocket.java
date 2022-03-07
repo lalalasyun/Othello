@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
@@ -23,6 +25,7 @@ import model.Room;
 @ServerEndpoint("/othello")
 public class WebSocket {
 	private static List<Room> roomlist = new ArrayList<>();
+	private static Map<Session,String> userlist = new LinkedHashMap<>();
 
 	@OnOpen
 	public void connect(Session session) throws Exception {
@@ -39,6 +42,7 @@ public class WebSocket {
 		if (getroom.removeRoom()) {
 			roomlist.remove(getroom);
 		}
+		userlist.remove(session);
 	}
 
 	@OnMessage
@@ -57,6 +61,8 @@ public class WebSocket {
 			room.timer();
 			if (room.isAI()) {
 				room.setAI(true);
+				Thread.sleep(100);
+				room.sendMessage("matching,"+ room.getName1()+","+ room.getName2());
 				Thread.sleep(100);
 				room.sendMessage(getResult());
 			}
@@ -97,6 +103,10 @@ public class WebSocket {
 			} else {
 				room.setAI(false);
 			}
+			String userid = userlist.get(session);
+			if(userid != null) {
+				getRoom(session).setName(session, userid);
+			}
 			break;
 		case "offline":
 			room.setAI(true);
@@ -105,18 +115,20 @@ public class WebSocket {
 			ret = userLogin(str[1],str[2]);
 			if(ret) {
 				room.sendMessage("login,success");
+				room.setName(session, str[1]);
+				userlist.put(session,str[1]);
 			}else {
 				room.sendMessage("login,failure");
 			}
 			break;
 		case "register":
-			ret = userLogin(str[1],str[2]);
-			if(!ret) {
-				userRegister(str[1],str[2]);
-				room.sendMessage("register,success");
-			}else {
-				room.sendMessage("register,failure");
+			if(!userLogin(str[1],str[2])) {
+				if(userRegister(str[1],str[2])) {
+					room.sendMessage("register,success");
+					break;
+				}
 			}
+			room.sendMessage("register,failure");
 			break;
 		}
 
@@ -129,7 +141,7 @@ public class WebSocket {
 				r.setUser(session);
 				setroom = true;
 				Thread.sleep(100);
-				r.sendMessage("matching");
+				r.sendMessage("matching,"+ r.getName1()+","+ r.getName2());
 				break;
 			}
 		}
@@ -179,13 +191,22 @@ public class WebSocket {
 		con.close();
 	}
 
-	public void userRegister(String id,String pass) throws SQLException {
+	public boolean userRegister(String id,String pass) throws SQLException {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
-		String sql = "insert into account (password,userid,rate) values ('" +pass+ "','" +id+ "',0.00);";
-		st.execute(sql);
-		st.close();
-		con.close();
+		String sql = "select * from account where userid='" +id+ ";";
+		ResultSet resultSet = st.executeQuery(sql);
+		boolean ret = false;
+		while (resultSet.next()) {
+			ret = true;
+		}
+		if(!ret) {
+			sql = "insert into account (password,userid,rate) values ('" +pass+ "','" +id+ "',0.00);";
+			st.execute(sql);
+			st.close();
+			con.close();
+		}
+		return !ret;
 	}
 	
 	public boolean userLogin(String id,String pass) throws SQLException {

@@ -10,6 +10,9 @@ public class Room {
 	private Session user1 = null;
 	private Session user2 = null;
 	
+	private String name1 = null;
+	private String name2 = "AI";
+	
 	private Othello game = new Othello();
 
 	private boolean AI = true;
@@ -24,7 +27,14 @@ public class Room {
 		return user2;
 	}
 	
-	
+	public String getName1() {
+		return name1;
+	}
+
+	public String getName2() {
+		return name2;
+	}
+
 	public boolean isAI() {
 		return AI;
 	}
@@ -37,13 +47,23 @@ public class Room {
 		}
 		
 	}
+	
+	public void setName(Session session,String str) {
+		if(session == user1) {
+			name1 = str;
+		}else {
+			name2 = str;
+		}
+	}
 
 	public void setUser(Session session) {
 		if(user1 == null) {
 			user1 = session;
+			name1 = "Anonymous1";
 			user1.getAsyncRemote().sendText("turn,black");
 		}else if(user2 == null){
 			user2 = session;
+			name2 = "Anonymous2";
 			user2.getAsyncRemote().sendText("turn,white");
 		}
 	}
@@ -56,8 +76,10 @@ public class Room {
 	public void removeSession(Session session) {
 		if(user1 == session) {
 			user1 = null;
+			name1 = null;
 		}else {
 			user2 = null;
+			name2 = null;
 		}
 	}
 	
