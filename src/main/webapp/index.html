@@ -19,7 +19,7 @@
 		let turn;
 		var gameturn = true;
 		var game = false;
-		var online = false;
+		var onlinemode = false;
 		
 		function stoneClick(x,y) {
 			if(game && gameturn){
@@ -43,9 +43,11 @@
 			if(!start.disabled){
 				result.innerHTML = "プレイヤーを待っています";
 				start.disabled = true;
+				onlinemode = true;
 			}else{
 				result.innerHTML = "";
 				start.disabled = false;
+				onlinemode = false;
 			}
 			
 			
@@ -110,7 +112,7 @@
 				turn = ary[1];
 				break;
 			case "matching":
-				if(online){
+				if(onlinemode){
 					start.disabled = false;
 					game = true;
 					result.innerHTML = "プレイヤーが見つかりました";
