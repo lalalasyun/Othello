@@ -78,9 +78,10 @@ button {
 		
 		function login(){
 			if(game){ 
-				var userlog = document.getElementById('usermenu');
 				return;
 			}
+			var userlog = document.getElementById('usermenu');
+			userlog.value = "";
 			document.getElementById("id").value = "";
 			document.getElementById("pass").value = "";
 			var form = document.getElementById('form');
@@ -192,7 +193,6 @@ button {
 				var cntblack = Number(black.innerHTML);
 				winresult(cntwhite,cntblack);
 				document.getElementById('start').innerHTML = "スタート";
-				initStone();
 				break;
 			}	
 		}
@@ -330,7 +330,7 @@ button {
 		<td><input type="text" id="id"></td>
 	</tr>
 	<tr>
-		<td align="right"><b> ユーザーID：</b></td>
+		<td align="right"><b> パスワード：</b></td>
 		<td><input type="password"id="pass"></td>
 	</tr>
 	</table>
