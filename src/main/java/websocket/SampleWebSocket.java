@@ -98,6 +98,16 @@ public class SampleWebSocket {
 		case "offline":
 			room.setAI(true);
 			break;
+		case "login":
+			ret = userLogin(str[1],str[2]);
+			if(ret) {
+				room.sendMessage("login,success");
+			}else {
+				room.sendMessage("login,failure");
+			}
+			break;
+		case "register":
+			break;
 		}
 
 	}
@@ -139,7 +149,7 @@ public class SampleWebSocket {
 			playcount += count[index];
 			index++;
 		}
-		double rate = (double) count[0] / playcount;
+		double rate = (double) count[0] /(double)  playcount;
 		rate = ((double) Math.round(rate * 100));
 		st.close();
 		con.close();
@@ -154,12 +164,26 @@ public class SampleWebSocket {
 		String time = datetime.format(f);
 		String sql = "INSERT INTO result(playdate,result,record) values('" + time + "','" + result + "','" + record
 				+ "');";
-		System.out.println(sql);
 		st.execute(sql);
 		st.close();
 		con.close();
 	}
 
+	public void userRegister(String id,String pass) throws Exception {
+		
+	}
+	
+	public boolean userLogin(String id,String pass) throws Exception {
+		Connection con = getConnection();
+		Statement st = con.createStatement();
+		String sql = "select rate from account where userid ='" +id+ "' AND password = '" +pass+ "'";
+		boolean ret = st.execute(sql);
+		st.close();
+		con.close();
+		return ret;
+	}
+	
+	
 	public Connection getConnection() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");

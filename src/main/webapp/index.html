@@ -3,23 +3,24 @@
 <head>
 <meta charset="UTF-8" name="viewport" content="width=device-width">
 <title>オセロゲーム</title>
-<link href="/favicon.ico" rel="icon"/>
+<link href="/favicon.ico" rel="icon" />
 <style type="text/css">
 #main {
-		margin:0px;
-        width: 300px;
-        height: 500px;
-        transform-origin:0px 0px;
-    }
+	margin: 0px;
+	width: 300px;
+	height: 500px;
+	transform-origin: 0px 0px;
+}
 </style>
 </head>
-	<script type="text/javascript">
+<script type="text/javascript">
 		//let ws = new WebSocket('ws://lalalasyun.com/websocket/othello');
 		let ws = new WebSocket('wss://othellojp.herokuapp.com/othello');
 		let turn;
 		var gameturn = true;
 		var game = false;
 		var onlinemode = false;
+		var id;
 		
 		function stoneClick(x,y) {
 			if(game && gameturn){
@@ -34,9 +35,7 @@
 		}
 		
 		function online(){
-			if(game){
-				return;
-			}
+			if(game){return;}
 			var result = document.getElementById('result');
 			var start = document.getElementById('start');
 			var black = document.getElementById("black");
@@ -61,10 +60,30 @@
 		}
 		
 		function login(){
-			
+			if(game){ return;}
+			document.getElementById("id").value = "";
+			document.getElementById("pass").value = "";
+			var form = document.getElementById('form');
+			form.hidden = form.hidden ? false:true;
 		}
 		
-		function record(){
+		function loginbtn(){
+			id = document.getElementById("id").value;
+			var pass = document.getElementById("pass").value;
+			var form = document.getElementById('form');
+			ws.send("login," + id +","+ pass);
+			form.hidden = true;
+		}
+		
+		function registerbtn(){
+			id = document.getElementById("id").value;
+			var pass = document.getElementById("pass").value;
+			var form = document.getElementById('form');
+			ws.send("register," + id +","+ pass);
+			form.hidden = true;
+		}
+		
+		function rank(){
 			
 		}
 		
@@ -73,6 +92,7 @@
 			var black = document.getElementById("black");
 			var white = document.getElementById("white");
 			var start = document.getElementById('start');
+			var userlog = document.getElementById('usermenu');
 			var ary = receive.data.split(',');
 			var command = ary[0];
 			
@@ -132,6 +152,13 @@
 			case "rate":
 				var rate = document.getElementById('AIrate');
 				rate.innerHTML = ary[1];
+				break;
+			case "login":
+				if(ary[1] == "success"){
+					userlog.innerHTML = "ログインしました";
+				}else{
+					userlog.innerHTML = "ログインに失敗しました";
+				}
 				break;
 			case "end":
 				var cntwhite = Number(white.innerHTML);
@@ -258,21 +285,27 @@
 
 	    
 	</script>
-	
-<body id="main"onload="sample()">
-    <canvas id="othello" width="300px" height="300px"></canvas>
-    <br>
-    <button id="start"onclick="start()">スタート</button>
-    <button onclick="online()">オンライン</button>
-    <button onclick="login()">ログイン</button>
-    <button onclick="record()">棋譜</button>
-    <br>
-    
-    <a id="black"></a>
-    <a id="white"></a>
-    <a id="result"></a>
-    <br>
-    <a id="AIrate"></a>
+
+<body id="main" onload="sample()">
+	<canvas id="othello" width="300px" height="300px"></canvas>
+	<br>
+	<button id="start" onclick="start()">スタート</button>
+	<button onclick="online()">オンライン</button>
+	<button onclick="login()">ログイン</button>
+	<button onclick="account()">アカウント</button>
+	<br>
+	<article id="form" hidden=true>
+		<input type="text" id="id">
+		<input type="password"id="pass">
+		<button onclick="loginbtn()">ログイン</button>
+		<button onclick="registerbtn()">登録</button>
+	</article>
+	<span id="black"></span>
+	<span id="white"></span>
+	<span id="result"></span>
+	<br>
+	<span id="AIrate"></span>
+	<span id="usermenu"></span>
 </body>
 
 </html>
