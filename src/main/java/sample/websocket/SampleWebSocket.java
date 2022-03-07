@@ -22,22 +22,12 @@ public class SampleWebSocket {
 
 	@OnOpen
 	public void connect(Session session) throws Exception {
-		boolean setroom = false;
-		for (Room r : roomlist) {
-			if (r.isEmpty()) {
-				r.setUser(session);
-				setroom = true;
-				Thread.sleep(100);
-				r.sendMessage("matching");
-				break;
-			}
-		}
-		if (!setroom) {
+		boolean ret = setRoom(session);
+		if (!ret) {
 			Room room = new Room();
 			room.setUser(session);
 			roomlist.add(room);
 		}
-
 	}
 
 	@OnClose
@@ -97,8 +87,33 @@ public class SampleWebSocket {
 				}
 			}
 			break;
+		case "online":
+			boolean getRoom = setRoom(session);
+			if(getRoom) {
+				roomlist.remove(room);
+			}else {
+				room.setAI(false);
+			}
+			break;
+		case "offline":
+			room.setAI(true);
+			break;
 		}
 
+	}
+	
+	public boolean setRoom(Session session) throws Exception {
+		boolean setroom = false;
+		for (Room r : roomlist) {
+			if (r.isEmpty()) {
+				r.setUser(session);
+				setroom = true;
+				Thread.sleep(100);
+				r.sendMessage("matching");
+				break;
+			}
+		}
+		return setroom;
 	}
 
 	public Room getRoom(Session session) {

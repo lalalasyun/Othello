@@ -44,10 +44,12 @@
 				result.innerHTML = "プレイヤーを待っています";
 				start.disabled = true;
 				onlinemode = true;
+				ws.send("online");
 			}else{
 				result.innerHTML = "";
 				start.disabled = false;
 				onlinemode = false;
+				ws.send("offline");
 			}
 			
 			
@@ -254,6 +256,7 @@
     <button id="start"onclick="start()">スタート</button>
     <button onclick="online()">オンライン</button>
     <button onclick="record()">棋譜</button>
+    <br>
     黒:<a id="black"></a>
     白:<a id="white"></a>
     <a id="result"></a>

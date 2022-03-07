@@ -12,7 +12,7 @@ public class Room {
 	
 	private Othello game = new Othello();
 
-	private boolean AI = false;
+	private boolean AI = true;
 	
 	
 	
