@@ -21,7 +21,7 @@ import model.Othello;
 import model.Room;
 
 @ServerEndpoint("/othello")
-public class SampleWebSocket {
+public class WebSocket {
 	private static List<Room> roomlist = new ArrayList<>();
 
 	@OnOpen
@@ -35,7 +35,7 @@ public class SampleWebSocket {
 	public void remove(Session session) {
 		Room getroom = getRoom(session);
 		getroom.removeSession(session);
-		getroom.setAI(false);
+		getroom.setAI(true);
 		if (getroom.removeRoom()) {
 			roomlist.remove(getroom);
 		}
