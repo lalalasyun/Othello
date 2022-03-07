@@ -52,7 +52,7 @@ public class SampleWebSocket {
 			stone = game.othello();
 			room.sendMessage("stone," + stone);
 			room.timer();
-			if (room.isEmpty()) {
+			if (room.isAI()) {
 				room.setAI(true);
 				Thread.sleep(100);
 				room.sendMessage(getResult());
