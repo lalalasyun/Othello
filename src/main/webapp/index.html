@@ -41,6 +41,7 @@ button {
 				black.innerHTML = "";
 				white.innerHTML = "";
 				game = false;
+				initStone();
 				return;
 			}
 			document.getElementById('start').innerHTML = "リセット";
@@ -188,6 +189,7 @@ button {
 				var cntblack = Number(black.innerHTML);
 				winresult(cntwhite,cntblack);
 				document.getElementById('start').innerHTML = "スタート";
+				initStone();
 				break;
 			}	
 		}
