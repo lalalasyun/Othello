@@ -176,7 +176,7 @@ public class SampleWebSocket {
 		con.close();
 	}
 
-	public void userRegister(String id,String pass) throws Exception {
+	public void userRegister(String id,String pass) throws SQLException {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
 		String sql = "insert into account (password,userid,rate) values ('" +pass+ "','" +id+ "',0.00);";
@@ -185,14 +185,18 @@ public class SampleWebSocket {
 		con.close();
 	}
 	
-	public boolean userLogin(String id,String pass) throws Exception {
+	public boolean userLogin(String id,String pass) throws SQLException {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
 		String sql = "select * from account where userid ='" +id+ "' AND password = '" +pass+ "'";
-		int ret = st.executeUpdate(sql);
+		ResultSet resultSet = st.executeQuery(sql);
+		boolean ret = false;
+		while (resultSet.next()) {
+			ret = true;
+		}
 		st.close();
 		con.close();
-		return (ret != 0);
+		return ret;
 	}
 	
 	

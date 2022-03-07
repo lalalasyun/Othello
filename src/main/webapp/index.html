@@ -324,12 +324,18 @@ button {
 	<button onclick="record()">レコード</button>
 	<br>
 	<article id="form" hidden=true>
-		ユーザーID <input type="text" id="id">
-		<br>
-		パスワード <input type="password"id="pass">
-		<br>
-		<button onclick="loginbtn()">ログイン</button>
-		<button onclick="registerbtn()">登録</button>
+	<table border="0">
+	<tr>
+		<td align="right"><b> ユーザーID：</b></td>
+		<td><input type="text" id="id"></td>
+	</tr>
+	<tr>
+		<td align="right"><b> ユーザーID：</b></td>
+		<td><input type="password"id="pass"></td>
+	</tr>
+	</table>
+	<button onclick="loginbtn()">ログイン</button>
+	<button onclick="registerbtn()">登録</button>
 	</article>
 	<span id="black"></span>
 	<span id="white"></span>
