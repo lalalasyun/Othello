@@ -109,7 +109,6 @@ public class SampleWebSocket {
 		case "register":
 			ret = userLogin(str[1],str[2]);
 			if(!ret) {
-				Thread.sleep(100);
 				userRegister(str[1],str[2]);
 				room.sendMessage("register,success");
 			}else {
@@ -190,10 +189,10 @@ public class SampleWebSocket {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
 		String sql = "select rate from account where userid ='" +id+ "' AND password = '" +pass+ "'";
-		boolean ret = st.execute(sql);
+		int ret = st.executeUpdate(sql);
 		st.close();
 		con.close();
-		return ret;
+		return (ret != 0);
 	}
 	
 	

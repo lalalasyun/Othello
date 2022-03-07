@@ -77,7 +77,11 @@ button {
 		}
 		
 		function login(){
-			if(game){ return;}
+			if(game){ 
+				var userlog = document.getElementById('usermenu');
+				userlog.innerHTML = "";
+				return;
+			}
 			document.getElementById("id").value = "";
 			document.getElementById("pass").value = "";
 			var form = document.getElementById('form');
@@ -321,8 +325,9 @@ button {
 	<button onclick="record()">レコード</button>
 	<br>
 	<article id="form" hidden=true>
-		<input type="text" id="id">
-		<input type="password"id="pass">
+		ユーザーID <input type="text" id="id">
+		パスワード <input type="password"id="pass">
+		<br>
 		<button onclick="loginbtn()">ログイン</button>
 		<button onclick="registerbtn()">登録</button>
 	</article>
