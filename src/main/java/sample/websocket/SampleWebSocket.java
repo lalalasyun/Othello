@@ -21,12 +21,14 @@ public class SampleWebSocket {
 	private static List<Room> roomlist = new ArrayList<>();
 
 	@OnOpen
-	public void connect(Session session) {
+	public void connect(Session session) throws Exception {
 		boolean setroom = false;
 		for (Room r : roomlist) {
 			if (r.isEmpty()) {
 				r.setUser(session);
 				setroom = true;
+				Thread.sleep(100);
+				r.sendMessage("matching");
 				break;
 			}
 		}

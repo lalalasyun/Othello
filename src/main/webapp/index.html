@@ -16,7 +16,6 @@
 	<script type="text/javascript">
 		//let ws = new WebSocket('ws://lalalasyun.com/websocket/sample');
 		let ws = new WebSocket('wss://othellojp.herokuapp.com/sample');
-		var result = document.getElementById('result');
 		let turn;
 		var gameturn = true;
 		var game = false;
@@ -33,10 +32,33 @@
 			ws.send("start");
 		}
 		
+		function online(){
+			if(game){
+				return;
+			}
+			var result = document.getElementById('result');
+			var start = document.getElementById('start');
+			
+			if(!start.disabled){
+				result.innerHTML = "プレイヤーを待っています";
+				start.disabled = true;
+			}else{
+				result.innerHTML = "";
+				start.disabled = false;
+			}
+			
+			
+		}
+		
+		function record(){
+			
+		}
+		
 		ws.onmessage = function(receive) {
 			var result = document.getElementById('result');
 			var black = document.getElementById("black");
 			var white = document.getElementById("white");
+			var start = document.getElementById('start');
 			var ary = receive.data.split(',');
 			var command = ary[0];
 			
@@ -84,7 +106,12 @@
 				white.innerHTML = cntwhite;
 				break;
 			case "turn":
+				game = true;
 				turn = ary[1];
+				break;
+			case "matching":
+				start.disabled = false;
+				result.innerHTML = "プレイヤーが見つかりました";
 				break;
 			case "rate":
 				var rate = document.getElementById('AIrate');
@@ -219,7 +246,9 @@
 <body id="main"onload="sample()">
     <canvas id="othello" width="300px" height="300px"></canvas>
     <br>
-    <button onclick="start()">スタート</button>
+    <button id="start"onclick="start()">スタート</button>
+    <button onclick="online()">オンライン</button>
+    <button onclick="record()">棋譜</button>
     黒:<a id="black"></a>
     白:<a id="white"></a>
     <a id="result"></a>

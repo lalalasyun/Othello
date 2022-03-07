@@ -8,7 +8,7 @@ public class Othello {
 	int oth[][] = new int[8][8];
 	int cnt = 0;
 	boolean game = true;
-	String record = null;
+	String record = "";
 
 	Othello() {
 	}
@@ -470,7 +470,7 @@ public class Othello {
 	// 初期化
 	void initialize() {
 		game = true;
-		record = null;
+		record = "";
 		cnt = 0;
 		for (int a = 0; a < 8; a++) {
 			for (int b = 0; b < 8; b++) {
