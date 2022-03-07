@@ -19,7 +19,7 @@
 		let turn;
 		var gameturn = true;
 		var game = false;
-		
+		var online = false;
 		
 		function stoneClick(x,y) {
 			if(game && gameturn){
@@ -28,6 +28,7 @@
 		}
 		
 		function start(){
+			online = false;
 			initStone();
 			ws.send("start");
 		}
@@ -36,7 +37,6 @@
 			if(game){
 				return;
 			}
-			game = true;
 			var result = document.getElementById('result');
 			var start = document.getElementById('start');
 			
@@ -110,8 +110,11 @@
 				turn = ary[1];
 				break;
 			case "matching":
-				start.disabled = false;
-				result.innerHTML = "プレイヤーが見つかりました";
+				if(online){
+					start.disabled = false;
+					game = true;
+					result.innerHTML = "プレイヤーが見つかりました";
+				}
 				break;
 			case "rate":
 				var rate = document.getElementById('AIrate');

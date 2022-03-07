@@ -29,6 +29,8 @@ public class SampleWebSocket {
 				setroom = true;
 				Thread.sleep(100);
 				r.sendMessage("matching");
+				Thread.sleep(100);
+				r.sendMessage("stone," + r.getGame().othello());
 				break;
 			}
 		}
