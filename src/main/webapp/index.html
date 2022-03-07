@@ -39,15 +39,20 @@
 			}
 			var result = document.getElementById('result');
 			var start = document.getElementById('start');
+			var black = document.getElementById("black");
+			var white = document.getElementById("white");
+			var rate = document.getElementById('AIrate');
 			
 			if(!start.disabled){
 				result.innerHTML = "プレイヤーを待っています";
 				start.disabled = true;
 				onlinemode = true;
 				ws.send("online");
-				var rate = document.getElementById('AIrate');
-				rate.innerHTML = "";
+				rate.hidden = true;
+				black.innerHTML = "";
+				white.innerHTML = "";
 			}else{
+				rate.hidden = true;
 				result.innerHTML = "";
 				start.disabled = false;
 				onlinemode = false;
@@ -111,8 +116,8 @@
 					gameturn = true;
 					result.innerHTML = "パス";
 				}
-				black.innerHTML = cntblack;
-				white.innerHTML = cntwhite;
+				black.innerHTML = "黒:" + cntblack;
+				white.innerHTML = "白:" + cntwhite;
 				break;
 			case "turn":
 				turn = ary[1];
@@ -263,8 +268,8 @@
     <button onclick="record()">棋譜</button>
     <br>
     
-    黒:<a id="black"></a>
-    白:<a id="white"></a>
+    <a id="black"></a>
+    <a id="white"></a>
     <a id="result"></a>
     <br>
     <a id="AIrate"></a>
