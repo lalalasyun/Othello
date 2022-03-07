@@ -1,5 +1,5 @@
-var ws = new WebSocket('ws://lalalasyun.com/websocket/othello');
-//var ws = new WebSocket('wss://othellojp.herokuapp.com/othello');
+//var ws = new WebSocket('ws://lalalasyun.com/websocket/othello');
+var ws = new WebSocket('wss://othellojp.herokuapp.com/othello');
 var turn;
 var gameturn = true;
 var game = false;
