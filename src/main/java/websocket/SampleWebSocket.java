@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,8 @@ public class SampleWebSocket {
 		case "start":
 			game.initialize();
 			stone = game.othello();
+			room.sendMessage("start");
+			Thread.sleep(100);
 			room.sendMessage("stone," + stone);
 			room.timer();
 			if (room.isAI()) {
@@ -66,11 +69,11 @@ public class SampleWebSocket {
 			int y = Integer.parseInt(str[2]);
 
 			boolean ret = game.place(x, y);
+			stone = game.othello();
+			room.sendMessage("stone," + stone);
 			if (!ret) {
 				break;
 			}
-			stone = game.othello();
-			room.sendMessage("stone," + stone);
 			if (room.isAI()) {
 				Thread.sleep(300);
 				game.othelloAI();
@@ -166,7 +169,7 @@ public class SampleWebSocket {
 	public void addResult(String result, String record) throws SQLException {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
-		LocalDateTime datetime = LocalDateTime.now();
+		LocalDateTime datetime = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
 		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String time = datetime.format(f);
 		String sql = "INSERT INTO result(playdate,result,record) values('" + time + "','" + result + "','" + record
