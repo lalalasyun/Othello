@@ -219,7 +219,7 @@ public class WebSocket {
 	public boolean userDelete(String id,String pass) throws SQLException {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
-		String sql = "delete from account where userid = '" +id+ "' AND password ='"+pass+"';";
+		String sql = "delete from account where userid = '" +id+ "' AND password ='"+pass+"'";
 		ResultSet resultSet = st.executeQuery(sql);
 		boolean ret = false;
 		while (resultSet.next()) {
