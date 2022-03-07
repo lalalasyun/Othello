@@ -59,11 +59,11 @@ public class Room {
 	public void setUser(Session session) {
 		if(user1 == null) {
 			user1 = session;
-			name1 = "Anonymous1";
+			name1 = "guest1";
 			user1.getAsyncRemote().sendText("turn,black");
 		}else if(user2 == null){
 			user2 = session;
-			name2 = "Anonymous2";
+			name2 = "guest2";
 			user2.getAsyncRemote().sendText("turn,white");
 		}
 	}

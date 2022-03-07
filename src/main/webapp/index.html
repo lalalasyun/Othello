@@ -28,7 +28,7 @@ button {
 	<article id="form" hidden=true>
 	<table border="0">
 	<tr>
-		<td><b>個人情報は入力しないで下さい</b></td>
+		個人情報は入力しないで下さい
 	</tr>
 	<tr>
 		<td align="right"><b> ユーザーID：</b></td>
@@ -41,6 +41,7 @@ button {
 	</table>
 	<button onclick="loginbtn()">ログイン</button>
 	<button onclick="registerbtn()">登録</button>
+	<button onclick="deletebtn()">削除</button>
 	</article>
 	<span id="usermenu"></span>
 	<br>
@@ -48,13 +49,15 @@ button {
 	<span id="white"></span>
 	<span id="result"></span>
 	<br>
+	<article id="userdata">
 	<span id="username1"></span><br>
 	<span id="userrate1"></span>
 	<br>
 	<span id="username2"></span><br>
 	<span id="userrate2"></span>
-<!--<script src="/websocket/othello.js"></script>-->
-	<script src="/othello.js"></script>
+	</article>
+    <script src="/websocket/othello.js"></script>
+<!--	<script src="/othello.js"></script>-->
 </body>
 
 </html>

@@ -130,6 +130,13 @@ public class WebSocket {
 			}
 			room.sendMessage("register,failure");
 			break;
+		case "delete":
+			if(userDelete(str[1],str[2])) {
+				room.sendMessage("delete,success");
+			}else {
+				room.sendMessage("delete,failure");
+			}
+			break;
 		}
 
 	}
@@ -175,7 +182,7 @@ public class WebSocket {
 		rate = (double)Math.round(rate * 10000) / 100;
 		st.close();
 		con.close();
-		return "rate,AI勝率" + rate + "% win:" + count[0] + " lose:" + count[1] + " draw:" + count[2];
+		return "rate,勝率" + rate + "% win:" + count[0] + " lose:" + count[1] + " draw:" + count[2];
 	}
 
 	public void addResult(String result, String record) throws SQLException {
@@ -190,23 +197,37 @@ public class WebSocket {
 		st.close();
 		con.close();
 	}
-
+	
 	public boolean userRegister(String id,String pass) throws SQLException {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
-		String sql = "select * from account where userid='" +id+ ";";
+		String sql = "select * from account where userid='" +id+ "';";
 		ResultSet resultSet = st.executeQuery(sql);
 		boolean ret = false;
 		while (resultSet.next()) {
 			ret = true;
 		}
 		if(!ret) {
-			sql = "insert into account (password,userid,rate) values ('" +pass+ "','" +id+ "',0.00);";
+			sql = "INSERT INTO account (password,userid,rate) values ('" +pass+ "','" +id+ "',0.00);";
 			st.execute(sql);
-			st.close();
-			con.close();
 		}
+		st.close();
+		con.close();
 		return !ret;
+	}
+	
+	public boolean userDelete(String id,String pass) throws SQLException {
+		Connection con = getConnection();
+		Statement st = con.createStatement();
+		String sql = "delete from account where userid = '" +id+ "' AND password ='"+pass+"';";
+		ResultSet resultSet = st.executeQuery(sql);
+		boolean ret = false;
+		while (resultSet.next()) {
+			ret = true;
+		}
+		st.close();
+		con.close();
+		return ret;
 	}
 	
 	public boolean userLogin(String id,String pass) throws SQLException {
