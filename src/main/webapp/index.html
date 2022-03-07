@@ -14,8 +14,8 @@
 </style>
 </head>
 	<script type="text/javascript">
-		//let ws = new WebSocket('ws://lalalasyun.com/websocket/sample');
-		let ws = new WebSocket('wss://othellojp.herokuapp.com/sample');
+		//let ws = new WebSocket('ws://lalalasyun.com/websocket/othello');
+		let ws = new WebSocket('wss://othellojp.herokuapp.com/othello');
 		let turn;
 		var gameturn = true;
 		var game = false;
@@ -45,13 +45,17 @@
 				start.disabled = true;
 				onlinemode = true;
 				ws.send("online");
+				var rate = document.getElementById('AIrate');
+				rate.innerHTML = "";
 			}else{
 				result.innerHTML = "";
 				start.disabled = false;
 				onlinemode = false;
 				ws.send("offline");
 			}
-			
+		}
+		
+		function login(){
 			
 		}
 		
@@ -255,8 +259,10 @@
     <br>
     <button id="start"onclick="start()">スタート</button>
     <button onclick="online()">オンライン</button>
+    <button onclick="login()">ログイン</button>
     <button onclick="record()">棋譜</button>
     <br>
+    
     黒:<a id="black"></a>
     白:<a id="white"></a>
     <a id="result"></a>

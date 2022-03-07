@@ -1,4 +1,4 @@
-package sample.websocket;
+package websocket;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,18 +16,18 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-@ServerEndpoint("/sample")
+import model.Othello;
+import model.Room;
+
+@ServerEndpoint("/othello")
 public class SampleWebSocket {
 	private static List<Room> roomlist = new ArrayList<>();
 
 	@OnOpen
 	public void connect(Session session) throws Exception {
-		boolean ret = setRoom(session);
-		if (!ret) {
-			Room room = new Room();
-			room.setUser(session);
-			roomlist.add(room);
-		}
+		Room room = new Room();
+		room.setUser(session);
+		roomlist.add(room);
 	}
 
 	@OnClose
@@ -78,10 +78,10 @@ public class SampleWebSocket {
 				room.sendMessage("stone," + stone);
 			}
 			if (!game.isGame()) {
-				addResult(game.judge(),game.getRecord());
+				addResult(game.judge(), game.getRecord());
 				Thread.sleep(100);
 				room.sendMessage("end");
-				if(room.isAI()) {
+				if (room.isAI()) {
 					Thread.sleep(100);
 					room.sendMessage(getResult());
 				}
@@ -89,9 +89,9 @@ public class SampleWebSocket {
 			break;
 		case "online":
 			boolean getRoom = setRoom(session);
-			if(getRoom) {
+			if (getRoom) {
 				roomlist.remove(room);
-			}else {
+			} else {
 				room.setAI(false);
 			}
 			break;
@@ -101,7 +101,7 @@ public class SampleWebSocket {
 		}
 
 	}
-	
+
 	public boolean setRoom(Session session) throws Exception {
 		boolean setroom = false;
 		for (Room r : roomlist) {
@@ -124,39 +124,40 @@ public class SampleWebSocket {
 		}
 		return null;
 	}
-	
+
 	public String getResult() throws SQLException {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
-		
-		String sql ="select count(*) as \"count\" from result where result = 'win' union ALL select count(*) from result where result = 'lose' union ALL select count(*) from result where result = 'draw';";
+
+		String sql = "select count(*) as \"count\" from result where result = 'win' union ALL select count(*) from result where result = 'lose' union ALL select count(*) from result where result = 'draw';";
 		ResultSet resultSet = st.executeQuery(sql);
 		int playcount = 0;
 		int[] count = new int[3];
 		int index = 0;
 		while (resultSet.next()) {
-		    count[index] = resultSet.getInt("count");
-		    playcount += count[index];
-		    index++;
+			count[index] = resultSet.getInt("count");
+			playcount += count[index];
+			index++;
 		}
-		double rate = (double)count[0] / playcount;
-		rate = ((double)Math.round(rate * 100));
+		double rate = (double) count[0] / playcount;
+		rate = ((double) Math.round(rate * 100));
 		st.close();
-	    con.close();
-	    return "rate,AI勝率"  + rate + "% win:" + count[0] + " lose:" + count[1] + " draw:" + count[2];
+		con.close();
+		return "rate,AI勝率" + rate + "% win:" + count[0] + " lose:" + count[1] + " draw:" + count[2];
 	}
 
-	public void addResult(String result,String record) throws SQLException {
+	public void addResult(String result, String record) throws SQLException {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
 		LocalDateTime datetime = LocalDateTime.now();
 		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String time = datetime.format(f);
-		String sql = "INSERT INTO result(playdate,result,record) values('" + time + "','" + result + "','" +  record  + "');";
+		String sql = "INSERT INTO result(playdate,result,record) values('" + time + "','" + result + "','" + record
+				+ "');";
 		System.out.println(sql);
 		st.execute(sql);
-	    st.close();
-	    con.close();
+		st.close();
+		con.close();
 	}
 
 	public Connection getConnection() {

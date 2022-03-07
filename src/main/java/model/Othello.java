@@ -1,4 +1,5 @@
-package sample.websocket;
+package model;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +22,12 @@ public class Othello {
 		return game;
 	}
 	
-	String getRecord() {
+	public String getRecord() {
 		return record;
 	}
 
 	// オセロメソッド
-	String othello() {
+	public String othello() {
 
 		search(cnt, oth);
 		String str = oth();
@@ -35,7 +36,7 @@ public class Othello {
 	}
 
 	// 座標指定
-	boolean place(int x, int y) {
+	public boolean place(int x, int y) {
 		int count[] = count(oth);
 
 		if (cnt % 2 == 0 && count[3] == 0) {
@@ -94,7 +95,7 @@ public class Othello {
 	}
 	
 	// 勝敗
-	String judge() {
+	public String judge() {
 		int point[] = count(oth);
 		String str = "";
 		if(point[1] == point[2]) {
@@ -468,7 +469,7 @@ public class Othello {
 	}
 
 	// 初期化
-	void initialize() {
+	public void initialize() {
 		game = true;
 		record = "";
 		cnt = 0;
@@ -484,7 +485,7 @@ public class Othello {
 		oth[4][4] = 1;
 	}
 
-	void othelloAI() {
+	public void othelloAI() {
 		List<int[]> coord = new ArrayList<>();
 		List<Integer> evaluation = new ArrayList<>();
 		int[][] stoneevaluation = { {100, -40, 20, 5, 5, 20, -40, 100}, {-40, -80, -1, -1, -1, -1, -80, -40}, {20, -1, 5, 1, 1,
