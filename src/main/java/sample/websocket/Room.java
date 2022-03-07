@@ -10,7 +10,7 @@ public class Room {
 	private Session user1 = null;
 	private Session user2 = null;
 	
-	private Othello game = new Othello(0);
+	private Othello game = new Othello();
 
 	private boolean AI = false;
 	

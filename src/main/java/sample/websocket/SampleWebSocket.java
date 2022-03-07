@@ -86,7 +86,7 @@ public class SampleWebSocket {
 				room.sendMessage("stone," + stone);
 			}
 			if (!game.isGame()) {
-				addResult(game.judge());
+				addResult(game.judge(),game.getRecord());
 				Thread.sleep(100);
 				room.sendMessage("end");
 				if(room.isAI()) {
@@ -129,14 +129,13 @@ public class SampleWebSocket {
 	    return "rate,AI勝率"  + rate + "% win:" + count[0] + " lose:" + count[1] + " draw:" + count[2];
 	}
 
-	public void addResult(String str) throws SQLException {
+	public void addResult(String result,String record) throws SQLException {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
 		LocalDateTime datetime = LocalDateTime.now();
 		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String time = datetime.format(f);
-		String result = str;
-		String sql = "INSERT INTO result(playdate,result) values('" + time + "','" + result + "');";
+		String sql = "INSERT INTO result(playdate,result,record) values('" + time + "','" + result + "','" +  record  + "');";
 		System.out.println(sql);
 		st.execute(sql);
 	    st.close();

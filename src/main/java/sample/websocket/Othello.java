@@ -5,13 +5,12 @@ import java.util.List;
 
 public class Othello {
 	// main
-	int mode = 0;
 	int oth[][] = new int[8][8];
 	int cnt = 0;
 	boolean game = true;
+	String record = null;
 
-	Othello(int mode) {
-		this.mode = mode;
+	Othello() {
 	}
 
 	boolean getColor() {
@@ -20,6 +19,10 @@ public class Othello {
 
 	public boolean isGame() {
 		return game;
+	}
+	
+	String getRecord() {
+		return record;
 	}
 
 	// オセロメソッド
@@ -36,6 +39,7 @@ public class Othello {
 		int count[] = count(oth);
 
 		if (cnt % 2 == 0 && count[3] == 0) {
+			setRecord(9,9);
 			cnt++;
 			search(1, oth);
 			if (count(oth)[4] == 0) {
@@ -43,6 +47,7 @@ public class Othello {
 			}
 			return true;
 		} else if (cnt % 2 == 1 && count[4] == 0) {
+			setRecord(9,9);
 			cnt++;
 			search(0, oth);
 			if (count(oth)[3] == 0) {
@@ -53,6 +58,7 @@ public class Othello {
 		}
 
 		if (oth[x][y] == 3 || oth[x][y] == 4) {
+			setRecord(x,y);
 			put(x, y, cnt, oth);
 			count = count(oth);
 			if(count[1] + count[2] == 64) {
@@ -464,6 +470,7 @@ public class Othello {
 	// 初期化
 	void initialize() {
 		game = true;
+		record = null;
 		cnt = 0;
 		for (int a = 0; a < 8; a++) {
 			for (int b = 0; b < 8; b++) {
@@ -534,6 +541,12 @@ public class Othello {
 			}
 		}
 		return copyoth;
+	}
+	
+	void setRecord(int x,int y) {
+		String charx = Integer.toString(x);
+		String chary = Integer.toString(y);
+		record += charx + chary;
 	}
 
 }
