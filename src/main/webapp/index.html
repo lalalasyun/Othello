@@ -79,7 +79,6 @@ button {
 		function login(){
 			if(game){ 
 				var userlog = document.getElementById('usermenu');
-				userlog.innerHTML = "";
 				return;
 			}
 			document.getElementById("id").value = "";
@@ -326,6 +325,7 @@ button {
 	<br>
 	<article id="form" hidden=true>
 		ユーザーID <input type="text" id="id">
+		<br>
 		パスワード <input type="password"id="pass">
 		<br>
 		<button onclick="loginbtn()">ログイン</button>

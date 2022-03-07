@@ -188,7 +188,7 @@ public class SampleWebSocket {
 	public boolean userLogin(String id,String pass) throws Exception {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
-		String sql = "select rate from account where userid ='" +id+ "' AND password = '" +pass+ "'";
+		String sql = "select * from account where userid ='" +id+ "' AND password = '" +pass+ "'";
 		int ret = st.executeUpdate(sql);
 		st.close();
 		con.close();
