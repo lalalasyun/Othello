@@ -41,10 +41,11 @@ button {
 				result.innerHTML = "";
 				black.innerHTML = "";
 				white.innerHTML = "";
-				rate.innerHTML = "";
+				rate.hidden = true;
 				game = false;
 				return;
 			}
+			rate.hidden = true;
 			document.getElementById('start').innerHTML = "リセット";
 			document.getElementById('usermenu').innerHTML = "";
 			onlinemode = false;
@@ -69,7 +70,7 @@ button {
 				black.innerHTML = "";
 				white.innerHTML = "";
 			}else{
-				rate.hidden = true;
+				rate.hidden = false;
 				result.innerHTML = "";
 				start.disabled = false;
 				onlinemode = false;
