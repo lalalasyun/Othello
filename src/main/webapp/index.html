@@ -32,7 +32,19 @@ button {
 		}
 		
 		function start(){
-			if(game){return;}
+			var result = document.getElementById('result');
+			var black = document.getElementById("black");
+			var white = document.getElementById("white");
+			var rate = document.getElementById('AIrate');
+			if(game){
+				document.getElementById('start').innerHTML = "スタート";
+				result.innerHTML = "";
+				black.innerHTML = "";
+				white.innerHTML = "";
+				rate.innerHTML = "";
+				game = false;
+				return;
+			}
 			document.getElementById('start').innerHTML = "リセット";
 			document.getElementById('usermenu').innerHTML = "";
 			onlinemode = false;
