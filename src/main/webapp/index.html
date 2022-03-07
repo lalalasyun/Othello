@@ -11,6 +11,9 @@
 	height: 500px;
 	transform-origin: 0px 0px;
 }
+button {
+    padding: 1px 5px;
+}
 </style>
 </head>
 <script type="text/javascript">
@@ -29,6 +32,9 @@
 		}
 		
 		function start(){
+			if(game){return;}
+			document.getElementById('start').innerHTML = "リセット";
+			document.getElementById('usermenu').innerHTML = "";
 			onlinemode = false;
 			initStone();
 			ws.send("start");
@@ -160,10 +166,18 @@
 					userlog.innerHTML = "ログインに失敗しました";
 				}
 				break;
+			case "register":
+				if(ary[1] == "success"){
+					userlog.innerHTML = "登録しました";
+				}else{
+					userlog.innerHTML = "登録に失敗しました";
+				}
+				break;
 			case "end":
 				var cntwhite = Number(white.innerHTML);
 				var cntblack = Number(black.innerHTML);
 				winresult(cntwhite,cntblack);
+				document.getElementById('start').innerHTML = "スタート";
 				break;
 			}	
 		}

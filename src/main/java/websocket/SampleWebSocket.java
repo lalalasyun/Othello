@@ -107,6 +107,13 @@ public class SampleWebSocket {
 			}
 			break;
 		case "register":
+			ret = userLogin(str[1],str[2]);
+			if(!ret) {
+				userRegister(str[1],str[2]);
+				room.sendMessage("register,success");
+			}else {
+				room.sendMessage("register,failure");
+			}
 			break;
 		}
 
@@ -150,7 +157,7 @@ public class SampleWebSocket {
 			index++;
 		}
 		double rate = (double) count[0] /(double)  playcount;
-		rate = ((double) Math.round(rate * 100));
+		rate = (double)Math.round(rate * 10000) / 100;
 		st.close();
 		con.close();
 		return "rate,AI勝率" + rate + "% win:" + count[0] + " lose:" + count[1] + " draw:" + count[2];
@@ -170,7 +177,12 @@ public class SampleWebSocket {
 	}
 
 	public void userRegister(String id,String pass) throws Exception {
-		
+		Connection con = getConnection();
+		Statement st = con.createStatement();
+		String sql = "insert into account (password,userid,rate) values ('" +id+ "','" +pass+ "',0.00);";
+		st.execute(sql);
+		st.close();
+		con.close();
 	}
 	
 	public boolean userLogin(String id,String pass) throws Exception {
