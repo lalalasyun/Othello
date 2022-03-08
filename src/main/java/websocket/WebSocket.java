@@ -62,9 +62,12 @@ public class WebSocket {
 			if (room.isAI()) {
 				room.setAI(true);
 				Thread.sleep(100);
-				room.sendMessage("matching,"+ room.getName1()+","+ room.getName2());
+				room.sendMessage("matching,AI,"+ room.getName1()+","+ room.getName2());
 				Thread.sleep(100);
 				room.sendMessage(getResult());
+			}else {
+				Thread.sleep(100);
+				room.sendMessage("matching,online,"+ room.getName1()+","+ room.getName2());
 			}
 			break;
 		case "coord":
@@ -114,27 +117,35 @@ public class WebSocket {
 		case "login":
 			ret = userLogin(str[1],str[2]);
 			if(ret) {
-				room.sendMessage("login,success");
+				room.sendMessage("login,0,success");
 				room.setName(session, str[1]);
 				userlist.put(session,str[1]);
 			}else {
-				room.sendMessage("login,failure");
+				room.sendMessage("login,0,failure");
+			}
+			break;
+		case "logout":
+			String removeret = userlist.remove(session);
+			if(removeret != null) {
+				room.sendMessage("login,1,success");
+			}else {
+				room.sendMessage("login,1,failure");
 			}
 			break;
 		case "register":
 			if(!userLogin(str[1],str[2])) {
 				if(userRegister(str[1],str[2])) {
-					room.sendMessage("register,success");
+					room.sendMessage("login,2,success");
 					break;
 				}
 			}
-			room.sendMessage("register,failure");
+			room.sendMessage("login,2,failure");
 			break;
 		case "delete":
 			if(userDelete(str[1],str[2])) {
-				room.sendMessage("delete,success");
+				room.sendMessage("login,3,success");
 			}else {
-				room.sendMessage("delete,failure");
+				room.sendMessage("login,3,failure");
 			}
 			break;
 		}

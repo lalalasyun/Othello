@@ -32,14 +32,15 @@ button {
 	</tr>
 	<tr>
 		<td align="right"><b> ユーザーID：</b></td>
-		<td><input type="text" id="id"></td>
+		<td><input type="text" id="id"oninput="inputChange()></td>
 	</tr>
 	<tr>
 		<td align="right"><b> パスワード：</b></td>
-		<td><input type="password"id="pass"></td>
+		<td><input type="password"id="pass"oninput="inputChange()></td>
 	</tr>
 	</table>
 	<button onclick="loginbtn()">ログイン</button>
+	<button id ="logout"onclick="logoutbtn()">ログアウト</button>
 	<button onclick="registerbtn()">登録</button>
 	<button onclick="deletebtn()">削除</button>
 	</article>

@@ -1,5 +1,6 @@
 //var ws = new WebSocket('ws://lalalasyun.com/websocket/othello');
 var ws = new WebSocket('wss://othellojp.herokuapp.com/othello');
+
 var turn;
 var gameturn = true;
 var game = false;
@@ -7,11 +8,12 @@ var cntblack = 0;
 var cntwhite = 0;
 var user1;
 var user2;
-
+//document.getElementById
 var result;
 var black;
 var white;
 var start;
+var logout;
 var userlog;
 var userid;
 var userpass;
@@ -27,6 +29,7 @@ function load() {
 	black = document.getElementById("black");
 	white = document.getElementById("white");
 	start = document.getElementById('startid');
+	logout = document.getElementById('logout');
 	userlog = document.getElementById('usermenu');
 	userid = document.getElementById("id");
 	userpass = document.getElementById("pass");
@@ -83,6 +86,15 @@ function loginbtn() {
 	form.hidden = true;
 }
 
+function logoutbtn(){
+	ws.send("logout");
+	form.hidden = true;
+}
+
+function inputChange(){
+	logout.disabled = userid.innerHTML == "" && userpass.innerHTML == "" ? false:true;
+}
+
 function registerbtn() {
 	ws.send("register," + userid.value + "," + userpass.value);
 	form.hidden = true;
@@ -100,7 +112,8 @@ function record() {
 ws.onmessage = function (receive) {
 	var ary = receive.data.split(',');
 	var command = ary[0];
-
+	var log =[ログイン,ログアウト,登録,削除];
+	var mess =[しました,に失敗しました];
 	switch (command) {
 		case "stone":
 			initStone();
@@ -146,12 +159,12 @@ ws.onmessage = function (receive) {
 			turn = ary[1];
 			break;
 		case "matching":
-			user1 = ary[1];
-			user2 = ary[2];
+			user1 = ary[2];
+			user2 = ary[3];
 			username1.innerHTML = user1;
 			username2.innerHTML = user2;
 			userdata.hidden = false;
-			if (!game) {
+			if (!game && ary[3]!="AI") {
 				start.disabled = false;
 				game = true;
 				result.innerHTML = "プレイヤーが見つかりました";
@@ -161,17 +174,8 @@ ws.onmessage = function (receive) {
 			userrate2.innerHTML = ary[1];
 			break;
 		case "login":
-			if (ary[1] == "success") {
-				userlog.innerHTML = "ログインしました";
-			} else {
-				userlog.innerHTML = "ログインに失敗しました";
-			}
-			break;
-		case "register":
-			userlog.innerHTML = ary[1] == "success" ? "登録しました":"登録に失敗しました";
-			break;
-		case "delete":
-			userlog.innerHTML = ary[1] == "success" ? "削除しました":"削除に失敗しました";
+			var index = Number(ary[1]);
+			userlog.innerHTML = ary[2] == "success" ? log[index]+mess[0]:log[index]+mess[1];
 			break;
 		case "start":
 			result.innerHTML = "";
