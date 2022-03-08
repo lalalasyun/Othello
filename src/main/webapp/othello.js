@@ -88,6 +88,7 @@ function loginbtn() {
 		form.hidden = true;
 		return;
 	}
+	alert("フォームを入力してください");
 }
 
 function logoutbtn(){
@@ -102,6 +103,7 @@ function registerbtn() {
 		form.hidden = true;
 		return;
 	}
+	alert("フォームを入力してください");
 }
 
 function deletebtn(){
@@ -110,6 +112,7 @@ function deletebtn(){
 		form.hidden = true;
 		return;
 	}
+	alert("フォームを入力してください");
 }
 
 function inputChange(){
