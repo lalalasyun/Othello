@@ -8,6 +8,7 @@ var cntblack = 0;
 var cntwhite = 0;
 var user1;
 var user2;
+var formIsEmpty;
 //document.getElementById
 var result;
 var black;
@@ -82,27 +83,38 @@ function login() {
 }
 
 function loginbtn() {
-	ws.send("login," + userid.value + "," + userpass.value);
-	form.hidden = true;
+	if(formIsEmpty){
+		ws.send("login," + userid.value + "," + userpass.value);
+		form.hidden = true;
+		return;
+	}
 }
 
 function logoutbtn(){
 	ws.send("logout");
 	form.hidden = true;
-}
-
-function inputChange(){
-	logout.disabled = userid.innerHTML == "" && userpass.innerHTML == "" ? false:true;
+	return;
 }
 
 function registerbtn() {
-	ws.send("register," + userid.value + "," + userpass.value);
-	form.hidden = true;
+	if(formIsEmpty){
+		ws.send("register," + userid.value + "," + userpass.value);
+		form.hidden = true;
+		return;
+	}
 }
 
 function deletebtn(){
-	ws.send("delete," + userid.value + "," + userpass.value);
-	form.hidden = true;
+	if(formIsEmpty){
+		ws.send("delete," + userid.value + "," + userpass.value);
+		form.hidden = true;
+		return;
+	}
+}
+
+function inputChange(){
+	formIsEmpty = userid.value == "" && userpass.value == "" ? false:true;
+	logout.disabled = formIsEmpty;
 }
 
 function record() {
