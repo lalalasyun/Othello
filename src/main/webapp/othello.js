@@ -112,8 +112,8 @@ function record() {
 ws.onmessage = function (receive) {
 	var ary = receive.data.split(',');
 	var command = ary[0];
-	var log =[ログイン,ログアウト,登録,削除];
-	var mess =[しました,に失敗しました];
+	var log =['ログイン','ログアウト','登録','削除'];
+	var mess =['しました','に失敗しました'];
 	switch (command) {
 		case "stone":
 			initStone();
