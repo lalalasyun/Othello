@@ -40,19 +40,23 @@ public class Othello {
 		int count[] = count(oth);
 
 		if (cnt % 2 == 0 && count[3] == 0) {
-			setRecord(9,9);
+			
 			cnt++;
 			search(1, oth);
 			if (count(oth)[4] == 0) {
 				game = false;
+			}else {
+				setRecord(9,9);
 			}
 			return true;
 		} else if (cnt % 2 == 1 && count[4] == 0) {
-			setRecord(9,9);
+			
 			cnt++;
 			search(0, oth);
 			if (count(oth)[3] == 0) {
 				game = false;
+			}else {
+				setRecord(9,9);
 			}
 			return true;
 
@@ -485,7 +489,7 @@ public class Othello {
 		oth[4][4] = 1;
 	}
 
-	public void othelloAI() {
+	public void othelloAI(boolean turn) {
 		List<int[]> coord = new ArrayList<>();
 		List<Integer> evaluation = new ArrayList<>();
 		int[][] stoneevaluation = { {100, -40, 20, 5, 5, 20, -40, 100}, {-40, -80, -1, -1, -1, -1, -80, -40}, {20, -1, 5, 1, 1,
@@ -507,12 +511,15 @@ public class Othello {
 			cnt++;
 			return;
 		}
+		
 		int index = 0;
+		int putindex = turn ? 0:1;
+		int searchindex = turn ? 1:0;
 		for (int[] ary : coord) {
 			int[][] copyoth = copyOth(oth);
 			int stonepoint = 0;
-			put(ary[0], ary[1], 1, copyoth);
-			search(0, copyoth);
+			put(ary[0], ary[1], putindex, copyoth);
+			search(searchindex, copyoth);
 			
 			for (int i = 0; i < 8; i++) {
 				for (int n = 0; n < 8; n++) {

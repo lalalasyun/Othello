@@ -1,10 +1,13 @@
 <html lang="ja">
 
 <head>
-<meta charset="UTF-8" name="viewport" content="width=device-width">
+<meta charset="UTF-8" name="viewport" content="width=device-width,user-scalable=no">
 <title>オセロゲーム</title>
 <link href="/favicon.ico" rel="icon" />
 <style type="text/css">
+html{
+	touch-action: manipulation;
+}
 #main {
 	margin: 0px;
 	width: 300px;
@@ -12,51 +15,62 @@
 	transform-origin: 0px 0px;
 }
 button {
-    padding: 1px 5px;
+    -webkit-appearance: none;
+  	margin: 1px;
+	cursor: pointer;
+	width: 73px;
+	padding: 0px;
+	color: black;
+	border: 0px;
+	border-radius: 5px;
 }
 </style>
 </head>
 
-<body id="main" onload="sample()">
+<body id="main" onload="load()">
 	<canvas id="othello" width="300px" height="300px"></canvas>
-	<br>
+	<table>
 	<button id="startid" onclick="startbtn()">スタート</button>
-	<button onclick="online()">オンライン</button>
-	<button onclick="login()">ログイン</button>
-	<button onclick="record()">レコード</button>
-	<br>
+	<button id="online" onclick="onlinebtn()">オフライン</button>
+	<button onclick="login()">アカウント</button>
+	<button id="changeturn" onclick="changeturnbtn()">攻守交代</button>
+	</table>
 	<article id="form" hidden=true>
 	個人情報は入力しないで下さい
 	<table>
 	<tr>
-		<td align="right"><b> ユーザーID：</b></td>
-		<td><input type="text" id="id"oninput="inputChange()"></td>
+		<td align="left"><b> ユーザーID</b></td>
+		<td><b>:</b></td>
+		<td><input type="text" id="id"oninput="inputChange()" maxlength=16></td>
 	</tr>
 	<tr>
-		<td align="right"><b> パスワード：</b></td>
-		<td><input type="password"id="pass"oninput="inputChange()"></td>
+		<td align="left"><b> パスワード</b></td>
+		<td><b>:</b></td>
+		<td><input type="password"id="pass"oninput="inputChange()" maxlength=16></td>
 	</tr>
 	</table>
+	<table>
 	<button onclick="loginbtn()">ログイン</button>
-	<button id ="logout"onclick="logoutbtn()">ログアウト</button>
+	<button id ="logout"onclick="logoutbtn()" disabled>ログアウト</button>
 	<button onclick="registerbtn()">登録</button>
 	<button onclick="deletebtn()">削除</button>
+	</table>
 	</article>
 	<span id="usermenu"></span>
-	<br>
+	<article id="resultbox">
 	<span id="black"></span>
 	<span id="white"></span>
 	<span id="result"></span>
-	<br>
-	<article id="userdata">
-	<span id="username1"></span><br>
-	<span id="userrate1"></span>
-	<br>
-	<span id="username2"></span><br>
-	<span id="userrate2"></span>
 	</article>
- <!--  <script src="/websocket/othello.js"></script>-->   
-	<script src="/othello.js"></script>
+	<article id="userdata">
+	<span id="turn1"></span><span id="username1"></span><br>
+	<span id="userrate1">データ取得中...</span><br>
+	<span id="turn2"></span><span id="username2"></span><br>
+	<span id="userrate2">データ取得中...</span>
+	</article>
+ 	<script src="/othello.js"></script>
+	<!-- <script src="/OthelloWeb/othello.js"></script>  -->
+	<!-- <script src="/othello.js"></script> -->
 </body>
 
 </html>

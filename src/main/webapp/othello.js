@@ -1,46 +1,50 @@
-//var ws = new WebSocket('ws://lalalasyun.com/websocket/othello');
-var ws = new WebSocket('wss://othellojp.herokuapp.com/othello');
+// let url = "ws://lalalasyun.com/OthelloWeb/othello";
+let url = "wss://othellojp.herokuapp.com/othello";
+var ws;
 
+var wsize;
 var turn;
 var gameturn = true;
 var game = false;
 var cntblack = 0;
 var cntwhite = 0;
-var user1;
-var user2;
 var formIsEmpty;
 //document.getElementById
-var result;
-var black;
-var white;
-var start;
-var logout;
-var userlog;
-var userid;
-var userpass;
-var form;
-var userdata;
-var username1;
-var username2;
-var userrate1;
-var userrate2;
+var resultbox, result, black, white;
+
+var start, online, changeturn, logout, userlog;
+
+var form, userid, userpass;
+
+var turn1, turn2, userdata, username1, username2, userrate1, userrate2;
 
 function load() {
+	documentload();
+	screenset();
+	initStone();
+	connect();
+}
+
+function documentload() {
+	resultbox = document.getElementById('resultbox');
 	result = document.getElementById('result');
 	black = document.getElementById("black");
 	white = document.getElementById("white");
 	start = document.getElementById('startid');
+	online = document.getElementById('online');
+	changeturn = document.getElementById('changeturn');
 	logout = document.getElementById('logout');
 	userlog = document.getElementById('usermenu');
 	userid = document.getElementById("id");
 	userpass = document.getElementById("pass");
 	form = document.getElementById('form');
+	turn1 = document.getElementById('turn1');
+	turn2 = document.getElementById('turn2');
 	username1 = document.getElementById('username1');
 	username2 = document.getElementById('username2');
 	userrate1 = document.getElementById('userrate1');
 	userrate2 = document.getElementById('userrate2');
 	userdata = document.getElementById('userdata');
-
 }
 
 function stoneClick(x, y) {
@@ -50,166 +54,221 @@ function stoneClick(x, y) {
 }
 
 function startbtn() {
-	ws.send("start");
+	ws.send(start.innerHTML == "スタート" ? "start" : "reset");
 }
 
-function online() {
-	if (game) { return; }
+function reset() {
+	game = false;
+	changeturn.disabled = false;
+	result.innerHTML = "";
+	black.innerHTML = "";
+	white.innerHTML = "";
+	start.innerHTML = "スタート";
+	initStone();
+}
 
-
-	if (!start.disabled) {
-		result.innerHTML = "プレイヤーを待っています";
-		start.disabled = true;
+function onlinebtn() {
+	userlog.innerHTML = "";
+	game = false;
+	if (online.innerHTML == "オフライン") {
+		onlinestart();
 		ws.send("online");
-		userdata.hidden = true;
-		black.innerHTML = "";
-		white.innerHTML = "";
 	} else {
-		userdata.hidden = false;
-		result.innerHTML = "";
-		start.disabled = false;
+		offlinestart();
 		ws.send("offline");
 	}
 }
+function onlinestart() {
+	reset();
+	online.innerHTML = "オンライン"
+	userlog.innerHTML = "プレイヤーを待っています";
+	start.disabled = true;
+	userdata.hidden = true;
+	black.innerHTML = "";
+	white.innerHTML = "";
+}
+
+function offlinestart() {
+	reset();
+	online.innerHTML = "オフライン"
+	userdata.hidden = false;
+	userlog.innerHTML = "";
+	start.disabled = false;
+}
 
 function login() {
-	if (game) {
-		return;
-	}
 	userlog.innerHTML = "";
-	userid.innerHTML = "";
-	userpass.innerHTML = "";
-	form.hidden = form.hidden ? false : true;
+	userid.value = "";
+	userpass.value = "";
+	var hidden = form.hidden ? false : true;
+	form.hidden = hidden
+	userdata.hidden = !hidden;
 }
 
 function loginbtn() {
-	if(formIsEmpty){
+	if (formIsEmpty) {
 		ws.send("login," + userid.value + "," + userpass.value);
-		form.hidden = true;
+		formclose();
 		return;
 	}
 	alert("フォームを入力してください");
 }
 
-function logoutbtn(){
+function logoutbtn() {
 	ws.send("logout");
-	form.hidden = true;
+	formclose();
 	return;
 }
 
 function registerbtn() {
-	if(formIsEmpty){
+	if (formIsEmpty) {
 		ws.send("register," + userid.value + "," + userpass.value);
-		form.hidden = true;
+		formclose();
 		return;
 	}
 	alert("フォームを入力してください");
 }
 
-function deletebtn(){
-	if(formIsEmpty){
+function deletebtn() {
+	if (formIsEmpty) {
 		ws.send("delete," + userid.value + "," + userpass.value);
-		form.hidden = true;
+		formclose();
 		return;
 	}
 	alert("フォームを入力してください");
 }
 
-function inputChange(){
-	formIsEmpty = userid.value == "" || userpass.value == "" ? false:true;
-	logout.disabled = formIsEmpty;
+function formclose(){
+	userdata.hidden = false;
+	form.hidden = true;
 }
 
-function record() {
-
+function inputChange() {
+	formIsEmpty = userid.value == "" || userpass.value == "" ? false : true;
 }
 
-ws.onmessage = function (receive) {
-	var ary = receive.data.split(',');
-	var command = ary[0];
-	var log =['ログイン','ログアウト','登録','削除'];
-	var mess =['しました','に失敗しました'];
-	switch (command) {
-		case "stone":
-			initStone();
-			var stone = ary[1].split('');
-			cntblack = 0;
-			cntwhite = 0;
-			var cntputblack = 0;
-			var cntputwhite = 0;
-			for (var i = 0; i < 8; i++) {
-				for (var n = 0; n < 8; n++) {
-					var index = (8 * i) + n;
-					var type = Number(stone[index]);
-					putStone(i, n, type);
+function changeturnbtn() {
+	ws.send("changeturn");
+}
+function connect() {
+	ws = new WebSocket(url);
+	ws.onopen = function () {
+		userlog.innerHTML = "サーバーに接続しました。<br>";
+	}
 
-					switch (type) {
-						case 1:
-							cntwhite++;
-							break;
-						case 2:
-							cntblack++;
-							break;
-						case 3:
-							cntputblack++;
-							break;
-						case 4:
-							cntputwhite++;
-							break;
+	ws.onmessage = function (receive) {
+		var ary = receive.data.split(',');
+		var command = ary[0];
+		var log = ['ログイン', 'ログアウト', '登録', '削除'];
+		var mess = ['しました', 'に失敗しました'];
+		switch (command) {
+			case "stone":
+				initStone();
+				var stone = ary[1].split('');
+				cntblack = 0;
+				cntwhite = 0;
+				var cntputblack = 0;
+				var cntputwhite = 0;
+				for (var i = 0; i < 8; i++) {
+					for (var n = 0; n < 8; n++) {
+						var index = (8 * i) + n;
+						var type = Number(stone[index]);
+						putStone(i, n, type);
+
+						switch (type) {
+							case 1:
+								cntwhite++;
+								break;
+							case 2:
+								cntblack++;
+								break;
+							case 3:
+								cntputblack++;
+								break;
+							case 4:
+								cntputwhite++;
+								break;
+						}
 					}
 				}
-			}
-			var cntput = cntputblack + cntputwhite;
-			gameturn = (cntputblack > cntputwhite ? "black" : "white") == turn ? true : false;
-			var turnmess = gameturn ? "あなた" : "相手";
-			result.innerHTML = turnmess + "のターン";
-			if (cntput == 0) {
-				gameturn = true;
-				result.innerHTML = "パス";
-			}
-			black.innerHTML = "黒:" + cntblack;
-			white.innerHTML = "白:" + cntwhite;
-			break;
-		case "turn":
-			turn = ary[1];
-			break;
-		case "matching":
-			user1 = ary[2];
-			user2 = ary[3];
-			username1.innerHTML = user1;
-			username2.innerHTML = user2;
-			userdata.hidden = false;
-			if (!game && ary[3]!="AI") {
+				var cntput = cntputblack + cntputwhite;
+				gameturn = (cntputblack > cntputwhite ? true : false) == turn ? true : false;
+				var turnmess = gameturn ? "あなた" : "相手";
+				result.innerHTML = turnmess + "のターン";
+				if (cntput == 0) {
+					if (cntblack + cntwhite != 64) {
+						gameturn = true;
+						result.innerHTML = "パス";
+					} else {
+						winresult();
+					}
+				}
+				black.innerHTML = "黒:" + cntblack;
+				white.innerHTML = "白:" + cntwhite;
+				break;
+			case "turn":
+				turn = ary[1] == "black" ? true : false;
+				turn1.innerHTML = turn ? "先攻:" : "後攻:";
+				turn2.innerHTML = !turn ? "先攻:" : "後攻:";
+				break;
+			case "matching":
 				start.disabled = false;
+				userdata.hidden = false;
+				if (!game && ary[1] != "AI") {
+					userlog.innerHTML = "プレイヤーが見つかりました";
+				}
+				if (ary[1] == "wait") {
+					onlinestart();
+				}
+				break;
+			case "name":
+				username1.innerHTML = turn ? ary[1] : ary[2];
+				username2.innerHTML = turn ? ary[2] : ary[1];
+				break;
+			case "rate":
+				var aryuser = [userrate1, userrate2];
+				if (ary[1] == "") {
+					aryuser[turn ? 1 : 0].innerHTML = ary[2];
+				} else {
+					aryuser[turn ? 0 : 1].innerHTML = ary[1];
+				}
+				break;
+			case "login":
+				var index = Number(ary[1]);
+				if (index == 0 && ary[2] == "success") {
+					logout.disabled = false;
+				} else if (index == 1 && ary[2] == "success") {
+					logout.disabled = true;
+				}
+				userlog.innerHTML = ary[2] == "success" ? log[index] + mess[0] : log[index] + mess[1];
+				userlog.innerHTML += "<br>";
+				break;
+			case "start":
+				userlog.innerHTML = "";
 				game = true;
-				result.innerHTML = "プレイヤーが見つかりました";
-			}
-			break;
-		case "rate":
-			userrate2.innerHTML = ary[1];
-			break;
-		case "login":
-			var index = Number(ary[1]);
-			userlog.innerHTML = ary[2] == "success" ? log[index]+mess[0]:log[index]+mess[1];
-			break;
-		case "start":
-			result.innerHTML = "";
-			black.innerHTML = "";
-			white.innerHTML = "";
-			userlog.innerHTML = "";
-			if (game) {
-				game = false;
-				start.innerHTML = "スタート";
-			}else{
-				game = true;
+				changeturn.disabled = true;
 				start.innerHTML = "リセット";
-			}
-			initStone();
-			break;
-		case "end":
-			winresult();
-			start.innerHTML = "スタート";
-			break;
+				initStone();
+				break;
+			case "reset":
+				reset();
+				break;
+			case "end":
+				winresult();
+				changeturn.disabled = false;
+				break;
+		}
+	}
+
+	ws.onclose = function () {
+		userlog.innerHTML = 'サーバーから切断されました<br>3秒後に再接続します。<br>'
+		setTimeout(() => {
+			connect();
+		}, 3000);
+	}
+
+	ws.onerror = function () {
+		userlog.innerHTML = 'サーバーの接続に失敗しました<br>';
 	}
 }
 
@@ -217,6 +276,9 @@ function winresult() {
 	var resmess = cntblack > cntwhite ? "黒の勝ち" : "白の勝ち";
 	var resmess = cntblack == cntwhite ? "引き分け" : resmess;
 	result.innerHTML = resmess;
+	var mess = "データ取得中...";
+	userrate1.innerHTML = mess;
+	userrate2.innerHTML = mess;
 	game = false;
 }
 
@@ -224,14 +286,10 @@ var canvas;
 var context;
 var block = 300 / 8;
 var size;
-function sample() {
-	canvas = document.getElementById('othello');
+function screenset() {
 	changesize();
-
-	if (canvas.getContext) {
-		context = canvas.getContext('2d');
-		initStone();
-	}
+	canvas = document.getElementById('othello');
+	context = canvas.getContext('2d');
 
 	canvas.addEventListener("click", e => {
 		const rect = e.target.getBoundingClientRect();
@@ -253,19 +311,33 @@ function sample() {
 
 		stoneClick(x, y);
 	});
-	load();
 }
+
+window.addEventListener("resize", function () {
+	if (wsize != window.innerWidth) {
+		screenset();
+	}
+});
+
+document.addEventListener('touchstart', (event) => {
+	if (event.touches && event.touches.length > 1) {
+		event.preventDefault();
+	}
+}, {
+	passive: false
+});
 
 function changesize() {
 	var main = document.getElementById('main');
-	var wsize = screen.width;
-	size = wsize / 300;
-	if (size < 2) {
-		main.style.transform = "scale(" + size + ")";
+	wsize = document.body.clientWidth;
+	var hsize = window.innerHeight;
+	if (wsize < hsize) {
+		size = wsize / 300;
 	} else {
-		size = 2;
-		main.style.transform = "scale(" + size + ")";
+		size = hsize / 450;
 	}
+	main.style.transform = "scale(" + size + ")";
+
 }
 
 function initStone() {
@@ -290,9 +362,9 @@ function initStone() {
 
 function putStone(x, y, type) {
 	context.beginPath();
-	if (turn == "black" && type == 4) {
+	if (turn && type == 4) {
 		return;
-	} else if (turn == "white" && type == 3) {
+	} else if (!turn && type == 3) {
 		return;
 	}
 	var stonex = block * x;
