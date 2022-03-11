@@ -32,7 +32,7 @@ button {
 	<table>
 	<button id="startid" onclick="startbtn()">スタート</button>
 	<button id="online" onclick="onlinebtn()">オフライン</button>
-	<button onclick="login()">アカウント</button>
+	<button onclick="account()">アカウント</button>
 	<button id="changeturn" onclick="changeturnbtn()">攻守交代</button>
 	</table>
 	<article id="form" hidden=true>
@@ -50,7 +50,7 @@ button {
 	</tr>
 	</table>
 	<table>
-	<button onclick="loginbtn()">ログイン</button>
+	<button id ="login"onclick="loginbtn()">ログイン</button>
 	<button id ="logout"onclick="logoutbtn()" disabled>ログアウト</button>
 	<button onclick="registerbtn()">登録</button>
 	<button onclick="deletebtn()">削除</button>
@@ -63,10 +63,12 @@ button {
 	<span id="result"></span>
 	</article>
 	<article id="userdata">
-	<span id="turn1"></span><span id="username1"></span><br>
-	<span id="userrate1">データ取得中...</span><br>
-	<span id="turn2"></span><span id="username2"></span><br>
-	<span id="userrate2">データ取得中...</span>
+	<span>あなた:</span><span id="username1"></span><br>
+	<span id="turn1"></span><span id="userrate1">データ取得中...</span>
+	<br>
+	<span>相手:</span><span id="username2"></span>
+	<br>
+	<span id="turn2"></span><span id="userrate2">データ取得中...</span>
 	</article>
  	<script src="/othello.js"></script>
 	<!-- <script src="/OthelloWeb/othello.js"></script>  -->

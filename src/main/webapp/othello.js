@@ -12,7 +12,7 @@ var formIsEmpty;
 //document.getElementById
 var resultbox, result, black, white;
 
-var start, online, changeturn, logout, userlog;
+var start, online, changeturn,login, logout, userlog;
 
 var form, userid, userpass;
 
@@ -33,6 +33,7 @@ function documentload() {
 	start = document.getElementById('startid');
 	online = document.getElementById('online');
 	changeturn = document.getElementById('changeturn');
+	login = document.getElementById('login');
 	logout = document.getElementById('logout');
 	userlog = document.getElementById('usermenu');
 	userid = document.getElementById("id");
@@ -96,13 +97,14 @@ function offlinestart() {
 	start.disabled = false;
 }
 
-function login() {
+function account() {
 	userlog.innerHTML = "";
 	userid.value = "";
 	userpass.value = "";
 	var hidden = form.hidden ? false : true;
 	form.hidden = hidden
 	userdata.hidden = !hidden;
+	inputChange();
 }
 
 function loginbtn() {
@@ -144,7 +146,8 @@ function formclose(){
 }
 
 function inputChange() {
-	formIsEmpty = userid.value == "" || userpass.value == "" ? false : true;
+	formIsEmpty = !(userid.value == "" || userpass.value == "");
+	logout.disabled = !(userid.value == "" && userpass.value == "");
 }
 
 function changeturnbtn() {
@@ -174,7 +177,6 @@ function connect() {
 						var index = (8 * i) + n;
 						var type = Number(stone[index]);
 						putStone(i, n, type);
-
 						switch (type) {
 							case 1:
 								cntwhite++;
@@ -190,6 +192,9 @@ function connect() {
 								break;
 						}
 					}
+				}
+				if(cntblack + cntwhite == 0){
+					break;
 				}
 				var cntput = cntputblack + cntputwhite;
 				gameturn = (cntputblack > cntputwhite ? true : false) == turn ? true : false;
@@ -236,8 +241,13 @@ function connect() {
 			case "login":
 				var index = Number(ary[1]);
 				if (index == 0 && ary[2] == "success") {
+					login.disabled = true;
 					logout.disabled = false;
+					if (online.innerHTML == "オンライン") {
+						ws.send("online");
+					} 
 				} else if (index == 1 && ary[2] == "success") {
+					login.disabled = false;
 					logout.disabled = true;
 				}
 				userlog.innerHTML = ary[2] == "success" ? log[index] + mess[0] : log[index] + mess[1];

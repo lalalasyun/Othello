@@ -23,8 +23,9 @@ public class Room {
 	private boolean AI = false;
 	private boolean aiturn = false; // black:true white
 	
-	private String initname1 = "guest1";
-	private String initname2 = "guest2";
+	private String initname = "guest1";
+	
+	private boolean changeturn = false;
 	
 	private static int guestNumber = 0;
 
@@ -32,6 +33,7 @@ public class Room {
 		AI = true;
 		name1 = "guest" + guestNumber++;
 		name2 = "AI";
+		initname = name1;
 	}
 	
 	public Room(String name) {
@@ -46,6 +48,10 @@ public class Room {
 
 	public String getName2() {
 		return name2;
+	}
+	
+	public String getInitName() {
+		return initname;
 	}
 	
 	public String getName(Session session) {
@@ -83,7 +89,6 @@ public class Room {
 	}
 
 	public void setUser(Session session) throws Exception {
-		Thread.sleep(10);
 		if (user1 == null) {
 			user1 = session;
 		} else if (user2 == null) {
@@ -109,9 +114,8 @@ public class Room {
 		name2 = name1;
 		user1 = copyuser;
 		name1 = copyname;
-		initname1 = initname1.equals("guest1") ? "guest2":"guest1";
-		initname2 = initname2.equals("guest2") ? "guest1":"guest2";
 		setAiturn();
+		changeturn = !changeturn;
 	}
 
 	public void removeSession(Session session) {
@@ -119,9 +123,12 @@ public class Room {
 		user2 = user2 == session ? null : user2;
 	}
 
-	public void removeName(Session session) {
-		name1 = user1 == session ? initname1 : name1;
-		name2 = user2 == session ? initname2 : name2;
+	public void removeName(Session session,String initname) {
+		if(user1 == session) {
+			name1 = initname;
+		}else {
+			name2 = initname;
+		}
 	}
 
 	public boolean removeRoom() {
@@ -137,18 +144,19 @@ public class Room {
 	}
 
 	public boolean searchUser(String name) {
-		if (name == name1 || name == name2) {
+		if (name.equals(name1) || name.equals(name2)) {
 			return true;
 		}
 		return false;
 	}
 
 	public void sendMessage(String mess) throws Exception {
-		Thread.sleep(10);
 		if (user1 != null) {
+			Thread.sleep(10);
 			user1.getAsyncRemote().sendText(mess);
 		}
 		if (user2 != null) {
+			Thread.sleep(10);
 			user2.getAsyncRemote().sendText(mess);
 		}
 	}
@@ -168,10 +176,10 @@ public class Room {
 		String sendname1 = name1;
 		String sendname2 = name2;
 		if(name1.startsWith("guest")) {
-			sendname1 = initname1;
+			sendname1 = changeturn?"guest2":"guest1";
 		}
 		if(name2.startsWith("guest")) {
-			sendname2 = initname2;
+			sendname2 = changeturn?"guest1":"guest2";
 		}
 		sendMessage("name," + sendname1 + "," + sendname2);
 	}
@@ -232,7 +240,27 @@ public class Room {
 		return "勝率" + rate + "% win:" + count[0] + " lose:" + count[1] + " draw:" + count[2];
 	}
 
-	
+	public void addResult(String result, String record) throws SQLException {
+		Connection con = getConnection();
+		Statement st = con.createStatement();
+		String sql = "INSERT INTO record(record,userid1,userid2) values('" + record
+				+ "','"+name1+"','"+name2+"');";
+		st.execute(sql);
+		sql = "SELECT gameid FROM record ORDER BY gameid DESC LIMIT 1;";
+		ResultSet resultSet = st.executeQuery(sql);
+		int gameid = 0;
+		while (resultSet.next()) {
+			gameid = resultSet.getInt("gameid");
+		}
+		String[] ary = {"win" , "lose" , "draw"};
+		String ret = result == ary[0] ? ary[1]:result == ary[1]?ary[0]:ary[2];
+		sql = "insert into result (userid,result,id) value('"+name1+"','"+ret+"',"+gameid+");";
+		st.execute(sql);
+		sql = "insert into result (userid,result,id) value('"+name2+"','"+result+"',"+gameid+");";
+		st.execute(sql);
+		st.close();
+		con.close();
+	}
 	
 	public Connection getConnection() {
 		try {

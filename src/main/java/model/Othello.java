@@ -8,7 +8,7 @@ public class Othello {
 	// main
 	int oth[][] = new int[8][8];
 	int cnt = 0;
-	boolean game = true;
+	boolean game = false;
 	String record = "";
 
 	Othello() {
@@ -22,12 +22,16 @@ public class Othello {
 		return game;
 	}
 	
+	public void setGame(boolean game) {
+		this.game = game;
+	}
+
 	public String getRecord() {
 		return record;
 	}
 
 	// オセロメソッド
-	public String othello() {
+	public String getStone() {
 
 		search(cnt, oth);
 		String str = oth();
@@ -45,8 +49,6 @@ public class Othello {
 			search(1, oth);
 			if (count(oth)[4] == 0) {
 				game = false;
-			}else {
-				setRecord(9,9);
 			}
 			return true;
 		} else if (cnt % 2 == 1 && count[4] == 0) {
@@ -55,8 +57,6 @@ public class Othello {
 			search(0, oth);
 			if (count(oth)[3] == 0) {
 				game = false;
-			}else {
-				setRecord(9,9);
 			}
 			return true;
 
@@ -537,8 +537,6 @@ public class Othello {
 		}
 
 		place(coord.get(maxindex)[0], coord.get(maxindex)[1]);
-		System.out.println(evaluation);
-		System.out.println(maxindex);
 	}
 
 	int[][] copyOth(int[][] oth) {
