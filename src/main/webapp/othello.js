@@ -213,8 +213,8 @@ function connect() {
 				break;
 			case "turn":
 				turn = ary[1] == "black" ? true : false;
-				turn1.innerHTML = turn ? "先攻:" : "後攻:";
-				turn2.innerHTML = !turn ? "先攻:" : "後攻:";
+				turn1.innerHTML = turn ? "先手:" : "後手:";
+				turn2.innerHTML = !turn ? "先手:" : "後手:";
 				break;
 			case "matching":
 				start.disabled = false;
@@ -354,20 +354,29 @@ function initStone() {
 	context.beginPath();
 	context.fillStyle = 'green';
 	context.fillRect(0, 0, 300, 300);
-
+	context.strokeStyle = 'black';
+	context.lineWidth = 1;
 	for (var i = 0; i < 9; i++) {
-		var move = block * i;
-		context.strokeStyle = 'black';
-		context.lineWidth = 2;
-
+		var move = i%2==0?block * i-0.5:block * i;
 		context.moveTo(move, 0);
 		context.lineTo(move, 300);
-		context.stroke();
-
 		context.moveTo(0, move);
 		context.lineTo(300, move);
-		context.stroke();
 	}
+	context.stroke();
+	context.beginPath();
+	context.fillStyle = 'black';
+	context.arc(block*2-0.5,block*2-0.5,2,Math.PI*1,Math.PI*360,false);
+	context.fill();
+	context.beginPath();
+	context.arc(block*6-0.5,block*2-0.5,2,Math.PI*1,Math.PI*360,false);
+	context.fill();
+	context.beginPath();
+	context.arc(block*2-0.5,block*6-0.5,2,Math.PI*1,Math.PI*360,false);
+	context.fill();
+	context.beginPath();
+	context.arc(block*6-0.5,block*6-0.5,2,Math.PI*1,Math.PI*360,false);
+	context.fill();
 }
 
 function putStone(x, y, type) {

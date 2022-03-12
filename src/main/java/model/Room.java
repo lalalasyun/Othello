@@ -234,10 +234,10 @@ public class Room {
 			index++;
 		}
 		double rate = (double) count[0] / (double) playcount;
-		rate = (double) Math.round(rate * 10000) / 100;
+		int resultrate = (int) Math.round(rate * 10000) / 100;
 		st.close();
 		con.close();
-		return "勝率" + rate + "% win:" + count[0] + " lose:" + count[1] + " draw:" + count[2];
+		return resultrate + "% win:" + count[0] + " lose:" + count[1] + " draw:" + count[2];
 	}
 
 	public void addResult(String result, String record) throws SQLException {

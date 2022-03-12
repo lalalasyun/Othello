@@ -1,6 +1,5 @@
 package model;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class Othello {
 	public boolean isGame() {
 		return game;
 	}
-	
+
 	public void setGame(boolean game) {
 		this.game = game;
 	}
@@ -44,7 +43,7 @@ public class Othello {
 		int count[] = count(oth);
 
 		if (cnt % 2 == 0 && count[3] == 0) {
-			
+
 			cnt++;
 			search(1, oth);
 			if (count(oth)[4] == 0) {
@@ -52,7 +51,7 @@ public class Othello {
 			}
 			return true;
 		} else if (cnt % 2 == 1 && count[4] == 0) {
-			
+
 			cnt++;
 			search(0, oth);
 			if (count(oth)[3] == 0) {
@@ -63,10 +62,10 @@ public class Othello {
 		}
 
 		if (oth[x][y] == 3 || oth[x][y] == 4) {
-			setRecord(x,y);
+			setRecord(x, y);
 			put(x, y, cnt, oth);
 			count = count(oth);
-			if(count[1] + count[2] == 64) {
+			if (count[1] + count[2] == 64) {
 				game = false;
 			}
 			cnt++;
@@ -97,19 +96,19 @@ public class Othello {
 		}
 		return cnt;
 	}
-	
+
 	// 勝敗
 	public String judge() {
 		int point[] = count(oth);
 		String str = "";
-		if(point[1] == point[2]) {
+		if (point[1] == point[2]) {
 			str = "draw";
-		}else if(point[1] < point[2]){
+		} else if (point[1] < point[2]) {
 			str = "lose";
-		}else {
+		} else {
 			str = "win";
 		}
-		
+
 		return str;
 	}
 
@@ -294,7 +293,7 @@ public class Othello {
 	}
 
 	// 配置
-	void put(int a, int b, int cnt, int[][] oth) {
+	int put(int a, int b, int cnt, int[][] oth) {
 		int x, y;
 		if (cnt % 2 == 0) {
 			y = 1;
@@ -305,6 +304,10 @@ public class Othello {
 		}
 
 		int i, n;
+
+		int openness = 0;
+
+		oth[a][b] = x;
 
 		// 0度
 		if (a - 1 >= 0) {
@@ -318,8 +321,9 @@ public class Othello {
 				if (a - i >= 0) {
 					if (oth[a - i][b] == x) {
 
-						for (n = 0; n < i + 1; n++) {
+						for (n = 1; n < i; n++) {
 							oth[a - n][b] = x;
+							openness += countOpenness(a - n, b, oth);
 						}
 					}
 
@@ -340,8 +344,9 @@ public class Othello {
 				if (a - i >= 0 && b + i <= 7) {
 					if (oth[a - i][b + i] == x) {
 
-						for (n = 0; n < i + 1; n++) {
+						for (n = 1; n < i; n++) {
 							oth[a - n][b + n] = x;
+							openness += countOpenness(a - n, b + n, oth);
 						}
 					}
 				}
@@ -359,8 +364,9 @@ public class Othello {
 				}
 				if (b + i <= 7) {
 					if (oth[a][b + i] == x) {
-						for (n = 0; n < i + 1; n++) {
+						for (n = 1; n < i; n++) {
 							oth[a][b + n] = x;
+							openness += countOpenness(a, b + n, oth);
 						}
 
 					}
@@ -380,8 +386,9 @@ public class Othello {
 				}
 				if (a + i <= 7 && b + i <= 7) {
 					if (oth[a + i][b + i] == x) {
-						for (n = 0; n < i + 1; n++) {
+						for (n = 1; n < i; n++) {
 							oth[a + n][b + n] = x;
+							openness += countOpenness(a + n, b + n, oth);
 						}
 
 					}
@@ -401,8 +408,9 @@ public class Othello {
 				if (a + i <= 7) {
 					if (oth[a + i][b] == x) {
 
-						for (n = 0; n < i + 1; n++) {
+						for (n = 1; n < i; n++) {
 							oth[a + n][b] = x;
+							openness += countOpenness(a + n, b, oth);
 						}
 
 					}
@@ -422,8 +430,9 @@ public class Othello {
 				if (a + i <= 7 && b - i >= 0) {
 					if (oth[a + i][b - i] == x) {
 
-						for (n = 0; n < i + 1; n++) {
+						for (n = 1; n < i; n++) {
 							oth[a + n][b - n] = x;
+							openness += countOpenness(a + n, b - n, oth);
 						}
 
 					}
@@ -442,8 +451,9 @@ public class Othello {
 				}
 				if (b - i >= 0) {
 					if (oth[a][b - i] == x) {
-						for (n = 0; n < i + 1; n++) {
+						for (n = 1; n < i; n++) {
 							oth[a][b - n] = x;
+							openness += countOpenness(a, b - n, oth);
 						}
 
 					}
@@ -461,14 +471,16 @@ public class Othello {
 				}
 				if (a - i >= 0 && b - i >= 0) {
 					if (oth[a - i][b - i] == x) {
-						for (n = 0; n < i + 1; n++) {
+						for (n = 1; n < i; n++) {
 							oth[a - n][b - n] = x;
+							openness += countOpenness(a - n, b - n, oth);
 						}
 					}
 				}
 			}
 		}
-		
+
+		return openness;
 
 	}
 
@@ -492,11 +504,60 @@ public class Othello {
 	public void othelloAI(boolean turn) {
 		List<int[]> coord = new ArrayList<>();
 		List<Integer> evaluation = new ArrayList<>();
-		int[][] stoneevaluation = { {100, -40, 20, 5, 5, 20, -40, 100}, {-40, -80, -1, -1, -1, -1, -80, -40}, {20, -1, 5, 1, 1,
-				5, -1, 20},{ 5, -1, 1, 0, 0, 1, -1, 5}, {5, -1, 1, 0, 0, 1, -1, 5},{ 20, -1, 5, 1, 1, 5, -1, 20}, {-40, -80, -1,
-				-1, -1, -1, -80, -40}, {100, -40, 20, 5, 5, 20, -40, 100} };
+		// 評価関数
+		int[][] stoneevaluation = { { 100, -40, 20, 5, 5, 20, -40, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
+				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
+				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
+				{ 100, -40, 20, 5, 5, 20, -40, 100 } };
 
-		int maxindex = 0;
+		int minindex = 0;
+		coord = getCoord(oth);
+		if (coord == null) {
+			cnt++;
+			return;
+		}
+
+		int index = 0;
+		int putindex = turn ? 0 : 1;
+		for (int[] ary : coord) {
+			int[][] copyoth = copyOth(oth);
+			int oppennes = put(ary[0], ary[1], putindex, copyoth);
+			search(turn ? 1 : 0, copyoth);
+			List<int[]> getcoord = getCoord(copyoth);
+			int point = 0;
+			if (count(oth)[1] + count(oth)[2] < 54) {
+				if (getcoord != null) {
+					for (int[] getary : getcoord) {
+						point += stoneevaluation[getary[0]][getary[1]];
+					}
+				}else {
+					point = -100;
+				}
+				evaluation.add((oppennes * 7) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
+			} else {
+				int[][] stonelastevaluation = { { 100, 80, 20, 5, 5, 20, 80, 100 }, { 80, 40, -1, -1, -1, -1, 40, 80 },
+						{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
+						{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 80, 40, -1, -1, -1, -1, 40, 80 },
+						{ 100, 80, 20, 5, 5, 20, 80, 100 } };
+				if (getcoord != null) {
+					for (int[] getary : getcoord) {
+						point += stonelastevaluation[getary[0]][getary[1]];
+					}
+				}else {
+					point = -100;
+				}
+				evaluation.add((oppennes * 7) + point + (stonelastevaluation[ary[0]][ary[1]] * -1));
+			}
+			if (evaluation.get(minindex) >= evaluation.get(index)) {
+				minindex = index;
+			}
+			index++;
+		}
+		place(coord.get(minindex)[0], coord.get(minindex)[1]);
+	}
+
+	public List<int[]> getCoord(int[][] oth) {
+		List<int[]> coord = new ArrayList<>();
 		int move = 0;
 		for (int i = 0; i < 8; i++) {
 			for (int n = 0; n < 8; n++) {
@@ -508,35 +569,27 @@ public class Othello {
 			}
 		}
 		if (move == 0) {
-			cnt++;
-			return;
+			return null;
 		}
-		
-		int index = 0;
-		int putindex = turn ? 0:1;
-		int searchindex = turn ? 1:0;
-		for (int[] ary : coord) {
-			int[][] copyoth = copyOth(oth);
-			int stonepoint = 0;
-			put(ary[0], ary[1], putindex, copyoth);
-			search(searchindex, copyoth);
-			
-			for (int i = 0; i < 8; i++) {
-				for (int n = 0; n < 8; n++) {
-					if (copyoth[i][n] == 3 || copyoth[i][n] == 4) {
-						stonepoint += stoneevaluation[i][n];
-					}
+		return coord;
+	}
+
+	public int countOpenness(int x, int y, int[][] oth) {
+		int[][] ary = { { -1, 1 }, { 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 }, { -1, 0 } };
+		int count = 0;
+		for (int[] Coord : ary) {
+			int CoordX = x + Coord[0];
+			int CoordY = y + Coord[1];
+			if (CoordX > -1 && CoordX < 8 && CoordY > -1 && CoordY < 8) {
+
+				int type = oth[CoordX][CoordY];
+				if (type != 1 && type != 2) {
+
+					count++;
 				}
 			}
-			int[] count = count(copyoth);
-			evaluation.add(stoneevaluation[ary[0]][ary[1]] + (stonepoint * -1) +  ((move - count[3] - count[4]) + 1)*10);
-			if (evaluation.get(maxindex) <= evaluation.get(index)) {
-				maxindex = index;
-			}
-			index++;
 		}
-
-		place(coord.get(maxindex)[0], coord.get(maxindex)[1]);
+		return count;
 	}
 
 	int[][] copyOth(int[][] oth) {
@@ -548,8 +601,8 @@ public class Othello {
 		}
 		return copyoth;
 	}
-	
-	void setRecord(int x,int y) {
+
+	void setRecord(int x, int y) {
 		String charx = Integer.toString(x);
 		String chary = Integer.toString(y);
 		record += charx + chary;
