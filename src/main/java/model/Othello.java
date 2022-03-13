@@ -13,7 +13,7 @@ public class Othello {
 	Othello() {
 	}
 
-	boolean getColor() {
+	public boolean getColor() {
 		return cnt % 2 == 0 ? true : false;
 	}
 
@@ -23,6 +23,10 @@ public class Othello {
 
 	public void setGame(boolean game) {
 		this.game = game;
+	}
+
+	public int[][] getOth() {
+		return oth;
 	}
 
 	public String getRecord() {
@@ -41,7 +45,7 @@ public class Othello {
 	// 座標指定
 	public boolean place(int x, int y) {
 		int count[] = count(oth);
-
+		search(cnt, oth);
 		if (cnt % 2 == 0 && count[3] == 0) {
 
 			cnt++;
@@ -282,7 +286,6 @@ public class Othello {
 
 	// スクリーン
 	String oth() {
-
 		String str = "";
 		for (int i = 0; i < 8; i++) {
 			for (int n = 0; n < 8; n++) {
@@ -501,7 +504,90 @@ public class Othello {
 		oth[4][4] = 1;
 	}
 
-	public void othelloAI(boolean turn) {
+	public void othelloAIPut(boolean turn) {
+		List<Integer> evaluation = othelloAI(turn, oth);
+		evaluation = getAIEvaluationRead(evaluation, turn);
+		if (evaluation != null) {
+			int[] coord = getAICoord(evaluation, oth);
+			place(coord[0], coord[1]);
+		} else {
+			place(0, 0);
+		}
+	}
+
+	public String getAIEvaluation(boolean turn) {
+		List<Integer> evaluation = othelloAI(turn, oth);
+		evaluation = getAIEvaluationRead(evaluation, turn);
+		String mess = null;
+		if (evaluation != null) {
+			mess = "eva,";
+			mess += getColor() ? "3" : "4";
+			for (int eva : evaluation) {
+				mess += "," + eva;
+			}
+		}
+		return mess;
+	}
+
+	public int[] getAICoord(List<Integer> evaluation, int[][] oth) {
+		List<int[]> coord = getCoord(oth);
+		int minindex = 0, index = 0;
+		for (int eva : evaluation) {
+			if (eva < evaluation.get(minindex)) {
+				minindex = index;
+			}
+			index++;
+		}
+		if (coord != null) {
+			return coord.get(minindex);
+		}
+		return null;
+	}
+
+	public int readingAI(int[] coordcase, boolean turn) {
+		int[][] copyOth = copyOth(oth);
+		boolean aiturn = turn;
+		put(coordcase[0], coordcase[1], aiturn ? 0 : 1, copyOth);
+		search(aiturn ? 1 : 0, copyOth);
+		aiturn = !aiturn;
+		boolean end = false;
+		while (true) {
+			List<Integer> evaluation = othelloAI(aiturn, copyOth);
+			int[] coord = getAICoord(evaluation, copyOth);
+			if (coord != null) {
+
+				put(coord[0], coord[1], aiturn ? 0 : 1, copyOth);
+				search(aiturn ? 1 : 0, copyOth);
+				end = false;
+			} else {
+				end = true;
+			}
+			if (end) {
+				return count(copyOth)[turn ? 1 : 2] - count(copyOth)[turn ? 2 : 1];
+			}
+			end = true;
+			aiturn = !aiturn;
+		}
+
+	}
+
+	public List<Integer> getAIEvaluationRead(List<Integer> evaluation, boolean turn) {
+		List<int[]> coord = getCoord(oth);
+		if(coord == null) {
+			return evaluation;
+		}
+		if (count(oth)[1] + count(oth)[2] > 50) {
+			int index = 0;
+			for (int[] readCoord : coord) {
+				Integer eva = evaluation.get(index) + readingAI(readCoord, turn) * -20;
+				evaluation.set(index, eva);
+				index++;
+			}
+		}
+		return evaluation;
+	}
+
+	public List<Integer> othelloAI(boolean turn, int[][] oth) {
 		List<int[]> coord = new ArrayList<>();
 		List<Integer> evaluation = new ArrayList<>();
 		// 評価関数
@@ -509,15 +595,10 @@ public class Othello {
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 				{ 100, -40, 20, 5, 5, 20, -40, 100 } };
-
-		int minindex = 0;
 		coord = getCoord(oth);
 		if (coord == null) {
-			cnt++;
-			return;
+			return evaluation;
 		}
-
-		int index = 0;
 		int putindex = turn ? 0 : 1;
 		for (int[] ary : coord) {
 			int[][] copyoth = copyOth(oth);
@@ -530,7 +611,7 @@ public class Othello {
 					for (int[] getary : getcoord) {
 						point += stoneevaluation[getary[0]][getary[1]];
 					}
-				}else {
+				} else {
 					point = -100;
 				}
 				evaluation.add((oppennes * 7) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
@@ -543,17 +624,13 @@ public class Othello {
 					for (int[] getary : getcoord) {
 						point += stonelastevaluation[getary[0]][getary[1]];
 					}
-				}else {
+				} else {
 					point = -100;
 				}
 				evaluation.add((oppennes * 7) + point + (stonelastevaluation[ary[0]][ary[1]] * -1));
 			}
-			if (evaluation.get(minindex) >= evaluation.get(index)) {
-				minindex = index;
-			}
-			index++;
 		}
-		place(coord.get(minindex)[0], coord.get(minindex)[1]);
+		return evaluation;
 	}
 
 	public List<int[]> getCoord(int[][] oth) {

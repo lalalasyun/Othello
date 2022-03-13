@@ -21,7 +21,7 @@ import model.Room;
 public class WebSocket {
 	private static List<Room> multiroomlist = new ArrayList<>();
 	private static List<Room> soloroomlist = new ArrayList<>();
-	
+
 	public WebSocket() throws SQLException {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
@@ -34,7 +34,7 @@ public class WebSocket {
 		st.close();
 		con.close();
 	}
-	
+
 	@OnOpen
 	public void connect(Session session) throws Exception {
 		Room room = new Room();
@@ -44,16 +44,16 @@ public class WebSocket {
 		room.sendTurn();
 		room.sendName();
 		room.sendResult();
-		userRegister(room.getName1(),"lalalasyun.com");
+		userRegister(room.getName1(), "lalalasyun.com");
 	}
 
 	@OnClose
 	public void remove(Session session) throws Exception {
 		Room room = getMultiRoom(session);
-		
+
 		if (room != null) {
 			room.removeSession(session);
-			if(!room.getGame().isGame()) {
+			if (!room.getGame().isGame()) {
 				room.sendMessage("matching,wait");
 			}
 			if (room.removeRoom()) {
@@ -61,11 +61,11 @@ public class WebSocket {
 			}
 		}
 		room = getSoloRoom(session);
-		userDelete(room.getInitName(),"lalalasyun.com");
+		userDelete(room.getInitName(), "lalalasyun.com");
 		soloroomlist.remove(room);
 		boolean ret = userLogout(room.getName(session));
-		if(ret) {
-			userAddStatus(room.getName(session),false);
+		if (ret) {
+			userAddStatus(room.getName(session), false);
 		}
 	}
 
@@ -73,9 +73,10 @@ public class WebSocket {
 	public void broadcast(String message, Session session) throws Exception {
 		String str[] = message.split(",");
 		String stone;
+		String mess;
 		Room soloroom = getSoloRoom(session);
 		Room multiroom = getMultiRoom(session);
-		Room room =  multiroom != null ? multiroom:soloroom;
+		Room room = multiroom != null ? multiroom : soloroom;
 		Othello game = room.getGame();
 		switch (str[0]) {
 		case "start":
@@ -85,9 +86,13 @@ public class WebSocket {
 			room.sendMessage("stone," + stone);
 			if (room.isAI() && room.isAiturn()) {
 				Thread.sleep(300);
-				game.othelloAI(room.isAiturn());
+				game.othelloAIPut(room.isAiturn());
 				stone = game.getStone();
 				room.sendMessage("stone," + stone);
+			}
+			mess = game.getAIEvaluation(!game.getColor());
+			if (mess != null) {
+				room.sendMessage(mess);
 			}
 			room.timer();
 			break;
@@ -104,15 +109,19 @@ public class WebSocket {
 
 			boolean ret = game.place(x, y);
 			stone = game.getStone();
-			room.sendMessage("stone," + stone);
 			if (!ret) {
 				break;
 			}
+			room.sendMessage("stone," + stone);
 			if (room.isAI()) {
 				Thread.sleep(300);
-				game.othelloAI(room.isAiturn());
+				game.othelloAIPut(room.isAiturn());
 				stone = game.getStone();
 				room.sendMessage("stone," + stone);
+			}
+			mess = game.getAIEvaluation(!game.getColor());
+			if (mess != null) {
+				room.sendMessage(mess);
 			}
 			if (!game.isGame()) {
 				room.addResult(game.judge(), game.getRecord());
@@ -126,11 +135,11 @@ public class WebSocket {
 			room.sendName();
 			break;
 		case "online":
-			online(soloroom,session);
+			online(soloroom, session);
 			break;
 		case "offline":
 			multiroom.removeSession(session);
-			if(!room.getGame().isGame()) {
+			if (!room.getGame().isGame()) {
 				multiroom.sendMessage("matching,wait");
 			}
 			if (multiroom.removeRoom()) {
@@ -148,21 +157,21 @@ public class WebSocket {
 				room.setName(session, str[1]);
 				soloroom.sendMessage("login,0,success");
 				room.sendName();
-				userAddStatus(str[1],true);
+				userAddStatus(str[1], true);
 			} else {
 				soloroom.sendMessage("login,0,failure");
 			}
-			
+
 			break;
 		case "logout":
 			boolean login = userLogout(room.getName(session));
 			if (login) {
 				String name = room.getName(session);
 				String initname = soloroom.getInitName();
-				soloroom.removeName(session,initname);
-				room.removeName(session,initname);
+				soloroom.removeName(session, initname);
+				room.removeName(session, initname);
 				soloroom.sendMessage("login,1,success");
-				userAddStatus(name,false);
+				userAddStatus(name, false);
 			} else {
 				soloroom.sendMessage("login,1,failure");
 			}
@@ -191,14 +200,14 @@ public class WebSocket {
 		}
 
 	}
-	
-	public void online(Room soloroom,Session session) throws Exception {
+
+	public void online(Room soloroom, Session session) throws Exception {
 		Room multiroom = getMultiRoom(soloroom.getName(session));
 		boolean matching = multiroom == null;
 		if (matching) {
 			multiroom = new Room(soloroom.getName(session));
 			multiroomlist.add(multiroom);
-		} 
+		}
 		multiroom.setUser(session);
 		if (!matching) {
 			multiroom.setName(session, soloroom.getName(session));
@@ -206,7 +215,7 @@ public class WebSocket {
 			multiroom.sendMessage("matching,player");
 			multiroom.sendName();
 			Othello game = multiroom.getGame();
-			if(game.isGame()) {
+			if (game.isGame()) {
 				multiroom.sendMessage("start");
 				multiroom.sendMessage("stone," + game.getStone());
 			}
@@ -229,7 +238,7 @@ public class WebSocket {
 				return r;
 			}
 		}
-		
+
 		return getEmptyMultiRoom();
 	}
 
@@ -250,8 +259,6 @@ public class WebSocket {
 		}
 		return null;
 	}
-
-
 
 	public boolean userRegister(String id, String pass) throws SQLException {
 		Connection con = getConnection();
@@ -284,7 +291,8 @@ public class WebSocket {
 	public boolean userLogin(String id, String pass) throws SQLException {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
-		String sql = "select * from account where userid ='" + id + "' AND password = '" + pass + "' AND status = false";
+		String sql = "select * from account where userid ='" + id + "' AND password = '" + pass
+				+ "' AND status = false";
 		ResultSet resultSet = st.executeQuery(sql);
 		boolean ret = false;
 		while (resultSet.next()) {
@@ -294,7 +302,7 @@ public class WebSocket {
 		con.close();
 		return ret;
 	}
-	
+
 	public boolean userLogout(String id) throws SQLException {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
@@ -308,12 +316,12 @@ public class WebSocket {
 		con.close();
 		return ret;
 	}
-	
-	public void userAddStatus(String id,boolean ret) throws SQLException {
+
+	public void userAddStatus(String id, boolean ret) throws SQLException {
 		Connection con = getConnection();
 		Statement st = con.createStatement();
-		int param = ret?1:0;
-		String sql = "update account set status = "+param+" where userid='"+id+"';";
+		int param = ret ? 1 : 0;
+		String sql = "update account set status = " + param + " where userid='" + id + "';";
 		st.executeUpdate(sql);
 		st.close();
 		con.close();

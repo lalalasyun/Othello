@@ -9,6 +9,8 @@ var game = false;
 var cntblack = 0;
 var cntwhite = 0;
 var formIsEmpty;
+var putcoord = [];
+var ainavi = false;
 //document.getElementById
 var resultbox, result, black, white;
 
@@ -167,6 +169,7 @@ function connect() {
 		switch (command) {
 			case "stone":
 				initStone();
+				putcoord = [];
 				var stone = ary[1].split('');
 				cntblack = 0;
 				cntwhite = 0;
@@ -185,9 +188,11 @@ function connect() {
 								cntblack++;
 								break;
 							case 3:
+								putcoord.push([i,n]);
 								cntputblack++;
 								break;
 							case 4:
+								putcoord.push([i,n]);
 								cntputwhite++;
 								break;
 						}
@@ -210,6 +215,13 @@ function connect() {
 				}
 				black.innerHTML = "黒:" + cntblack;
 				white.innerHTML = "白:" + cntwhite;
+				break;
+			case "eva":
+				var type = Number(ary[1]);
+				for(var index in putcoord){
+					var evaindex = Number(index) + 2;
+					putEva(putcoord[index][0],putcoord[index][1],type,ary[evaindex]);
+				}
 				break;
 			case "turn":
 				turn = ary[1] == "black" ? true : false;
@@ -364,31 +376,23 @@ function initStone() {
 		context.lineTo(300, move);
 	}
 	context.stroke();
-	context.beginPath();
+	var position = [[block*2-0.5,block*2-0.5],[block*6-0.5,block*2-0.5],[block*2-0.5,block*6-0.5],[block*6-0.5,block*6-0.5]];
 	context.fillStyle = 'black';
-	context.arc(block*2-0.5,block*2-0.5,2,Math.PI*1,Math.PI*360,false);
-	context.fill();
-	context.beginPath();
-	context.arc(block*6-0.5,block*2-0.5,2,Math.PI*1,Math.PI*360,false);
-	context.fill();
-	context.beginPath();
-	context.arc(block*2-0.5,block*6-0.5,2,Math.PI*1,Math.PI*360,false);
-	context.fill();
-	context.beginPath();
-	context.arc(block*6-0.5,block*6-0.5,2,Math.PI*1,Math.PI*360,false);
-	context.fill();
+	for(var index in position){
+		context.beginPath();
+		context.arc(position[index][0],position[index][1],Math.PI*1,Math.PI*360,false);
+		context.fill();
+	}
 }
 
 function putStone(x, y, type) {
 	context.beginPath();
-	if (turn && type == 4) {
+	if ((turn && type == 4) || (!turn && type == 3)) {
 		return;
-	} else if (!turn && type == 3) {
-		return;
-	}
+	} 
 	var stonex = block * x;
 	var stoney = block * y;
-	context.arc(stonex + block / 2, stoney + block / 2, 15, 0 * Math.PI / 180, 360 * Math.PI / 180, false);
+	context.arc(stonex + block / 2, stoney + block / 2,15,Math.PI*1,Math.PI*360, false);
 	switch (type) {
 		case 0:
 			return false;
@@ -398,7 +402,6 @@ function putStone(x, y, type) {
 			break;
 		case 2:
 			context.fillStyle = 'black';
-
 			context.fill();
 			break;
 		case 3:
@@ -412,7 +415,20 @@ function putStone(x, y, type) {
 			context.stroke();
 			break;
 		default:
-			return false;
+			break;
 	}
-
+}
+function putEva(x,y,type,eva){
+	context.beginPath();
+	if ((turn && type == 4) || (!turn && type == 3) || ainavi) {
+		return;
+	}
+	var color = type==3?"black":"white";
+	var stonex = block * x;
+	var stoney = block * y;
+	var fontpositionx = (block * 0.4375) - (block * 0.0625)*eva.length;
+	var fontpositiony = (block * 0.625);
+	context.fillStyle = color;
+	context.font = "12px serif";
+	context.fillText(eva, stonex + fontpositionx, stoney + fontpositiony);
 }
