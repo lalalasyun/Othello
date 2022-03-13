@@ -110,6 +110,7 @@ public class WebSocket {
 			boolean ret = game.place(x, y);
 			stone = game.getStone();
 			if (!ret) {
+				room.sendMessage("stone," + stone);
 				break;
 			}
 			room.sendMessage("stone," + stone);
