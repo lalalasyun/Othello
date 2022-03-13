@@ -505,7 +505,7 @@ public class Othello {
 	}
 
 	public void othelloAIPut(boolean turn) {
-		List<Integer> evaluation = othelloAI(turn, oth);
+		List<Integer> evaluation = othelloAI(turn, copyOth(oth));
 		evaluation = getAIEvaluationRead(evaluation, turn);
 		if (evaluation != null) {
 			int[] coord = getAICoord(evaluation, oth);
@@ -520,7 +520,7 @@ public class Othello {
 	}
 
 	public String getAIEvaluation(boolean turn) {
-		List<Integer> evaluation = othelloAI(turn, oth);
+		List<Integer> evaluation = othelloAI(turn, copyOth(oth));
 		evaluation = getAIEvaluationRead(evaluation, turn);
 		String mess = null;
 		if (evaluation != null) {
