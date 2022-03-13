@@ -44,8 +44,9 @@ public class Othello {
 
 	// 座標指定
 	public boolean place(int x, int y) {
-		int count[] = count(oth);
 		search(cnt, oth);
+		int count[] = count(oth);
+		
 		if (cnt % 2 == 0 && count[3] == 0) {
 
 			cnt++;
