@@ -505,7 +505,6 @@ public class Othello {
 	}
 
 	public void othelloAIPut(boolean turn) {
-		search(cnt,oth);
 		List<Integer> evaluation = othelloAI(turn, oth);
 		evaluation = getAIEvaluationRead(evaluation, turn);
 		if (evaluation != null) {
@@ -556,7 +555,6 @@ public class Othello {
 			List<Integer> evaluation = othelloAI(aiturn, copyOth);
 			int[] coord = getAICoord(evaluation, copyOth);
 			if (coord != null) {
-
 				put(coord[0], coord[1], aiturn ? 0 : 1, copyOth);
 				search(aiturn ? 1 : 0, copyOth);
 				end = false;
@@ -633,7 +631,6 @@ public class Othello {
 	}
 
 	public List<int[]> getCoord(int[][] oth) {
-		search(cnt,oth);
 		List<int[]> coord = new ArrayList<>();
 		int move = 0;
 		for (int i = 0; i < 8; i++) {
