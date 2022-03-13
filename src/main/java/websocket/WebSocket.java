@@ -101,7 +101,7 @@ public class WebSocket {
 			room.sendMessage("reset");
 			break;
 		case "coord":
-			if (!game.isGame()) {
+			if (room.isTurn(session) || !game.isGame()) {
 				break;
 			}
 			int x = Integer.parseInt(str[1]);
