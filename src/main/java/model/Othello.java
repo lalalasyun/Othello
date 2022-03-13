@@ -512,6 +512,8 @@ public class Othello {
 			if(coord != null) {
 				place(coord[0], coord[1]);
 			}
+		}else {
+			cnt++;
 		}
 	}
 
