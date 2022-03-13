@@ -580,7 +580,7 @@ public class Othello {
 		if (count(oth)[1] + count(oth)[2] > 54) {
 			int index = 0;
 			for (int[] readCoord : coord) {
-				Integer eva = evaluation.get(index) + readingAI(readCoord, turn) * -10;
+				Integer eva = readingAI(readCoord, turn);
 				evaluation.set(index, eva);
 				index++;
 			}
