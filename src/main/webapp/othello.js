@@ -53,6 +53,7 @@ function documentload() {
 function stoneClick(x, y) {
 	if (game && gameturn) {
 		ws.send("coord," + x + "," + y);
+		var gameturn = false;
 	}
 }
 
