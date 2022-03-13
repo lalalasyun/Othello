@@ -10,7 +10,7 @@ var cntblack = 0;
 var cntwhite = 0;
 var formIsEmpty;
 var putcoord = [];
-var ainavi = false;
+var ainavi = true;
 //document.getElementById
 var resultbox, result, black, white;
 
