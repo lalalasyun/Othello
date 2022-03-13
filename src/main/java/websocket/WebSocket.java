@@ -114,7 +114,7 @@ public class WebSocket {
 			}
 			room.sendMessage("stone," + stone);
 			if (room.isAI()) {
-				Thread.sleep(100);
+				Thread.sleep(300);
 				game.othelloAIPut(room.isAiturn());
 				stone = game.getStone();
 				room.sendMessage("stone," + stone);
