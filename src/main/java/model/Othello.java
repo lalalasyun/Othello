@@ -75,9 +75,8 @@ public class Othello {
 			}
 			cnt++;
 			return true;
-		} else {
-			return false;
-		}
+		} 
+		return false;
 
 	}
 
@@ -506,11 +505,14 @@ public class Othello {
 	}
 
 	public void othelloAIPut(boolean turn) {
+		search(cnt,oth);
 		List<Integer> evaluation = othelloAI(turn, oth);
 		evaluation = getAIEvaluationRead(evaluation, turn);
 		if (evaluation != null) {
 			int[] coord = getAICoord(evaluation, oth);
-			place(coord[0], coord[1]);
+			if(coord != null) {
+				place(coord[0], coord[1]);
+			}
 		} else {
 			place(0, 0);
 		}
@@ -560,11 +562,9 @@ public class Othello {
 				put(coord[0], coord[1], aiturn ? 0 : 1, copyOth);
 				search(aiturn ? 1 : 0, copyOth);
 				end = false;
-			} else {
-				end = true;
 			}
 			if (end) {
-				return count(copyOth)[turn ? 1 : 2] - count(copyOth)[turn ? 2 : 1];
+				return count(copyOth)[turn ? 1 : 2];
 			}
 			end = true;
 			aiturn = !aiturn;
@@ -577,10 +577,10 @@ public class Othello {
 		if(coord == null) {
 			return evaluation;
 		}
-		if (count(oth)[1] + count(oth)[2] > 50) {
+		if (count(oth)[1] + count(oth)[2] > 54) {
 			int index = 0;
 			for (int[] readCoord : coord) {
-				Integer eva = evaluation.get(index) + readingAI(readCoord, turn) * -20;
+				Integer eva = evaluation.get(index) + readingAI(readCoord, turn) * -1;
 				evaluation.set(index, eva);
 				index++;
 			}
@@ -635,6 +635,7 @@ public class Othello {
 	}
 
 	public List<int[]> getCoord(int[][] oth) {
+		search(cnt,oth);
 		List<int[]> coord = new ArrayList<>();
 		int move = 0;
 		for (int i = 0; i < 8; i++) {

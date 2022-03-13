@@ -101,7 +101,7 @@ public class WebSocket {
 			room.sendMessage("reset");
 			break;
 		case "coord":
-			if (!room.isTurn(session) || !game.isGame()) {
+			if (!game.isGame()) {
 				break;
 			}
 			int x = Integer.parseInt(str[1]);
@@ -119,14 +119,15 @@ public class WebSocket {
 				stone = game.getStone();
 				room.sendMessage("stone," + stone);
 			}
-			mess = game.getAIEvaluation(!game.getColor());
-			if (mess != null) {
-				room.sendMessage(mess);
-			}
+			
 			if (!game.isGame()) {
 				room.addResult(game.judge(), game.getRecord());
 				room.sendMessage("end");
 				room.sendResult();
+			}
+			mess = game.getAIEvaluation(!game.getColor());
+			if (mess != null) {
+				room.sendMessage(mess);
 			}
 			break;
 		case "changeturn":
