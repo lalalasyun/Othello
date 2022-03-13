@@ -217,6 +217,9 @@ function connect() {
 				black.innerHTML = "黒:" + cntblack;
 				white.innerHTML = "白:" + cntwhite;
 				break;
+			case "miss":
+				gameturn = true;
+				break;
 			case "eva":
 				var type = Number(ary[1]);
 				for(var index in putcoord){

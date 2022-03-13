@@ -108,11 +108,12 @@ public class WebSocket {
 			int y = Integer.parseInt(str[2]);
 
 			boolean ret = game.place(x, y);
-			stone = game.getStone();
+			
 			if (!ret) {
-				room.sendMessage("stone," + stone);
+				room.sendMessage("miss");
 				break;
 			}
+			stone = game.getStone();
 			room.sendMessage("stone," + stone);
 			if (room.isAI()) {
 				Thread.sleep(300);
