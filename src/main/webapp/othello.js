@@ -46,7 +46,8 @@ function Twitter(){
 //openTwitter(投稿文、シェアするURL)
 
 function openTwitter(text) {
-	var gameurl = 'http://lalalasyun.com/OthelloWeb/';
+	// var gameurl = 'http://lalalasyun.com/OthelloWeb/';
+	var gameurl = 'https://othellojp.herokuapp.com/';
 	var turl = "https://twitter.com/intent/tweet?text="+text+"&url="+gameurl;
 	window.open(turl,'_blank');
 }
