@@ -123,10 +123,19 @@ public class WebSocket {
 			}
 			
 			if (!game.isGame()) {
-				room.addResult(game.judge(), game.getRecord());
 				room.sendMessage("end");
+				room.addResult(game.judge(), game.getRecord());
 				room.sendResult();
 			}
+			mess = game.getAIEvaluation(!game.getColor());
+			room.sendMessage("stone," + stone);
+			if (mess != null) {
+				room.sendMessage(mess);
+			}
+			break;
+		case "ainavi":
+			stone = game.getStone();
+			room.sendMessage("stone," + stone);
 			mess = game.getAIEvaluation(!game.getColor());
 			if (mess != null) {
 				room.sendMessage(mess);
@@ -200,8 +209,30 @@ public class WebSocket {
 			}
 			room.sendName();
 			break;
+		case "kihu":
+			switch (str[1]) {
+			case "get":
+				soloroom.getKihu(session);
+				break;
+			case "index":
+				int index = Integer.parseInt(str[2]);
+				soloroom.getKihuStone(index);
+				break;
+			case "next":
+				soloroom.playKihu(0);
+				break;
+			case "back":
+				soloroom.playKihu(1);
+				break;
+			case "start":
+				soloroom.playKihu(2);
+				break;
+			case "end":
+				soloroom.playKihu(3);
+				break;
+			}
+			break;
 		}
-
 	}
 
 	public void online(Room soloroom, Session session) throws Exception {

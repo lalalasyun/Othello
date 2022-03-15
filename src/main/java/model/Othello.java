@@ -41,14 +41,19 @@ public class Othello {
 
 		return str;
 	}
+	
+	public String getStoneInit() {
 
-	// 座標指定
-	public boolean place(int x, int y) {
+		search(cnt, oth);
+		String str = othInit();
+
+		return str;
+	}
+
+	public boolean getPass() {
 		search(cnt, oth);
 		int count[] = count(oth);
-		
 		if (cnt % 2 == 0 && count[3] == 0) {
-
 			cnt++;
 			search(1, oth);
 			if (count(oth)[4] == 0) {
@@ -56,16 +61,24 @@ public class Othello {
 			}
 			return true;
 		} else if (cnt % 2 == 1 && count[4] == 0) {
-
 			cnt++;
 			search(0, oth);
 			if (count(oth)[3] == 0) {
 				game = false;
 			}
 			return true;
-
 		}
-
+		return false;
+	}
+	
+	// 座標指定
+	public boolean place(int x, int y) {
+		if(getPass()) {
+			return true;
+		}
+		search(cnt, oth);
+		int count[] = count(oth);
+		
 		if (oth[x][y] == 3 || oth[x][y] == 4) {
 			setRecord(x, y);
 			put(x, y, cnt, oth);
@@ -290,6 +303,21 @@ public class Othello {
 		for (int i = 0; i < 8; i++) {
 			for (int n = 0; n < 8; n++) {
 				str += oth[i][n];
+			}
+		}
+		return str;
+	}
+	
+	String othInit() {
+		String str = "";
+		for (int i = 0; i < 8; i++) {
+			for (int n = 0; n < 8; n++) {
+				if(oth[i][n] == 3 || oth[i][n] == 4) {
+					str += 0;
+				}else {
+					str += oth[i][n];
+				}
+				
 			}
 		}
 		return str;
@@ -527,7 +555,7 @@ public class Othello {
 			mess = "eva,";
 			mess += getColor() ? "3" : "4";
 			for (int eva : evaluation) {
-				mess += "," + eva;
+				mess += "," + eva * -1;
 			}
 		}
 		return mess;

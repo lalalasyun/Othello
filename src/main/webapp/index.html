@@ -1,8 +1,15 @@
 <html lang="ja">
-
 <head>
 <meta charset="UTF-8" name="viewport" content="width=device-width,user-scalable=no">
-<title>オセロゲーム</title>
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="WebOthello" />
+<meta name="twitter:image" content="https://othellojp.herokuapp.com/othello.png" />
+<!-- https://othellojp.herokuapp.com/othello.png -->
+<!-- http://lalalasyun.com/OthelloWeb/othello.png -->
+<meta name="twitter:url" content="https://othellojp.herokuapp.com/" />
+<!-- https://othellojp.herokuapp.com/ -->
+<!-- http://lalalasyun.com/OthelloWeb/ -->
+<title>WebOthello</title>
 <link href="/favicon.ico" rel="icon" />
 <style type="text/css">
 html{
@@ -14,7 +21,7 @@ html{
 	height: 500px;
 	transform-origin: 0px 0px;
 }
-button {
+button,#btn{
     -webkit-appearance: none;
   	margin: 1px;
 	cursor: pointer;
@@ -24,16 +31,41 @@ button {
 	border: 0px;
 	border-radius: 5px;
 }
+table{
+	border-spacing: 0px 0px;
+}
+td{
+    padding: 0px 0px;
+}
+#tweetmess{
+	margin: 0px;
+	color: rgb(42, 102, 102);
+}
+
 </style>
 </head>
 
-<body id="main" onload="load()">
+<body id="main" onload="load(); DefaultSave();">
 	<canvas id="othello" width="300px" height="300px"></canvas>
 	<table>
-	<button id="startid" onclick="startbtn()">スタート</button>
-	<button id="online" onclick="onlinebtn()">オフライン</button>
-	<button onclick="account()">アカウント</button>
-	<button id="changeturn" onclick="changeturnbtn()">攻守交代</button>
+	<tr id="gamebtn">
+	<td><button id="startid" onclick="startbtn()">スタート</button></td>
+	<td><button id="online" onclick="onlinebtn()">オフライン</button></td>
+	<td><button id="assistbtn" onclick="aiassist()">アシスト</button></td>
+	<td><button id="changeturn" onclick="changeturnbtn()">攻守交代</button></td>
+	</tr>
+	<tr>
+	<td><button id="kihubtn"onclick="kihu()">棋譜データ</button></td>
+	<td><button onclick="account()">アカウント</button></td>
+	<td><input id="btn"type="button" value="プログラム" onClick="window.open('https://github.com/lalalasyun/Othello','_blank','')"></td>
+	<td><input id="btn"type="button" value="ツイート" onClick="Twitter()"></td>
+	</tr>
+	<tr id="kihuplaybtn"hidden>
+	<td><button onclick="kihuback()">前へ</button></td>
+	<td><button onclick="kihunext()">次へ</button></td>
+	<td><button onclick="kihustart()">最初へ</button></td>
+	<td><button onclick="kihuend()">最後へ</button></td>
+	</tr>
 	</table>
 	<article id="form" hidden=true>
 	個人情報は入力しないで下さい
@@ -50,10 +82,12 @@ button {
 	</tr>
 	</table>
 	<table>
-	<button id ="login"onclick="loginbtn()">ログイン</button>
-	<button id ="logout"onclick="logoutbtn()" disabled>ログアウト</button>
-	<button onclick="registerbtn()">登録</button>
-	<button onclick="deletebtn()">削除</button>
+	<tr>
+	<td><button id ="login"onclick="loginbtn()">ログイン</button></td>
+	<td><button id ="logout"onclick="logoutbtn()" disabled>ログアウト</button></td>
+	<td><button onclick="registerbtn()">登録</button></td>
+	<td><button onclick="deletebtn()">削除</button></td>
+	</tr>
 	</table>
 	</article>
 	<span id="usermenu"></span>
@@ -62,6 +96,7 @@ button {
 	<span id="white"></span>
 	<span id="result"></span>
 	</article>
+	<span id="kihumenu"hidden></span>
 	<article id="userdata">
 	<span>あなた:</span><span id="username1"></span><br>
 	<span id="turn1"></span><span id="userrate1">データ取得中...</span>
@@ -70,9 +105,11 @@ button {
 	<br>
 	<span id="turn2"></span><span id="userrate2">データ取得中...</span>
 	</article>
+	<p id="tweetmess"hidden>ツイートボタンを押して結果をシェア</p>
  	<script src="/othello.js"></script>
 	<!-- <script src="/OthelloWeb/othello.js"></script>  -->
 	<!-- <script src="/othello.js"></script> -->
 </body>
+
 
 </html>
