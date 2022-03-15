@@ -513,7 +513,7 @@ function changesize() {
 	if (wsize < hsize) {
 		size = wsize / 300;
 	} else {
-		size = hsize / 470;
+		size = hsize / 500;
 	}
 	main.style.transform = "scale(" + size + ")";
 
