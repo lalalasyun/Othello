@@ -313,11 +313,7 @@ function connect() {
 					if (cntput == 0) {
 						if (cntblack + cntwhite != 64) {
 							gameturn = true;
-							result.innerHTML = "パス";
-							window.setTimeout(dispMsg, 1000);
-							function dispMsg() {
-								stoneClick(9, 9);
-							}
+							result.innerHTML = "パス<br>パスするには画面を押してください";
 						} else {
 							winresult();
 						}
