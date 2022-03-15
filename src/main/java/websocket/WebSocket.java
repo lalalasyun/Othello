@@ -123,12 +123,11 @@ public class WebSocket {
 			}
 			
 			if (!game.isGame()) {
-				room.sendMessage("end");
 				room.addResult(game.judge(), game.getRecord());
+				room.sendMessage("end");
 				room.sendResult();
 			}
 			mess = game.getAIEvaluation(!game.getColor());
-			room.sendMessage("stone," + stone);
 			if (mess != null) {
 				room.sendMessage(mess);
 			}
