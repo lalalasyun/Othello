@@ -30,15 +30,6 @@ function load() {
 	connect();
 }
 
-var defaultHTML;
-function DefaultSave() {
-	defaultHTML = document.body.innerHTML;
-}
-// HTML記述を初期状態に戻す
-function HTMLRestore() {
-	document.body.innerHTML = defaultHTML;
-}
-
 
 function Twitter(){
 	openTwitter(tweet);
@@ -435,7 +426,6 @@ function connect() {
 	}
 
 	ws.onclose = function () {
-		HTMLRestore();
 		userlog.innerHTML = 'サーバーから切断されました<br>3秒後に再接続します。<br>'
 		setTimeout(() => {
 			connect();
@@ -443,7 +433,6 @@ function connect() {
 	}
 
 	ws.onerror = function () {
-		HTMLRestore();
 		userlog.innerHTML = 'サーバーの接続に失敗しました<br>';
 	}
 }
