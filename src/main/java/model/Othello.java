@@ -41,7 +41,7 @@ public class Othello {
 
 		return str;
 	}
-	
+
 	public String getStoneInit() {
 
 		search(cnt, oth);
@@ -70,15 +70,15 @@ public class Othello {
 		}
 		return false;
 	}
-	
+
 	// 座標指定
 	public boolean place(int x, int y) {
-		if(getPass()) {
+		if (getPass()) {
 			return true;
 		}
 		search(cnt, oth);
 		int count[] = count(oth);
-		
+
 		if (oth[x][y] == 3 || oth[x][y] == 4) {
 			setRecord(x, y);
 			put(x, y, cnt, oth);
@@ -88,7 +88,7 @@ public class Othello {
 			}
 			cnt++;
 			return true;
-		} 
+		}
 		return false;
 
 	}
@@ -307,17 +307,17 @@ public class Othello {
 		}
 		return str;
 	}
-	
+
 	String othInit() {
 		String str = "";
 		for (int i = 0; i < 8; i++) {
 			for (int n = 0; n < 8; n++) {
-				if(oth[i][n] == 3 || oth[i][n] == 4) {
+				if (oth[i][n] == 3 || oth[i][n] == 4) {
 					str += 0;
-				}else {
+				} else {
 					str += oth[i][n];
 				}
-				
+
 			}
 		}
 		return str;
@@ -537,12 +537,12 @@ public class Othello {
 		evaluation = getAIEvaluationRead(evaluation, turn);
 		if (evaluation != null) {
 			int[] coord = getAICoord(evaluation, oth);
-			if(coord != null) {
+			if (coord != null) {
 				place(coord[0], coord[1]);
-			}else {
+			} else {
 				cnt++;
 			}
-		}else {
+		} else {
 			cnt++;
 		}
 	}
@@ -602,7 +602,7 @@ public class Othello {
 
 	public List<Integer> getAIEvaluationRead(List<Integer> evaluation, boolean turn) {
 		List<int[]> coord = getCoord(oth);
-		if(coord == null) {
+		if (coord == null) {
 			return evaluation;
 		}
 		if (count(oth)[1] + count(oth)[2] > 54) {
@@ -619,11 +619,76 @@ public class Othello {
 	public List<Integer> othelloAI(boolean turn, int[][] oth) {
 		List<int[]> coord = new ArrayList<>();
 		List<Integer> evaluation = new ArrayList<>();
+		int color = turn ? 1 : 2;
+		int enemycolor = turn ? 2 : 1;
 		// 評価関数
 		int[][] stoneevaluation = { { 100, -40, 20, 5, 5, 20, -40, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 				{ 100, -40, 20, 5, 5, 20, -40, 100 } };
+		
+		
+		int[][] cornerscoord = { { 0, 0 }, { 7, 0 }, { 0, 7 }, { 7, 7 } };
+		int[][] shift = { { 1, 1 }, { -1, +1 }, { 1, -1 }, { -1, -1 } };
+		int index = 0;
+		for (int[] corners : cornerscoord) {
+			int x = corners[0];
+			int y = corners[1];
+			boolean ret = true;
+			while (oth[x][y] == color) {
+				x += shift[index][0];
+				if (x == 7 || x == -1) {
+					ret = true;
+					break;
+				}
+				ret = false;
+			}
+			if (!ret) {
+				ret = true;
+				while (oth[x][y] == enemycolor) {
+					x += shift[index][0];
+					if (x == 7 || x == -1) {
+						ret = true;
+						break;
+					}
+					ret = false;
+				}
+			}
+			if (!ret) {
+				stoneevaluation[x][y] = 100;
+			}
+			index++;
+		}
+		index = 0;
+		for (int[] corners : cornerscoord) {
+			int x = corners[0];
+			int y = corners[1];
+			boolean ret = true;
+			while (oth[x][y] == color) {
+				y += shift[index][1];
+				if (y == 7 || y == -1) {
+					ret = true;
+					break;
+				}
+				ret = false;
+			}
+			if (!ret) {
+				ret = true;
+				while (oth[x][y] == enemycolor) {
+					y += shift[index][1];
+					if (y == 7 || y == -1) {
+						ret = true;
+						break;
+					}
+					ret = false;
+				}
+			}
+			if (!ret) {
+				stoneevaluation[x][y] = 100;
+			}
+			index++;
+		}
+
 		coord = getCoord(oth);
 		if (coord == null) {
 			return evaluation;
@@ -635,29 +700,15 @@ public class Othello {
 			search(turn ? 1 : 0, copyoth);
 			List<int[]> getcoord = getCoord(copyoth);
 			int point = 0;
-			if (count(oth)[1] + count(oth)[2] < 54) {
-				if (getcoord != null) {
-					for (int[] getary : getcoord) {
-						point += stoneevaluation[getary[0]][getary[1]];
-					}
-				} else {
-					point = -100;
+			if (getcoord != null) {
+				for (int[] getary : getcoord) {
+					point += stoneevaluation[getary[0]][getary[1]];
 				}
-				evaluation.add((oppennes * 7) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
 			} else {
-				int[][] stonelastevaluation = { { 100, 80, 20, 5, 5, 20, 80, 100 }, { 80, 40, -1, -1, -1, -1, 40, 80 },
-						{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
-						{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 80, 40, -1, -1, -1, -1, 40, 80 },
-						{ 100, 80, 20, 5, 5, 20, 80, 100 } };
-				if (getcoord != null) {
-					for (int[] getary : getcoord) {
-						point += stonelastevaluation[getary[0]][getary[1]];
-					}
-				} else {
-					point = -100;
-				}
-				evaluation.add((oppennes * 7) + point + (stonelastevaluation[ary[0]][ary[1]] * -1));
+				point = -100;
 			}
+			evaluation.add((oppennes * 7) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
+
 		}
 		return evaluation;
 	}
