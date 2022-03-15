@@ -558,17 +558,11 @@ function putStone(x, y, type) {
 			context.fill();
 			break;
 		case 3:
-			if (ainavi) {
-				break;
-			}
 			context.strokeStyle = 'black';
 			context.lineWidth = 2;
 			context.stroke();
 			break;
 		case 4:
-			if (ainavi) {
-				break;
-			}
 			context.strokeStyle = 'white';
 			context.lineWidth = 2;
 			context.stroke();
