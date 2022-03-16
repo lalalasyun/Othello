@@ -568,7 +568,7 @@ public class Othello {
 			mess = "eva,";
 			mess += getColor() ? "3" : "4";
 
-			for (int eva : evarank) {
+			for (int eva : evaluation) {
 				mess += "," + eva;
 			}
 		}
@@ -606,7 +606,7 @@ public class Othello {
 				end = false;
 			}
 			if (end) {
-				return count(copyOth)[turn ? 1 : 2];
+				return count(copyOth)[turn ? 1 : 2] - 32;
 			}
 			end = true;
 			aiturn = !aiturn;
@@ -622,7 +622,7 @@ public class Othello {
 		if (count(oth)[1] + count(oth)[2] > 54) {
 			int index = 0;
 			for (int[] readCoord : coord) {
-				Integer eva = evaluation.get(index) + readingAI(readCoord, turn) * -1;
+				Integer eva = evaluation.get(index) + readingAI(readCoord, turn) * -20;
 				evaluation.set(index, eva);
 				index++;
 			}
