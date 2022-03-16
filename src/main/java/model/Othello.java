@@ -657,7 +657,7 @@ public class Othello {
 			boolean ret = true;
 			while (oth[x][y] == color) {
 				x += shift[index][0];
-				if (x == 5) {
+				if (x == 7 || x == 0) {
 					ret = true;
 					break;
 				}
@@ -667,7 +667,7 @@ public class Othello {
 				ret = true;
 				while (oth[x][y] == enemycolor) {
 					x += shift[index][0];
-					if (x == 7 || x == -1) {
+					if (x == 7 || x == 0) {
 						ret = true;
 						break;
 					}
@@ -686,7 +686,7 @@ public class Othello {
 			boolean ret = true;
 			while (oth[x][y] == color) {
 				y += shift[index][1];
-				if (y == 5) {
+				if (y == 7 || y == 0) {
 					ret = true;
 					break;
 				}
@@ -696,7 +696,7 @@ public class Othello {
 				ret = true;
 				while (oth[x][y] == enemycolor) {
 					y += shift[index][1];
-					if (y == 7 || y == -1) {
+					if (y == 7 || y == 0) {
 						ret = true;
 						break;
 					}
