@@ -665,6 +665,10 @@ public class Othello {
 					ret = true;
 					break;
 				}
+				if(x == 7 || x == 0) {
+					ret = true;
+					break;
+				}
 				ret = false;
 			}
 			if (!ret) {
@@ -679,6 +683,11 @@ public class Othello {
 
 					if (shift[index][0] == -1 && x == 2) {
 						stoneevaluation[0][corners[1]] = 0;
+						ret = true;
+						break;
+					}
+					
+					if(x == 7 || x == 0) {
 						ret = true;
 						break;
 					}
@@ -724,6 +733,11 @@ public class Othello {
 
 					if (shift[index][1] == -1 && y == 2) {
 						stoneevaluation[corners[0]][0] = 0;
+						ret = true;
+						break;
+					}
+					
+					if(y == 7 || y == 0) {
 						ret = true;
 						break;
 					}
