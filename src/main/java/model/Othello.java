@@ -676,13 +676,11 @@ public class Othello {
 				while (oth[x][y] == enemycolor) {
 					x += shift[index][0];
 					if (shift[index][0] == 1 && x == 6) {
-						stoneevaluation[7][corners[1]] = -100;
 						ret = true;
 						break;
 					}
 
 					if (shift[index][0] == -1 && x == 2) {
-						stoneevaluation[0][corners[1]] = -100;
 						ret = true;
 						break;
 					}
@@ -726,13 +724,11 @@ public class Othello {
 					y += shift[index][1];
 
 					if (shift[index][1] == 1 && y == 6) {
-						stoneevaluation[corners[0]][7] = -100;
 						ret = true;
 						break;
 					}
 
 					if (shift[index][1] == -1 && y == 2) {
-						stoneevaluation[corners[0]][0] = -100;
 						ret = true;
 						break;
 					}
