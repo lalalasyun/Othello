@@ -568,8 +568,8 @@ public class Othello {
 			mess = "eva,";
 			mess += getColor() ? "3" : "4";
 
-			for (int eva : evarank) {
-				mess += "," + eva;
+			for (int eva : evaluation) {
+				mess += "," + eva * -1;
 			}
 		}
 		return mess;
@@ -676,13 +676,13 @@ public class Othello {
 				while (oth[x][y] == enemycolor) {
 					x += shift[index][0];
 					if (shift[index][0] == 1 && x == 5) {
-						stoneevaluation[7][corners[1]] = 0;
+						stoneevaluation[7][corners[1]] = -100;
 						ret = true;
 						break;
 					}
 
 					if (shift[index][0] == -1 && x == 2) {
-						stoneevaluation[0][corners[1]] = 0;
+						stoneevaluation[0][corners[1]] = -100;
 						ret = true;
 						break;
 					}
@@ -726,13 +726,13 @@ public class Othello {
 					y += shift[index][1];
 
 					if (shift[index][1] == 1 && y == 5) {
-						stoneevaluation[corners[0]][7] = 0;
+						stoneevaluation[corners[0]][7] = -100;
 						ret = true;
 						break;
 					}
 
 					if (shift[index][1] == -1 && y == 2) {
-						stoneevaluation[corners[0]][0] = 0;
+						stoneevaluation[corners[0]][0] = -100;
 						ret = true;
 						break;
 					}
