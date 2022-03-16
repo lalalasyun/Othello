@@ -627,6 +627,13 @@ public class Othello {
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 				{ 100, -40, 20, 5, 5, 20, -40, 100 } };
 		
+		if(count(oth)[1] + count(oth)[2] == 50) {
+			int [][] corner = {{0,1},{0,6},{1,0},{1,7},{6,0},{6,7},{7,1},{7,6}};
+			for(int[] corners:corner) {
+				stoneevaluation[corners[0]][corners[1]] = 80;
+			}
+		}
+		
 		
 		int[][] cornerscoord = { { 0, 0 }, { 7, 0 }, { 0, 7 }, { 7, 7 } };
 		int[][] shift = { { 1, 1 }, { -1, +1 }, { 1, -1 }, { -1, -1 } };
@@ -655,7 +662,7 @@ public class Othello {
 				}
 			}
 			if (!ret) {
-				stoneevaluation[x][y] = 100;
+				stoneevaluation[x][y] = 80;
 			}
 			index++;
 		}
@@ -684,7 +691,7 @@ public class Othello {
 				}
 			}
 			if (!ret) {
-				stoneevaluation[x][y] = 100;
+				stoneevaluation[x][y] = 80;
 			}
 			index++;
 		}
