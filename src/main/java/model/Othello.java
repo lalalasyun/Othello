@@ -551,13 +551,25 @@ public class Othello {
 
 	public String getAIEvaluation(boolean turn) {
 		List<Integer> evaluation = othelloAI(turn, copyOth(oth));
+		int[] evarank = new int[evaluation.size()];
 		evaluation = getAIEvaluationRead(evaluation, turn);
 		String mess = null;
+		int evarankindex = 0;
+		for (int search : evaluation) {
+			for (int eva : evaluation) {
+				if(search < eva) {
+					evarank[evarankindex]++;
+				}
+			}
+			evarankindex++;
+		}
+
 		if (evaluation != null) {
 			mess = "eva,";
 			mess += getColor() ? "3" : "4";
-			for (int eva : evaluation) {
-				mess += "," + eva * -1;
+
+			for (int eva : evarank) {
+				mess += "," + eva;
 			}
 		}
 		return mess;
@@ -628,15 +640,14 @@ public class Othello {
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 				{ 150, -40, 20, 5, 5, 20, -40, 150 } };
-		
-		if(count(oth)[1] + count(oth)[2] == 50) {
-			int [][] corner = {{0,1},{0,6},{1,0},{1,7},{6,0},{6,7},{7,1},{7,6}};
-			for(int[] corners:corner) {
+
+		if (count(oth)[1] + count(oth)[2] == 50) {
+			int[][] corner = { { 0, 1 }, { 0, 6 }, { 1, 0 }, { 1, 7 }, { 6, 0 }, { 6, 7 }, { 7, 1 }, { 7, 6 } };
+			for (int[] corners : corner) {
 				stoneevaluation[corners[0]][corners[1]] = 80;
 			}
 		}
-		
-		
+
 		int[][] cornerscoord = { { 0, 0 }, { 7, 0 }, { 0, 7 }, { 7, 7 } };
 		int[][] shift = { { 1, 1 }, { -1, +1 }, { 1, -1 }, { -1, -1 } };
 		int index = 0;
