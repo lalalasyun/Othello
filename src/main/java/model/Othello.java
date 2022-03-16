@@ -675,7 +675,7 @@ public class Othello {
 				}
 			}
 			if (!ret) {
-				stoneevaluation[x][y] = 80;
+				stoneevaluation[x][y] = 150;
 			}
 			index++;
 		}
@@ -704,7 +704,7 @@ public class Othello {
 				}
 			}
 			if (!ret) {
-				stoneevaluation[x][y] = 80;
+				stoneevaluation[x][y] = 150;
 			}
 			index++;
 		}
