@@ -646,7 +646,7 @@ public class Othello {
 			boolean ret = true;
 			while (oth[x][y] == color) {
 				x += shift[index][0];
-				if (x == 4) {
+				if (x == 5) {
 					ret = true;
 					break;
 				}
@@ -675,7 +675,7 @@ public class Othello {
 			boolean ret = true;
 			while (oth[x][y] == color) {
 				y += shift[index][1];
-				if (y == 4) {
+				if (y == 5) {
 					ret = true;
 					break;
 				}
