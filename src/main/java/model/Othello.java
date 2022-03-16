@@ -733,10 +733,10 @@ public class Othello {
 				}
 			}
 			if (!ret) {
-				if (shift[index][1] == 1 && y == 6) {
+				if (shift[index][1] == 1) {
 					stoneevaluation[corners[0]][7] = -100;
 				}
-				if (shift[index][1] == -1 && x == 1) {
+				if (shift[index][1] == -1) {
 					stoneevaluation[corners[0]][0] = -100;
 				}
 				stoneevaluation[x][y] = 150;
