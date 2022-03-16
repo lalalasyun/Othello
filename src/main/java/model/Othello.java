@@ -569,7 +569,7 @@ public class Othello {
 			mess += getColor() ? "3" : "4";
 
 			for (int eva : evaluation) {
-				mess += "," + eva;
+				mess += "," + eva*-1;
 			}
 		}
 		return mess;
@@ -636,10 +636,10 @@ public class Othello {
 		int color = turn ? 1 : 2;
 		int enemycolor = turn ? 2 : 1;
 		// 評価関数
-		int[][] stoneevaluation = { { 150, -40, 20, 5, 5, 20, -40, 150 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
+		int[][] stoneevaluation = { { 100, -40, 20, 5, 5, 20, -40, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
-				{ 150, -40, 20, 5, 5, 20, -40, 150 } };
+				{ 100, -40, 20, 5, 5, 20, -40, 100 } };
 
 		if (count(oth)[1] + count(oth)[2] == 50) {
 			int[][] corner = { { 0, 1 }, { 0, 6 }, { 1, 0 }, { 1, 7 }, { 6, 0 }, { 6, 7 }, { 7, 1 }, { 7, 6 } };
@@ -762,7 +762,7 @@ public class Othello {
 					point += stoneevaluation[getary[0]][getary[1]];
 				}
 			} else {
-				point = -100;
+				point = -200;
 			}
 			evaluation.add((oppennes * 7) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
 
