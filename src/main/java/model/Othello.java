@@ -557,7 +557,7 @@ public class Othello {
 		int evarankindex = 0;
 		for (int search : evaluation) {
 			for (int eva : evaluation) {
-				if(search < eva) {
+				if (search < eva) {
 					evarank[evarankindex]++;
 				}
 			}
@@ -657,12 +657,11 @@ public class Othello {
 			boolean ret = true;
 			while (oth[x][y] == color) {
 				x += shift[index][0];
-				if((index == 0 || index == 2) && x == 7) {
+				if (shift[index][0] == 1 && x == 7) {
 					ret = true;
 					break;
 				}
-				
-				if((index == 1 || index == 3) && x == 0) {
+				if (shift[index][0] == -1 && x == 0) {
 					ret = true;
 					break;
 				}
@@ -672,15 +671,15 @@ public class Othello {
 				ret = true;
 				while (oth[x][y] == enemycolor) {
 					x += shift[index][0];
-					if((index == 0 || index == 2) && x == 6) {
+					if (shift[index][0] == 1 && x == 6) {
 						stoneevaluation[x][y] = 150;
-						stoneevaluation[corners[0]+7][corners[1]] = 0;
+						stoneevaluation[7][corners[1]] = 0;
 						ret = true;
 						break;
 					}
-					
-					if((index == 1 || index == 3) && x == 1) {
-						stoneevaluation[corners[0]-7][corners[1]] = 0;
+
+					if (shift[index][0] == -1 && x == 1) {
+						stoneevaluation[0][corners[1]] = 0;
 						ret = true;
 						break;
 					}
@@ -699,32 +698,32 @@ public class Othello {
 			boolean ret = true;
 			while (oth[x][y] == color) {
 				y += shift[index][1];
-				
-				if((index == 0 || index == 1) && y == 7) {
+
+				if (shift[index][1] == 1 && y == 7) {
 					ret = true;
 					break;
 				}
-				
-				if((index == 2 || index == 3) && y == 0) {
+
+				if (shift[index][1] == -1 && y == 0) {
 					ret = true;
 					break;
 				}
-				
+
 				ret = false;
 			}
 			if (!ret) {
 				ret = true;
 				while (oth[x][y] == enemycolor) {
 					y += shift[index][1];
-					
-					if((index == 0 || index == 1) && y == 6) {
-						stoneevaluation[corners[0]][corners[1]+7] = 0;
+
+					if (shift[index][1] == 1 && y == 6) {
+						stoneevaluation[corners[0]][7] = 0;
 						ret = true;
 						break;
 					}
-					
-					if((index == 2 || index == 3) && y == 1) {
-						stoneevaluation[corners[0]][corners[1]-7] = 0;
+
+					if (shift[index][1] == -1 && y == 1) {
+						stoneevaluation[corners[0]][0] = 0;
 						ret = true;
 						break;
 					}
