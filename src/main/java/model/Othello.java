@@ -770,7 +770,7 @@ public class Othello {
 			} else {
 				point = -150;
 			}
-			evaluation.add((oppennes * 7) + point*enemcnt + (stoneevaluation[ary[0]][ary[1]] * -1));
+			evaluation.add((oppennes * 7) + point + enemcnt*7 + (stoneevaluation[ary[0]][ary[1]] * -1));
 
 		}
 		return evaluation;
