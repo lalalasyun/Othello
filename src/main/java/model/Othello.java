@@ -685,27 +685,8 @@ public class Othello {
 			}
 			if (!ret) {
 				stoneevaluation[x][y] = 150;
-				if (shift[index][0] == 1 && x == 6) {
-					stoneevaluation[7][corners[1]] = 0;
-				}
-				if (shift[index][0] == -1 && x == 1) {
-					stoneevaluation[0][corners[1]] = 0;
-				}
 			}
-			x = corners[0];
-			y = corners[1];
-			while (oth[x][y] == 1 || oth[x][y] == 2) {
-				x += shift[index][0];
-				if (shift[index][0] == 1 && x == 7) {
-					stoneevaluation[7][corners[1]] = 150;
-					break;
-				}
-				if (shift[index][0] == -1 && x == 0) {
-					stoneevaluation[0][corners[1]] = 150;
-					break;
-				}
-				
-			}
+			
 			index++;
 		}
 		index = 0;
@@ -741,27 +722,7 @@ public class Othello {
 				}
 			}
 			if (!ret) {
-				if (shift[index][1] == 1) {
-					stoneevaluation[corners[0]][7] = 0;
-				}
-				if (shift[index][1] == -1) {
-					stoneevaluation[corners[0]][0] = 0;
-				}
 				stoneevaluation[x][y] = 150;
-			}
-			x = corners[0];
-			y = corners[1];
-			while (oth[x][y] == 1 || oth[x][y] == 2) {
-				y += shift[index][1];
-				if (shift[index][1] == 1 && y == 7) {
-					stoneevaluation[corners[0]][7] = 150;
-					break;
-				}
-				if (shift[index][1] == -1 && y == 0) {
-					stoneevaluation[corners[0]][0] = 150;
-					break;
-				}
-				
 			}
 			index++;
 		}
