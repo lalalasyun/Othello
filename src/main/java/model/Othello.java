@@ -690,13 +690,13 @@ public class Othello {
 				}
 			}
 			if (!ret) {
+				stoneevaluation[x][y] = 150;
 				if (shift[index][0] == 1 && x == 6) {
-					stoneevaluation[7][corners[1]] = -100;
+					stoneevaluation[7][corners[1]] = 0;
 				}
 				if (shift[index][0] == -1 && x == 1) {
-					stoneevaluation[0][corners[1]] = -100;
+					stoneevaluation[0][corners[1]] = 0;
 				}
-				stoneevaluation[x][y] = 150;
 			}
 			index++;
 		}
@@ -734,10 +734,10 @@ public class Othello {
 			}
 			if (!ret) {
 				if (shift[index][1] == 1) {
-					stoneevaluation[corners[0]][7] = -100;
+					stoneevaluation[corners[0]][7] = 0;
 				}
 				if (shift[index][1] == -1) {
-					stoneevaluation[corners[0]][0] = -100;
+					stoneevaluation[corners[0]][0] = 0;
 				}
 				stoneevaluation[x][y] = 150;
 			}
@@ -754,17 +754,20 @@ public class Othello {
 			search(turn ? 1 : 0, copyoth);
 			List<int[]> getcoord = getCoord(copyoth);
 			int point = 0;
-			int enemcnt = 0;
 			if (getcoord != null) {
-				enemcnt = getcoord.size();
 				for (int[] getary : getcoord) {
 					point += enemevaluation[getary[0]][getary[1]];
+					put(getary[0], getary[1], turn ? 1 : 0, copyoth);
+					search(turn ? 0 : 1, copyoth);
+					if(getCoord(copyoth)==null) {
+						point+=100;
+					}
 				}
 			} else {
-				point = -300;
+				point = -200;
 			}
 			
-			evaluation.add((oppennes * 7) + point + enemcnt*7 + (stoneevaluation[ary[0]][ary[1]] * -1));
+			evaluation.add((oppennes * 7) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
 
 		}
 		return evaluation;
