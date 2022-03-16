@@ -680,15 +680,6 @@ public class Othello {
 				ret = true;
 				while (oth[x][y] == enemycolor) {
 					x += shift[index][0];
-					if (shift[index][0] == 1 && x == 6) {
-						ret = true;
-						break;
-					}
-
-					if (shift[index][0] == -1 && x == 2) {
-						ret = true;
-						break;
-					}
 					
 					if(x == 7 || x == 0) {
 						ret = true;
@@ -699,6 +690,12 @@ public class Othello {
 				}
 			}
 			if (!ret) {
+				if (shift[index][0] == 1 && x == 6) {
+					stoneevaluation[7][corners[1]] = -100;
+				}
+				if (shift[index][0] == -1 && x == 1) {
+					stoneevaluation[0][corners[1]] = -100;
+				}
 				stoneevaluation[x][y] = 150;
 			}
 			index++;
@@ -727,16 +724,6 @@ public class Othello {
 				ret = true;
 				while (oth[x][y] == enemycolor) {
 					y += shift[index][1];
-
-					if (shift[index][1] == 1 && y == 6) {
-						ret = true;
-						break;
-					}
-
-					if (shift[index][1] == -1 && y == 2) {
-						ret = true;
-						break;
-					}
 					
 					if(y == 7 || y == 0) {
 						ret = true;
@@ -746,6 +733,12 @@ public class Othello {
 				}
 			}
 			if (!ret) {
+				if (shift[index][1] == 1 && y == 6) {
+					stoneevaluation[corners[0]][7] = -100;
+				}
+				if (shift[index][1] == -1 && x == 1) {
+					stoneevaluation[corners[0]][0] = -100;
+				}
 				stoneevaluation[x][y] = 150;
 			}
 			index++;
