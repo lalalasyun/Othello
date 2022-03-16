@@ -606,7 +606,7 @@ public class Othello {
 				end = false;
 			}
 			if (end) {
-				return count(copyOth)[turn ? 1 : 2] - 32;
+				return count(copyOth)[turn ? 1 : 2];
 			}
 			end = true;
 			aiturn = !aiturn;
@@ -619,7 +619,7 @@ public class Othello {
 		if (coord == null) {
 			return evaluation;
 		}
-		if (count(oth)[1] + count(oth)[2] > 54) {
+		if (count(oth)[1] + count(oth)[2] > 50) {
 			int index = 0;
 			for (int[] readCoord : coord) {
 				Integer eva = evaluation.get(index) + readingAI(readCoord, turn) * -20;
@@ -640,11 +640,16 @@ public class Othello {
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 				{ 100, -40, 20, 5, 5, 20, -40, 100 } };
+		int[][] enemevaluation = { { 100, -40, 20, 5, 5, 20, -40, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
+				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
+				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
+				{ 100, -40, 20, 5, 5, 20, -40, 100 } };
 
 		if (count(oth)[1] + count(oth)[2] == 50) {
 			int[][] corner = { { 0, 1 }, { 0, 6 }, { 1, 0 }, { 1, 7 }, { 6, 0 }, { 6, 7 }, { 7, 1 }, { 7, 6 } };
 			for (int[] corners : corner) {
 				stoneevaluation[corners[0]][corners[1]] = 80;
+				enemevaluation[corners[0]][corners[1]] = 80;
 			}
 		}
 
@@ -756,16 +761,16 @@ public class Othello {
 			search(turn ? 1 : 0, copyoth);
 			List<int[]> getcoord = getCoord(copyoth);
 			int point = 0;
+			int enemcnt = 0;
 			if (getcoord != null) {
 				for (int[] getary : getcoord) {
-					point += stoneevaluation[getary[0]][getary[1]];
-					int enemoppennes = put(getary[0], getary[1], turn ? 1 : 0, copyoth);
-					point -= (enemoppennes * 7);
+					point += enemevaluation[getary[0]][getary[1]];
+					enemcnt++;
 				}
 			} else {
 				point = -150;
 			}
-			evaluation.add((oppennes * 7) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
+			evaluation.add((oppennes * 7) + point*enemcnt + (stoneevaluation[ary[0]][ary[1]] * -1));
 
 		}
 		return evaluation;
