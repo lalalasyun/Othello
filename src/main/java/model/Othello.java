@@ -757,6 +757,7 @@ public class Othello {
 		}
 		for (int[] ary : coord) {
 			int[][] copyoth = copyOth(oth);
+			int turncnt = (64 - count(copyoth)[1] + count(copyoth)[2])/7;
 			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth);
 			search(turn ? 1 : 0, copyoth);
 			List<int[]> getcoord = getCoord(copyoth);
@@ -770,7 +771,8 @@ public class Othello {
 			} else {
 				point = -150;
 			}
-			evaluation.add((oppennes * 7) + point + enemcnt*7 + (stoneevaluation[ary[0]][ary[1]] * -1));
+			
+			evaluation.add((oppennes * 7) + point + enemcnt*turncnt + (stoneevaluation[ary[0]][ary[1]] * -1));
 
 		}
 		return evaluation;
