@@ -121,7 +121,6 @@ public class WebSocket {
 				stone = game.getStone();
 				room.sendMessage("stone," + stone);
 			}
-			
 			if (!game.isGame()) {
 				room.addResult(game.judge(), game.getRecord());
 				room.sendMessage("end");

@@ -532,7 +532,7 @@ public class Othello {
 		oth[4][4] = 1;
 	}
 
-	public void othelloAIPut(boolean turn) {
+	public void othelloAIPut(boolean turn) throws Exception {
 		List<Integer> evaluation = othelloAI(turn, copyOth(oth));
 		evaluation = getAIEvaluationRead(evaluation, turn);
 		if (evaluation != null) {
@@ -540,9 +540,11 @@ public class Othello {
 			if (coord != null) {
 				place(coord[0], coord[1]);
 			} else {
+				Thread.sleep(300);
 				cnt++;
 			}
 		} else {
+			Thread.sleep(300);
 			cnt++;
 		}
 	}
@@ -644,7 +646,7 @@ public class Othello {
 			boolean ret = true;
 			while (oth[x][y] == color) {
 				x += shift[index][0];
-				if (x == 7 || x == -1) {
+				if (x == 4) {
 					ret = true;
 					break;
 				}
@@ -673,7 +675,7 @@ public class Othello {
 			boolean ret = true;
 			while (oth[x][y] == color) {
 				y += shift[index][1];
-				if (y == 7 || y == -1) {
+				if (y == 4) {
 					ret = true;
 					break;
 				}
