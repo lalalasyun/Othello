@@ -568,8 +568,8 @@ public class Othello {
 			mess = "eva,";
 			mess += getColor() ? "3" : "4";
 
-			for (int eva : evaluation) {
-				mess += "," + eva * -1;
+			for (int eva : evarank) {
+				mess += "," + eva;
 			}
 		}
 		return mess;
