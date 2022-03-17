@@ -640,13 +640,7 @@ public class Othello {
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 				{ 150, -40, 20, 5, 5, 20, -40, 150 } };
-		int[][] enemevaluation = { { 150, -40, 20, 5, 5, 20, -40, 150 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
-				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
-				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
-				{ 150, -40, 20, 5, 5, 20, -40, 150 } };
-
 		
-
 		int[][] cornerscoord = { { 0, 0 }, { 7, 0 }, { 0, 7 }, { 7, 7 } };
 		int[][] shift = { { 1, 1 }, { -1, 1 }, { 1, -1 }, { -1, -1 } };
 		int index = 0;
@@ -721,10 +715,10 @@ public class Othello {
 			int point = 0;
 			if (getcoord != null) {
 				for (int[] getary : getcoord) {
-					point += enemevaluation[getary[0]][getary[1]];
+					point += stoneevaluation[getary[0]][getary[1]];
 				}
 			} else {
-				point = -100;
+				point = -300;
 			}
 			
 			evaluation.add((oppennes * 7) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
