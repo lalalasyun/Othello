@@ -684,7 +684,7 @@ public class Othello {
 				}
 			}
 			if (!ret) {
-				stoneevaluation[x][y] = 150;
+				stoneevaluation[x][y] = 100;
 			}
 			
 			index++;
@@ -722,7 +722,7 @@ public class Othello {
 				}
 			}
 			if (!ret) {
-				stoneevaluation[x][y] = 150;
+				stoneevaluation[x][y] = 100;
 			}
 			index++;
 		}
@@ -740,14 +740,10 @@ public class Othello {
 			if (getcoord != null) {
 				for (int[] getary : getcoord) {
 					point += enemevaluation[getary[0]][getary[1]];
-					put(getary[0], getary[1], turn ? 1 : 0, copyoth);
-					search(turn ? 0 : 1, copyoth);
-					if(getCoord(copyoth)==null) {
-						point+=100;
-					}
+					
 				}
 			} else {
-				point = -200;
+				point = -100;
 			}
 			
 			evaluation.add((oppennes * 7) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
