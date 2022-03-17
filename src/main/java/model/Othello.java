@@ -641,68 +641,6 @@ public class Othello {
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 				{ 100, -40, 20, 5, 5, 20, -40, 100 } };
 		
-		int[][] cornerscoord = { { 0, 0 }, { 7, 0 }, { 0, 7 }, { 7, 7 } };
-		int[][] shift = { { 1, 1 }, { -1, 1 }, { 1, -1 }, { -1, -1 } };
-		int index = 0;
-		for (int[] corners : cornerscoord) {
-			int x = corners[0];
-			int y = corners[1];
-			boolean ret = true;
-			while (oth[x][y] == color) {
-				x += shift[index][0];
-				if(x == 4) {
-					ret = true;
-					break;
-				}
-				ret = false;
-			}
-			if (!ret) {
-				ret = true;
-				while (oth[x][y] == enemycolor) {
-					x += shift[index][0];
-					if(x == 7 || x == 0) {
-						ret = true;
-						break;
-					}
-					ret = false;
-				}
-			}
-			if (!ret && oth[x][y] == 0) {
-				stoneevaluation[x][y] = 100;
-			}
-			
-			index++;
-		}
-		index = 0;
-		for (int[] corners : cornerscoord) {
-			int x = corners[0];
-			int y = corners[1];
-			boolean ret = true;
-			while (oth[x][y] == color) {
-				y += shift[index][1];
-				if(y == 4) {
-					ret = true;
-					break;
-				}
-				ret = false;
-			}
-			if (!ret) {
-				ret = true;
-				while (oth[x][y] == enemycolor) {
-					y += shift[index][1];
-					if(y == 7 || y == 0) {
-						ret = true;
-						break;
-					}
-					ret = false;
-				}
-			}
-			if (!ret && oth[x][y] == 0) {
-				stoneevaluation[x][y] = 100;
-			}
-			index++;
-		}
-
 		coord = getCoord(oth);
 		if (coord == null) {
 			return evaluation;
@@ -718,10 +656,10 @@ public class Othello {
 					point += stoneevaluation[getary[0]][getary[1]];
 				}
 			} else {
-				point = -300;
+				point = -500;
 			}
 			
-			evaluation.add((oppennes * 7) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
+			evaluation.add((oppennes * 20) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
 
 		}
 		return evaluation;
