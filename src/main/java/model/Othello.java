@@ -622,7 +622,7 @@ public class Othello {
 		if (count(oth)[1] + count(oth)[2] > 50) {
 			int index = 0;
 			for (int[] readCoord : coord) {
-				Integer eva = evaluation.get(index) + readingAI(readCoord, turn) * -20;
+				Integer eva = evaluation.get(index) + readingAI(readCoord, turn) * -1;
 				evaluation.set(index, eva);
 				index++;
 			}
@@ -636,10 +636,10 @@ public class Othello {
 		int color = turn ? 1 : 2;
 		int enemycolor = turn ? 2 : 1;
 		// 評価関数
-		int[][] stoneevaluation = { { 150, -40, 20, 5, 5, 20, -40, 150 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
+		int[][] stoneevaluation = { { 100, -40, 20, 5, 5, 20, -40, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
-				{ 150, -40, 20, 5, 5, 20, -40, 150 } };
+				{ 100, -40, 20, 5, 5, 20, -40, 100 } };
 		
 		int[][] cornerscoord = { { 0, 0 }, { 7, 0 }, { 0, 7 }, { 7, 7 } };
 		int[][] shift = { { 1, 1 }, { -1, 1 }, { 1, -1 }, { -1, -1 } };
