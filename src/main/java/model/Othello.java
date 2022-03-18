@@ -664,10 +664,11 @@ public class Othello {
 			
 			if (getcoord == null) {
 				point -= 100;
+				
 			}
 			
 			
-			evaluation.add((oppennes * 7) + point - enempoint);
+			evaluation.add((oppennes * -7) + point - enempoint);
 
 		}
 		return evaluation;
