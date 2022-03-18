@@ -633,8 +633,6 @@ public class Othello {
 	public List<Integer> othelloAI(boolean turn, int[][] oth) {
 		List<int[]> coord = new ArrayList<>();
 		List<Integer> evaluation = new ArrayList<>();
-		int color = turn ? 1 : 2;
-		int enemycolor = turn ? 2 : 1;
 		// 評価関数
 		int[][] stoneevaluation = { { 100, -40, 20, 5, 5, 20, -40, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
@@ -656,10 +654,10 @@ public class Othello {
 					point += stoneevaluation[getary[0]][getary[1]];
 				}
 			} else {
-				point = -500;
+				point = -300;
 			}
 			
-			evaluation.add((oppennes * 20) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
+			evaluation.add((oppennes * 7) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
 
 		}
 		return evaluation;
