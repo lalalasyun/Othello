@@ -569,7 +569,7 @@ public class Othello {
 			mess += getColor() ? "3" : "4";
 
 			for (int eva : evaluation) {
-				mess += "," + eva*-1;
+				mess += "," + eva;
 			}
 		}
 		return mess;
@@ -577,15 +577,15 @@ public class Othello {
 
 	public int[] getAICoord(List<Integer> evaluation, int[][] oth) {
 		List<int[]> coord = getCoord(oth);
-		int minindex = 0, index = 0;
+		int maxindex = 0, index = 0;
 		for (int eva : evaluation) {
-			if (eva < evaluation.get(minindex)) {
-				minindex = index;
+			if (eva > evaluation.get(maxindex)) {
+				maxindex = index;
 			}
 			index++;
 		}
 		if (coord != null) {
-			return coord.get(minindex);
+			return coord.get(maxindex);
 		}
 		return null;
 	}
@@ -646,18 +646,28 @@ public class Othello {
 		for (int[] ary : coord) {
 			int[][] copyoth = copyOth(oth);
 			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth);
-			search(turn ? 1 : 0, copyoth);
-			List<int[]> getcoord = getCoord(copyoth);
+			
 			int point = 0;
-			if (getcoord != null) {
-				for (int[] getary : getcoord) {
-					point += stoneevaluation[getary[0]][getary[1]];
+			int enempoint = 0;
+			search(turn ? 1 : 0, copyoth);
+			for(int i=0;i<8;i++) {
+				for(int n=0;n<8;n++) {
+					if(oth[i][n] == 1) {
+						point += stoneevaluation[i][n];
+					}
+					if(oth[i][n] == 2) {
+						enempoint += stoneevaluation[i][n];
+					}
 				}
-			} else {
-				point = -300;
+			}
+			List<int[]> getcoord = getCoord(copyoth);
+			
+			if (getcoord == null) {
+				point -= 100;
 			}
 			
-			evaluation.add((oppennes * 7) + point + (stoneevaluation[ary[0]][ary[1]] * -1));
+			
+			evaluation.add((oppennes * 7) + point - enempoint);
 
 		}
 		return evaluation;
