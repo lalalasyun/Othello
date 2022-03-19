@@ -126,7 +126,7 @@ public class WebSocket {
 				room.sendMessage("end");
 				room.sendResult();
 			}
-			mess = game.getAIEvaluation(!game.getColor());
+			mess = game.getAIEvaluation(game.getColor());
 			if (mess != null) {
 				room.sendMessage(mess);
 			}
@@ -134,7 +134,7 @@ public class WebSocket {
 		case "ainavi":
 			stone = game.getStone();
 			room.sendMessage("stone," + stone);
-			mess = game.getAIEvaluation(!game.getColor());
+			mess = game.getAIEvaluation(game.getColor());
 			if (mess != null) {
 				room.sendMessage(mess);
 			}
