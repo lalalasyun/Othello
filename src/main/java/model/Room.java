@@ -325,7 +325,7 @@ public class Room {
 		Othello game = new Othello();
 		game.initialize();
 		String stone = game.getStone();
-		sendMessage("stone," + stone);
+		sendMessage("kihustone," + stone);
 		stonedata.add(stone);
 		for(int i = 0; i < record.length()+2;i+=2) {
 			try {
@@ -364,7 +364,7 @@ public class Room {
 			break;
 		}
 		stone = stonedata.get(stonedataindex);
-		sendMessage("stone,"+stone);
+		sendMessage("kihustone,"+stone);
 	}
 
 	public Connection getConnection() {

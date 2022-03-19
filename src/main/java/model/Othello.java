@@ -600,7 +600,7 @@ public class Othello {
 				end = false;
 			}
 			if (end) {
-				return count(copyOth)[turn ? 2 : 1];
+				return count(copyOth)[turn?2:1];
 
 			}
 			end = true;
@@ -640,7 +640,7 @@ public class Othello {
 			int[][] copyoth = copyOth(oth);
 			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth) * -100;
 
-			if (count(oth)[1] + count(oth)[2] < 20) {
+			if (count(oth)[1] + count(oth)[2] < 0) {
 				evaluation.add(oppennes);
 			} else {
 				search(turn ? 1 : 0, copyoth);
@@ -652,7 +652,7 @@ public class Othello {
 						enempoint += stoneevaluation[getary[0]][getary[1]] * -1;
 					}
 				} else {
-					enempoint = 300;
+					enempoint = 500;
 				}
 				evaluation.add(oppennes + point + enempoint);
 			}

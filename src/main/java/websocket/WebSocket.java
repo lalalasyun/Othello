@@ -82,6 +82,7 @@ public class WebSocket {
 		case "start":
 			game.initialize();
 			stone = game.getStone();
+			room.sendTurn();
 			room.sendMessage("start");
 			room.sendMessage("stone," + stone);
 			if (room.isAI() && room.isAiturn()) {

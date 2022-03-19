@@ -19,7 +19,7 @@ var resultbox, result, black, white;
 
 var gamebtn, start, online, changeturn, kihubtn, login, logout, userlog;
 
-var form, userid, userpass, kihumenu, kihuplaybtn,tweetmess;
+var form, userid, userpass, kihumenu, kihuplaybtn, tweetmess;
 
 var turn1, turn2, userdata, username1, username2, userrate1, userrate2;
 
@@ -31,7 +31,7 @@ function load() {
 }
 
 
-function Twitter(){
+function Twitter() {
 	openTwitter(tweet);
 }
 //openTwitter(投稿文、シェアするURL)
@@ -39,8 +39,8 @@ function Twitter(){
 function openTwitter(text) {
 	// var gameurl = 'http://lalalasyun.com/OthelloWeb/';
 	var gameurl = 'https://othellojp.herokuapp.com/';
-	var turl = "https://twitter.com/intent/tweet?text="+text+"&url="+gameurl;
-	window.open(turl,'_blank');
+	var turl = "https://twitter.com/intent/tweet?text=" + text + "&url=" + gameurl;
+	window.open(turl, '_blank');
 }
 
 function documentload() {
@@ -262,67 +262,25 @@ function connect() {
 		var mess = ['しました', 'に失敗しました'];
 		switch (command) {
 			case "stone":
-				resultbox.hidden = false;
-				initStone();
-				putcoord = [];
-				var stone = ary[1].split('');
-				cntblack = 0;
-				cntwhite = 0;
-				var cntputblack = 0;
-				var cntputwhite = 0;
-				for (var i = 0; i < 8; i++) {
-					for (var n = 0; n < 8; n++) {
-						var index = (8 * i) + n;
-						var type = Number(stone[index]);
-						putStone(i, n, type);
-						switch (type) {
-							case 1:
-								cntwhite++;
-								break;
-							case 2:
-								cntblack++;
-								break;
-							case 3:
-								putcoord.push([i, n]);
-								cntputblack++;
-								break;
-							case 4:
-								putcoord.push([i, n]);
-								cntputwhite++;
-								break;
-						}
-					}
-				}
-				if (cntblack + cntwhite == 0) {
-					break;
-				}
-				if (kihumenu.hidden == true) {
-					var cntput = cntputblack + cntputwhite;
-					gameturn = (cntputblack > cntputwhite ? true : false) == turn ? true : false;
-					var turnmess = gameturn ? "あなた" : "相手";
-					result.innerHTML = turnmess + "のターン";
-					if (cntput == 0) {
-						if (cntblack + cntwhite != 64) {
-							gameturn = true;
-							result.innerHTML = "パス<br>パスするには画面を押してください";
-						} else {
-							winresult();
-						}
-					}
-				}
-
-				black.innerHTML = "黒:" + cntblack;
-				white.innerHTML = "白:" + cntwhite;
+				stone(ary[1]);
 				break;
 			case "miss":
 				gameturn = true;
 				break;
 			case "eva":
 				var type = Number(ary[1]);
+				var maxeva = -1000;
+				var maxX, maxY;
 				for (var index in putcoord) {
 					var evaindex = Number(index) + 2;
 					putEva(putcoord[index][0], putcoord[index][1], type, ary[evaindex]);
+					if (Number(ary[evaindex]) > Number(maxeva)) {
+						maxeva = Number(ary[evaindex]);
+						maxX = putcoord[index][0];
+						maxY = putcoord[index][1];
+					}
 				}
+				putStone(maxX, maxY, 5);
 				break;
 			case "turn":
 				turn = ary[1] == "black" ? true : false;
@@ -360,12 +318,12 @@ function connect() {
 						}
 						login.disabled = true;
 						logout.disabled = false;
-					} 
+					}
 				} else if (index == 1) {
 					if (ary[2] == "success") {
 						login.disabled = false;
 						logout.disabled = true;
-					} 
+					}
 				}
 				userlog.innerHTML = ary[2] == "success" ? log[index] + mess[0] : log[index] + mess[1];
 				userlog.innerHTML += "<br>";
@@ -389,10 +347,10 @@ function connect() {
 				tweet = black.innerHTML + white.innerHTML;
 				var jodge = winresult();
 				tweet += "で";
-				if(username2.innerHTML == 'AI'){
+				if (username2.innerHTML == 'AI') {
 					tweet += "AIに";
 				}
-				var resmess = jodge == 0?"勝ちました":jodge == 1?"負けました":"引き分けです";
+				var resmess = jodge == 0 ? "勝ちました" : jodge == 1 ? "負けました" : "引き分けです";
 				tweet += resmess;
 				tweetmess.hidden = false;
 				changeturn.disabled = false;
@@ -416,12 +374,15 @@ function connect() {
 					kihumenu.hidden = false;
 					resultbox.hidden = true;
 					kihuplaybtn.hidden = true;
-					kihumenu.innerHTML += "<a href='javascript:OnLinkClick(" + kihuindex + ")';>" + "棋譜: " + ary[1] + " -> " + ary[2] + "</a><br>"
+					kihumenu.innerHTML = "<a href='javascript:OnLinkClick(" + kihuindex + ")';>" + "棋譜: " + ary[1] + " -> " + ary[2] + "</a><br>" + kihumenu.innerHTML;
 					kihuindex++;
 					kihubtn.innerHTML = "棋譜終了"
 					gamebtn.hidden = true;
 				}
 				break
+			case "kihustone":
+				stone(ary[1]);
+				break;
 		}
 	}
 
@@ -437,10 +398,65 @@ function connect() {
 	}
 }
 
+function stone(arystone) {
+	resultbox.hidden = false;
+	initStone();
+	putcoord = [];
+	var stone = arystone.split('');
+	cntblack = 0;
+	cntwhite = 0;
+	var cntputblack = 0;
+	var cntputwhite = 0;
+	for (var i = 0; i < 8; i++) {
+		for (var n = 0; n < 8; n++) {
+			var index = (8 * i) + n;
+			var type = Number(stone[index]);
+			putStone(i, n, type);
+			switch (type) {
+				case 1:
+					cntwhite++;
+					break;
+				case 2:
+					cntblack++;
+					break;
+				case 3:
+					putcoord.push([i, n]);
+					cntputblack++;
+					break;
+				case 4:
+					putcoord.push([i, n]);
+					cntputwhite++;
+					break;
+			}
+		}
+	}
+	if (cntblack + cntwhite == 0) {
+		return;
+	}
+	if (kihumenu.hidden == true) {
+		var cntput = cntputblack + cntputwhite;
+		gameturn = (cntputblack > cntputwhite ? true : false) == turn ? true : false;
+		var turnmess = gameturn ? "あなた" : "相手";
+		result.innerHTML = turnmess + "のターン";
+		if (cntput == 0) {
+			if (cntblack + cntwhite != 64) {
+				gameturn = true;
+				result.innerHTML = "パス<br>パスするには画面を押してください";
+			} else {
+				winresult();
+			}
+		}
+	}
+
+	black.innerHTML = "黒:" + cntblack;
+	white.innerHTML = "白:" + cntwhite;
+}
+
+
 function winresult() {
-	var jodge =  (cntblack > cntwhite) == turn ? 0 : 1;
-	jodge = cntblack == cntwhite ? 3:(cntblack > cntwhite) == turn ? 0 : 1;
-	resmess = jodge == 0?"あなたの勝ち":jodge == 1?"あなたの負け":"引き分け";
+	var jodge = (cntblack > cntwhite) == turn ? 0 : 1;
+	jodge = cntblack == cntwhite ? 3 : (cntblack > cntwhite) == turn ? 0 : 1;
+	resmess = jodge == 0 ? "あなたの勝ち" : jodge == 1 ? "あなたの負け" : "引き分け";
 	result.innerHTML = resmess;
 	game = false;
 	return jodge;
@@ -530,7 +546,9 @@ function initStone() {
 function putStone(x, y, type) {
 	context.beginPath();
 	if ((turn && type == 4) || (!turn && type == 3)) {
-		return;
+		if(kihumenu.hidden == true){
+			return;
+		}
 	}
 	var stonex = block * x;
 	var stoney = block * y;
@@ -556,6 +574,14 @@ function putStone(x, y, type) {
 			context.lineWidth = 2;
 			context.stroke();
 			break;
+		case 5:
+			if ((turn && type == 4) || (!turn && type == 3) || ainavi) {
+				break;
+			}
+			context.strokeStyle = 'pink';
+			context.lineWidth = 2.2;
+			context.stroke();
+			break;
 		default:
 			break;
 	}
@@ -573,4 +599,6 @@ function putEva(x, y, type, eva) {
 	context.fillStyle = color;
 	context.font = "12px serif";
 	context.fillText(eva, stonex + fontpositionx, stoney + fontpositiony);
+
+
 }
