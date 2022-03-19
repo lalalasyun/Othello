@@ -551,18 +551,8 @@ public class Othello {
 
 	public String getAIEvaluation(boolean turn) {
 		List<Integer> evaluation = othelloAI(turn, copyOth(oth));
-		int[] evarank = new int[evaluation.size()];
 		evaluation = getAIEvaluationRead(evaluation, turn);
 		String mess = null;
-		int evarankindex = 0;
-		for (int search : evaluation) {
-			for (int eva : evaluation) {
-				if (search < eva) {
-					evarank[evarankindex]++;
-				}
-			}
-			evarankindex++;
-		}
 
 		if (evaluation != null) {
 			mess = "eva,";
@@ -591,6 +581,7 @@ public class Othello {
 	}
 
 	public int readingAI(int[] coordcase, boolean turn) {
+		// 評価関数
 		int[][] copyOth = copyOth(oth);
 		boolean aiturn = turn;
 		put(coordcase[0], coordcase[1], aiturn ? 0 : 1, copyOth);
@@ -607,7 +598,9 @@ public class Othello {
 			}
 			if (end) {
 				return count(copyOth)[turn ? 1 : 2];
+
 			}
+			
 			end = true;
 			aiturn = !aiturn;
 		}
@@ -620,12 +613,12 @@ public class Othello {
 			return evaluation;
 		}
 		if (count(oth)[1] + count(oth)[2] > 50) {
-			int index = 0;
-			for (int[] readCoord : coord) {
-				Integer eva = evaluation.get(index) + readingAI(readCoord, turn) * -1;
-				evaluation.set(index, eva);
-				index++;
-			}
+		int index = 0;
+		for (int[] readCoord : coord) {
+			Integer eva = evaluation.get(index) + readingAI(readCoord, turn);
+			evaluation.set(index, eva);
+			index++;
+		}
 		}
 		return evaluation;
 	}
@@ -633,42 +626,39 @@ public class Othello {
 	public List<Integer> othelloAI(boolean turn, int[][] oth) {
 		List<int[]> coord = new ArrayList<>();
 		List<Integer> evaluation = new ArrayList<>();
-		// 評価関数
+		
 		int[][] stoneevaluation = { { 100, -40, 20, 5, 5, 20, -40, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
 				{ 20, -1, 5, 1, 1, 5, -1, 20 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 				{ 100, -40, 20, 5, 5, 20, -40, 100 } };
-		
+
 		coord = getCoord(oth);
 		if (coord == null) {
 			return evaluation;
 		}
 		for (int[] ary : coord) {
 			int[][] copyoth = copyOth(oth);
-			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth);
-			
+			int oppennes = put(ary[0], ary[1], turn ? 1 : 0, copyoth);
+			List<int[]> getcoord = getCoord(copyoth);
 			int point = 0;
 			int enempoint = 0;
-			search(turn ? 1 : 0, copyoth);
-			for(int i=0;i<8;i++) {
-				for(int n=0;n<8;n++) {
-					if(oth[i][n] == 1) {
+			for (int i = 0; i < 8; i++) {
+				for (int n = 0; n < 8; n++) {
+					if (copyoth[i][n] == (turn ? 1 : 2)) {
 						point += stoneevaluation[i][n];
-					}
-					if(oth[i][n] == 2) {
-						enempoint += stoneevaluation[i][n];
+						
 					}
 				}
 			}
-			List<int[]> getcoord = getCoord(copyoth);
-			
-			if (getcoord == null) {
-				point -= 100;
-				
+			if (getcoord != null) {
+				for (int[] getary : getcoord) {
+					enempoint += stoneevaluation[getary[0]][getary[1]] * -1;
+					
+				}
+			} else {
+				enempoint = 100;
 			}
-			
-			
-			evaluation.add((oppennes * -7) + point - enempoint);
+			evaluation.add((oppennes*-7) + point + enempoint);
 
 		}
 		return evaluation;
@@ -695,14 +685,13 @@ public class Othello {
 	public int countOpenness(int x, int y, int[][] oth) {
 		int[][] ary = { { -1, 1 }, { 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 }, { -1, 0 } };
 		int count = 0;
-		for (int[] Coord : ary) {
-			int CoordX = x + Coord[0];
-			int CoordY = y + Coord[1];
+		for (int[] shift : ary) {
+			int CoordX = x + shift[0];
+			int CoordY = y + shift[1];
 			if (CoordX > -1 && CoordX < 8 && CoordY > -1 && CoordY < 8) {
 
 				int type = oth[CoordX][CoordY];
 				if (type != 1 && type != 2) {
-
 					count++;
 				}
 			}
