@@ -269,7 +269,7 @@ function connect() {
 				break;
 			case "eva":
 				var type = Number(ary[1]);
-				var maxeva = -1000;
+				var maxeva = -10000;
 				var maxX, maxY;
 				for (var index in putcoord) {
 					var evaindex = Number(index) + 2;
@@ -304,9 +304,9 @@ function connect() {
 			case "rate":
 				var aryuser = [userrate1, userrate2];
 				if (ary[1] == "") {
-					aryuser[turn ? 1 : 0].innerHTML = ary[2];
+					aryuser[turn ? 1 : 0].innerHTML = "勝率:" + ary[2];
 				} else {
-					aryuser[turn ? 0 : 1].innerHTML = ary[1];
+					aryuser[turn ? 0 : 1].innerHTML = "勝率:" + ary[1];
 				}
 				break;
 			case "login":
