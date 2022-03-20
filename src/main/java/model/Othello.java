@@ -10,10 +10,10 @@ public class Othello {
 	boolean game = false;
 	String record = "";
 
-	int[][] stoneevaluation = { { 100, -40, 80, 5, 5, 80, -40, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
-			{ 80, -1, 5, 1, 1, 5, -1, 80 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
-			{ 80, -1, 5, 1, 1, 5, -1, 80 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
-			{ 100, -40, 80, 5, 5, 80, -40, 100 } };
+	int[][] stoneevaluation = { { 100, -40, 40, 20, 20, 40, -40, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
+			{ 40, -1, 20, 1, 1, 20, -1, 40 }, { 20, -1, 1, 0, 0, 1, -1, 20 }, { 20, -1, 1, 0, 0, 1, -1, 20 },
+			{ 40, -1, 20, 1, 1, 20, -1, 40 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
+			{ 100, -40, 40, 20, 20, 40, -40, 100 } };
 
 	Othello() {
 	}
@@ -591,7 +591,6 @@ public class Othello {
 		search(aiturn ? 1 : 0, copyOth);
 		aiturn = !aiturn;
 		boolean end = false;
-		int readcnt = 0;
 		while (true) {
 			List<Integer> evaluation = othelloAI(aiturn, copyOth);
 			if (evaluation.size() != 0) {
@@ -602,10 +601,10 @@ public class Othello {
 					end = false;
 				}
 			}
-			if (end || readcnt == 10) {
+			if (end) {
+				
 				return count(copyOth)[turn ? 2 : 1];
 			}
-			readcnt++;
 			end = true;
 			aiturn = !aiturn;
 		}
@@ -631,10 +630,17 @@ public class Othello {
 	public List<Integer> othelloAI(boolean turn, int[][] oth) {
 		List<int[]> coord = new ArrayList<>();
 		List<Integer> evaluation = new ArrayList<>();
+		int[][] eva = stoneevaluation;
 		search(turn ? 0 : 1, oth);
 		coord = getCoord(oth);
 		if (coord == null) {
 			return evaluation;
+		}
+		if(count(oth)[1]+count(oth)[2]>54) {
+			eva[1][1] = -40;
+			eva[1][6] = -40;
+			eva[6][1] = -40;
+			eva[6][6] = -40;
 		}
 		for (int[] ary : coord) {
 			int[][] copyoth = copyOth(oth);
@@ -643,19 +649,18 @@ public class Othello {
 			outerstone = (countOuterStone(turn,copyoth)-outerstone)*10;
 			search(turn ? 1 : 0, copyoth);
 			List<int[]> getcoord = getCoord(copyoth);
-			int point = stoneevaluation[ary[0]][ary[1]] * 10;
+			int point = eva[ary[0]][ary[1]] * 10;
 			int enempoint = 0;
 			if (getcoord != null) {
 				for (int[] getary : getcoord) {
-					enempoint += stoneevaluation[getary[0]][getary[1]] * -1;
+					enempoint += eva[getary[0]][getary[1]] * -2;
 				}
 			} else {
 				enempoint = 1000;
 			}
-			int addpoint = enempoint + outerstone;
-			if(count(oth)[1] + count(oth)[2] <40) {
-				addpoint += oppennes + point;
-			}
+			int addpoint = enempoint + oppennes + point + outerstone;
+			
+			
 			evaluation.add(addpoint);
 
 		}
