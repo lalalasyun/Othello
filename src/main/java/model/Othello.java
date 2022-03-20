@@ -650,7 +650,7 @@ public class Othello {
 				for (int[] getary : getcoord) {
 					enempoint += stoneevaluation[getary[0]][getary[1]] * -1;
 				}
-				enemplay = getcoord.size() * -10;
+				enemplay = 500 - getcoord.size() * -100;
 			} else {
 				enempoint = 1000;
 			}
