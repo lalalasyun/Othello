@@ -10,7 +10,7 @@ public class Othello {
 	boolean game = false;
 	String record = "";
 
-	int[][] stoneevaluation = { { 100, -40, 80, 5, 5, 70, -80, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
+	int[][] stoneevaluation = { { 100, -40, 80, 5, 5, 80, -40, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 			{ 80, -1, 5, 1, 1, 5, -1, 80 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
 			{ 80, -1, 5, 1, 1, 5, -1, 80 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
 			{ 100, -40, 80, 5, 5, 80, -40, 100 } };
@@ -563,9 +563,6 @@ public class Othello {
 			mess += getColor() ? "3" : "4";
 
 			for (int eva : evaluation) {
-				if(eva/1000 != 0) {
-					eva /= 100;
-				}
 				mess += "," + eva;
 			}
 		}
@@ -653,7 +650,7 @@ public class Othello {
 				for (int[] getary : getcoord) {
 					enempoint += stoneevaluation[getary[0]][getary[1]] * -1;
 				}
-				enemplay = getcoord.size() * -100;
+				enemplay = getcoord.size() * -10;
 			} else {
 				enempoint = 1000;
 			}
