@@ -594,13 +594,15 @@ public class Othello {
 		int readcnt = 0;
 		while (true) {
 			List<Integer> evaluation = othelloAI(aiturn, copyOth);
-			int[] coord = getAICoord(evaluation, copyOth);
-			if (coord != null) {
-				put(coord[0], coord[1], aiturn ? 0 : 1, copyOth);
-				search(aiturn ? 1 : 0, copyOth);
-				end = false;
+			if (evaluation.size() != 0) {
+				int[] coord = getAICoord(evaluation, copyOth);
+				if (coord != null) {
+					put(coord[0], coord[1], aiturn ? 0 : 1, copyOth);
+					search(aiturn ? 1 : 0, copyOth);
+					end = false;
+				}
 			}
-			if (end || readcnt==10) {
+			if (end || readcnt == 10) {
 				return count(copyOth)[turn ? 2 : 1];
 
 			}
@@ -655,8 +657,7 @@ public class Othello {
 				enempoint = 1000;
 			}
 			int addpoint = oppennes + enemplay + enempoint + point;
-			
-			
+
 			evaluation.add(addpoint);
 
 		}
