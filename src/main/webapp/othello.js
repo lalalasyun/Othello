@@ -17,7 +17,7 @@ var tweet = tweetinit;
 //document.getElementById
 var resultbox, result, black, white;
 
-var gamebtn, start, online, changeturn, kihubtn, login, logout, userlog;
+var gamebtn, start, online, assistbtn,changeturn, kihubtn, login, logout, userlog;
 
 var form, userid, userpass, kihumenu, kihuplaybtn, tweetmess;
 
@@ -102,6 +102,7 @@ function reset() {
 	kihuplaybtn.hidden = true;
 	kihubtn.disabled = false;
 	tweetmess.hidden = true;
+	assistbtn.disabled = true;
 	tweet = tweetinit;
 	initStone();
 }

@@ -10,9 +10,9 @@ public class Othello {
 	boolean game = false;
 	String record = "";
 
-	int[][] stoneevaluation = { { 100, -40, 40, 20, 20, 40, -40, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
+	int[][] stoneevaluation = { { 100, -40, 40, 20, 20, 40, -40, 100 }, { -40, -40, -1, -1, -1, -1, -80, -40 },
 			{ 40, -1, 20, 1, 1, 20, -1, 40 }, { 20, -1, 1, 0, 0, 1, -1, 20 }, { 20, -1, 1, 0, 0, 1, -1, 20 },
-			{ 40, -1, 20, 1, 1, 20, -1, 40 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
+			{ 40, -1, 20, 1, 1, 20, -1, 40 }, { -40, -40, -1, -1, -1, -1, -40, -40 },
 			{ 100, -40, 40, 20, 20, 40, -40, 100 } };
 
 	Othello() {
@@ -602,9 +602,9 @@ public class Othello {
 				}
 			}
 			if (end) {
-				
 				return count(copyOth)[turn ? 2 : 1];
 			}
+			
 			end = true;
 			aiturn = !aiturn;
 		}
@@ -614,7 +614,7 @@ public class Othello {
 	public List<Integer> getAIEvaluationRead(List<Integer> evaluation, boolean turn) {
 		search(turn ? 0 : 1, oth);
 		List<int[]> coord = getCoord(oth);
-		if (coord == null || count(oth)[1] + count(oth)[2] < 54) {
+		if (coord == null || count(oth)[1] + count(oth)[2] < 50) {
 			return evaluation;
 		}
 		int index = 0;
@@ -635,12 +635,6 @@ public class Othello {
 		coord = getCoord(oth);
 		if (coord == null) {
 			return evaluation;
-		}
-		if(count(oth)[1]+count(oth)[2]>54) {
-			eva[1][1] = -40;
-			eva[1][6] = -40;
-			eva[6][1] = -40;
-			eva[6][6] = -40;
 		}
 		for (int[] ary : coord) {
 			int[][] copyoth = copyOth(oth);
@@ -703,22 +697,55 @@ public class Othello {
 		return count;
 	}
 
-	public int countInnerStone(boolean turn, int[][] oth) {
-		int color = turn ? 2 : 1;
-		int count = 0;
-		for (int i = 2; i < 6; i++) {
-			for (int n = 2; n < 6; n++) {
-				if (oth[i][n] == color) {
-					count++;
-				}
-			}
-		}
-		return count;
-	}
+
 	
 	public int countOuterStone(boolean turn, int[][] oth) {
 		int color = turn ? 2 : 1;
 		int count = 0;
+		int addcnt = 0;
+		for(int i=0;i<8;i++) {
+			if(!(oth[0][i] == 1 || oth[0][i] == 2)) {
+				addcnt = 0;
+				break;
+			}
+			if(oth[0][i] == color) {
+				addcnt++;
+			}
+		}
+		count +=addcnt;
+		for(int i=0;i<8;i++) {
+			if(!(oth[i][0] == 1 || oth[i][0] == 2)) {
+				addcnt = 0;
+				break;
+			}
+			if(oth[i][0] == color) {
+				addcnt++;
+			}
+		}
+		count +=addcnt;
+		for(int i=0;i<8;i++) {
+			if(!(oth[i][7] == 1 || oth[i][7] == 2)) {
+				addcnt = 0;
+				break;
+			}
+			if(oth[i][7] == color) {
+				addcnt++;
+			}
+		}
+		count +=addcnt;
+		for(int i=0;i<8;i++) {
+			if(!(oth[7][i] == 1 || oth[7][i] == 2)) {
+				addcnt = 0;
+				break;
+			}
+			if(oth[7][i] == color) {
+				addcnt++;
+			}
+		}
+		count +=addcnt;
+		
+		
+		
 		if(oth[0][0] == color) {
 			count++;
 			for(int i=1;i<4;i++) {
