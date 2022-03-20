@@ -563,6 +563,9 @@ public class Othello {
 			mess += getColor() ? "3" : "4";
 
 			for (int eva : evaluation) {
+				if(eva/1000 != 0) {
+					eva /= 100;
+				}
 				mess += "," + eva;
 			}
 		}
@@ -600,7 +603,7 @@ public class Othello {
 				search(aiturn ? 1 : 0, copyOth);
 				end = false;
 			}
-			if (end || readcnt==5) {
+			if (end || readcnt==10) {
 				return count(copyOth)[turn ? 2 : 1];
 
 			}
