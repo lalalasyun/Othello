@@ -643,12 +643,12 @@ public class Othello {
 			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth) * -100;
 			search(turn ? 1 : 0, copyoth);
 			List<int[]> getcoord = getCoord(copyoth);
-			int point = stoneevaluation[ary[0]][ary[1]] * 10;
+			int point = stoneevaluation[ary[0]][ary[1]] * 100;
 			int enempoint = 0;
 			int enemplay = 0;
 			if (getcoord != null) {
 				for (int[] getary : getcoord) {
-					enempoint += stoneevaluation[getary[0]][getary[1]] * -1;
+					enempoint += stoneevaluation[getary[0]][getary[1]] * -10;
 				}
 				enemplay = getcoord.size() * -10;
 			} else {
