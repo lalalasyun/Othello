@@ -588,7 +588,7 @@ function putStone(x, y, type) {
 }
 function putEva(x, y, type, eva) {
 	context.beginPath();
-	if ((turn && type == 4) || (!turn && type == 3) || ainavi) {
+	if (!gameturn || ainavi) {
 		return;
 	}
 	var color = type == 3 ? "black" : "white";
