@@ -10,10 +10,10 @@ public class Othello {
 	boolean game = false;
 	String record = "";
 
-	int[][] stoneevaluation = { { 100, -40, 80, 5, 5, 80, -40, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
-			{ 80, -1, 5, 1, 1, 5, -1, 80 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
-			{ 80, -1, 5, 1, 1, 5, -1, 80 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
-			{ 100, -40, 80, 5, 5, 80, -40, 100 } };
+	int[][] stoneevaluation = { { 100, -40, 70, 5, 5, 70, -40, 100 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
+			{ 70, -1, 5, 1, 1, 5, -1, 70 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
+			{ 70, -1, 5, 1, 1, 5, -1, 70 }, { -40, -80, -1, -1, -1, -1, -80, -40 },
+			{ 100, -40, 70, 5, 5, 70, -40, 100 } };
 
 	Othello() {
 	}
@@ -643,12 +643,12 @@ public class Othello {
 			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth) * -100;
 			search(turn ? 1 : 0, copyoth);
 			List<int[]> getcoord = getCoord(copyoth);
-			int point = stoneevaluation[ary[0]][ary[1]] * 100;
+			int point = stoneevaluation[ary[0]][ary[1]] * 10;
 			int enempoint = 0;
 			int enemplay = 0;
 			if (getcoord != null) {
 				for (int[] getary : getcoord) {
-					enempoint += stoneevaluation[getary[0]][getary[1]] * -10;
+					enempoint += stoneevaluation[getary[0]][getary[1]] * -1;
 				}
 				enemplay = getcoord.size() * -10;
 			} else {
