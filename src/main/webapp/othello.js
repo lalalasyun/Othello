@@ -81,7 +81,7 @@ function stoneClick(x, y) {
 
 function startbtn() {
 	ws.send(start.innerHTML == "スタート" ? "start" : "reset");
-
+	formclose();
 	if (start.innerHTML == "スタート") {
 		kihubtn.disabled = false;
 		resultbox.hidden = false;
@@ -209,6 +209,7 @@ function kihu() {
 		resultbox.hidden = false;
 		userdata.hidden = false;
 		kihumenu.hidden = true;
+		ainavi = true;
 		initStone();
 	}
 }
@@ -264,6 +265,9 @@ function connect() {
 		switch (command) {
 			case "stone":
 				stone(ary[1]);
+				break;
+			case "coord":
+				putStone(Number(ary[1]), Number(ary[2]), 6);
 				break;
 			case "miss":
 				gameturn = true;
@@ -369,7 +373,7 @@ function connect() {
 					kihuplaybtn.hidden = false;
 					kihubtn.innerHTML = "棋譜終了"
 					gamebtn.hidden = true;
-					ainavi = true;
+					ainavi = false;
 				} else {
 					userlog.innerHTML = "";
 					kihumenu.hidden = false;
@@ -576,11 +580,16 @@ function putStone(x, y, type) {
 			context.stroke();
 			break;
 		case 5:
-			if ((turn && type == 4) || (!turn && type == 3) || ainavi) {
+			if (ainavi) {
 				break;
 			}
 			context.strokeStyle = 'pink';
 			context.lineWidth = 2.2;
+			context.stroke();
+			break;
+		case 6:
+			context.strokeStyle = 'red';
+			context.lineWidth = 2;
 			context.stroke();
 			break;
 		default:
@@ -589,7 +598,7 @@ function putStone(x, y, type) {
 }
 function putEva(x, y, type, eva) {
 	context.beginPath();
-	if (!gameturn || ainavi) {
+	if (ainavi) {
 		return;
 	}
 	var color = type == 3 ? "black" : "white";

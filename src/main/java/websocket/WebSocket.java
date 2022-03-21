@@ -87,9 +87,12 @@ public class WebSocket {
 			room.sendMessage("stone," + stone);
 			if (room.isAI() && room.isAiturn()) {
 				Thread.sleep(300);
-				game.othelloAIPut(room.isAiturn());
+				int[] coord = game.othelloAIPut(room.isAiturn());
 				stone = game.getStone();
 				room.sendMessage("stone," + stone);
+				if (coord != null) {
+					room.sendMessage("coord," + coord[0] + "," + coord[1]);
+				}
 			}
 			mess = game.getAIEvaluation(!game.getColor());
 			if (mess != null) {
@@ -109,18 +112,22 @@ public class WebSocket {
 			int y = Integer.parseInt(str[2]);
 
 			boolean ret = game.place(x, y);
-			
+
 			if (!ret) {
 				room.sendMessage("miss");
 				break;
 			}
 			stone = game.getStone();
 			room.sendMessage("stone," + stone);
+			room.sendMessage("coord," + x + "," + y);
 			if (room.isAI()) {
 				Thread.sleep(300);
-				game.othelloAIPut(room.isAiturn());
+				int[] coord = game.othelloAIPut(room.isAiturn());
 				stone = game.getStone();
 				room.sendMessage("stone," + stone);
+				if (coord != null) {
+					room.sendMessage("coord," + coord[0] + "," + coord[1]);
+				}
 			}
 			if (!game.isGame()) {
 				room.addResult(game.judge(), game.getRecord());

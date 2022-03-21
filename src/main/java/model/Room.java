@@ -38,6 +38,8 @@ public class Room {
 	
 	private List<String> record = new ArrayList<>();
 	private List<String> stonedata = new ArrayList<>();
+	private List<String> evadata = new ArrayList<>();
+	private List<int[]> coorddata = new ArrayList<>();
 	private int stonedataindex = 0;
 
 	public Room() {
@@ -320,21 +322,31 @@ public class Room {
 	
 	public void getKihuStone(int index) throws Exception {
 		this.stonedata = new ArrayList<>();
+		this.evadata = new ArrayList<>();
 		stonedataindex = 0;
 		String record = this.record.get(index);
 		Othello game = new Othello();
 		game.initialize();
 		String stone = game.getStone();
-		sendMessage("kihustone," + stone);
+		String eva = game.getAIEvaluation(!game.getColor());
+		int[] coord = {9,9};
 		stonedata.add(stone);
+		evadata.add(eva);
+		coorddata.add(coord);
+		sendMessage("kihustone," + stone);
 		for(int i = 0; i < record.length()+2;i+=2) {
 			try {
 				int x = Character.getNumericValue(record.charAt(i));
 				int y = Character.getNumericValue(record.charAt(i+1));
 				game.getPass();
 				game.place(x,y);
+				int[] addcoord = {x,y};
+				coord = addcoord;
 				stone = game.getStone();
+				eva = game.getAIEvaluation(game.getColor());
 				stonedata.add(stone);
+				evadata.add(eva);
+				coorddata.add(coord);
 			}catch (java.lang.StringIndexOutOfBoundsException e) {
 				break;
 			}
@@ -344,6 +356,8 @@ public class Room {
 	
 	public void playKihu(int cmd) throws Exception {
 		String stone = null;
+		String eva = null;
+		int[] coord = null;
 		int maxindex = stonedata.size()-1;
 		switch(cmd) {
 		case 0:
@@ -364,7 +378,11 @@ public class Room {
 			break;
 		}
 		stone = stonedata.get(stonedataindex);
+		eva = evadata.get(stonedataindex);
+		coord = coorddata.get(stonedataindex);
 		sendMessage("kihustone,"+stone);
+		sendMessage(eva);
+		sendMessage("coord," + coord[0] + "," + coord[1]);
 	}
 
 	public Connection getConnection() {
