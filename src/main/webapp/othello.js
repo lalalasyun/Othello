@@ -81,7 +81,7 @@ function stoneClick(x, y) {
 
 function startbtn() {
 	ws.send(start.innerHTML == "スタート" ? "start" : "reset");
-	formclose();
+	form.hidden = true;
 	if (start.innerHTML == "スタート") {
 		kihubtn.disabled = false;
 		resultbox.hidden = false;
