@@ -328,25 +328,27 @@ public class Room {
 		Othello game = new Othello();
 		game.initialize();
 		String stone = game.getStone();
-		String eva = game.getAIEvaluation(!game.getColor());
+		String mess = game.getAIEvaluation(!game.getColor());
 		int[] coord = {9,9};
 		stonedata.add(stone);
-		evadata.add(eva);
+		evadata.add(mess);
 		coorddata.add(coord);
 		sendMessage("kihustone," + stone);
+		sendMessage(mess);
 		for(int i = 0; i < record.length()+2;i+=2) {
 			try {
 				int x = Character.getNumericValue(record.charAt(i));
 				int y = Character.getNumericValue(record.charAt(i+1));
-				game.getPass();
+				if(game.getPass()) {
+					stonedata.add(game.getStone());
+					evadata.add(game.getAIEvaluation(game.getColor()));
+					coorddata.add(coord);
+				}
 				game.place(x,y);
 				int[] addcoord = {x,y};
-				coord = addcoord;
-				stone = game.getStone();
-				eva = game.getAIEvaluation(game.getColor());
-				stonedata.add(stone);
-				evadata.add(eva);
-				coorddata.add(coord);
+				stonedata.add(game.getStone());
+				evadata.add(game.getAIEvaluation(game.getColor()));
+				coorddata.add(addcoord);
 			}catch (java.lang.StringIndexOutOfBoundsException e) {
 				break;
 			}
