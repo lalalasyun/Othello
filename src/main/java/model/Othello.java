@@ -627,7 +627,7 @@ public class Othello {
 	public List<Integer> getAIEvaluationRead(List<Integer> evaluation, boolean turn) {
 		search(turn ? 0 : 1, oth);
 		List<int[]> coord = getCoord(oth);
-		if (coord == null || count(oth)[1] + count(oth)[2] < 40) {
+		if (coord == null || count(oth)[1] + count(oth)[2] < 54) {
 			return evaluation;
 		}
 
