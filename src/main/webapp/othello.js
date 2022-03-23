@@ -273,6 +273,9 @@ function connect() {
 				gameturn = true;
 				break;
 			case "eva":
+				if(kihumenu.hidden == true && !gameturn){
+					break;
+				}
 				var type = Number(ary[1]);
 				var maxeva = -10000;
 				var maxX, maxY;

@@ -334,7 +334,6 @@ public class Room {
 		evadata.add(mess);
 		coorddata.add(coord);
 		sendMessage("kihustone," + stone);
-		sendMessage(mess);
 		for(int i = 0; i < record.length()+2;i+=2) {
 			try {
 				int x = Character.getNumericValue(record.charAt(i));

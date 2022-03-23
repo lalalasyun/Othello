@@ -10,16 +10,16 @@ public class Othello {
 	boolean game = false;
 	String record = "";
 
-	int[][] stoneevaluation = { 
-	{ 100, 	-40, 	20, 	5, 		5, 		20, 	-40, 	100 }, 
-	{ -40, 	-80, 	-1, 	-1, 	-1, 	-1, 	-80, 	-40 },
-	{ 20, 	-1, 	5, 		1, 		1, 		5, 		-1, 	20  }, 
-	{ 5, 	-1, 	1, 		0, 		0, 		1, 		-1, 	5 }, 
-	{ 5, 	-1, 	1, 		0, 		0, 		1, 		-1, 	5 },
-	{ 20, 	-1, 	5, 		1, 		1, 		5, 		-1, 	20  }, 
-	{ -40, 	-80, 	-1, 	-1, 	-1, 	-1, 	-80, 	-40 },
-	{ 100, 	-40, 	20, 	5, 		5, 		20, 	-40, 	100 } };
-
+	int[][] stoneevaluation;
+	int[][] initeva = { 
+			{ 300, -40, 20, 5, 5, 20, -40, 300 }, 
+			{ -40, -200, -1, -1, -1, -1, -200, -40 },
+			{ 20, -1, 5, 1, 1, 5, -1, 20 }, 
+			{ 5, -1, 1, 0, 0, 1, -1, 5 }, 
+			{ 5, -1, 1, 0, 0, 1, -1, 5 },
+			{ 20, -1, 5, 1, 1, 5, -1, 20 }, 
+			{ -40, -20, -1, -1, -1, -1, -200, -40 },
+			{ 300, -40, 20, 5, 5, 20, -40, 300 } };
 	Othello() {
 	}
 
@@ -527,6 +527,8 @@ public class Othello {
 
 	// 初期化
 	public void initialize() {
+		
+		stoneevaluation = initeva;
 		game = true;
 		record = "";
 		cnt = 0;
@@ -594,7 +596,6 @@ public class Othello {
 	public int readingAI(int[] coordcase, boolean turn) {
 		int[][] copyOth = copyOth(oth);
 		boolean aiturn = turn;
-		int stone = countOuterStone(turn,copyOth);
 		put(coordcase[0], coordcase[1], aiturn ? 0 : 1, copyOth);
 		search(aiturn ? 1 : 0, copyOth);
 		aiturn = !aiturn;
@@ -609,16 +610,17 @@ public class Othello {
 					endcnt = 0;
 					aiturn = !aiturn;
 				}
-			}else {
+			} else {
 				aiturn = !aiturn;
 				search(aiturn ? 1 : 0, copyOth);
 				endcnt++;
 			}
+			int count = 0;
 			if (endcnt == 2) {
-				stone = countOuterStone(turn,copyOth) - stone;
-				return count(copyOth)[turn ? 2 : 1] + stone/10;
+				count = count(copyOth)[turn ? 2 : 1];
+				return count;
 			}
-			
+
 		}
 	}
 
@@ -642,31 +644,31 @@ public class Othello {
 	public List<Integer> othelloAI(boolean turn, int[][] oth) {
 		List<int[]> coord = new ArrayList<>();
 		List<Integer> evaluation = new ArrayList<>();
+		int mystone = countOuterStone(turn, oth);
+		int enemstone = countOuterStone(!turn, oth);
 		search(turn ? 0 : 1, oth);
 		coord = getCoord(oth);
 		if (coord == null) {
 			return evaluation;
 		}
+		
 		for (int[] ary : coord) {
 			int[][] copyoth = copyOth(oth);
-			int outerstone = countOuterStone(!turn, copyoth);
-			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth) * -7;
+			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth)*-49;
 			search(turn ? 1 : 0, copyoth);
 			List<int[]> getcoord = getCoord(copyoth);
 			int point = stoneevaluation[ary[0]][ary[1]];
 			int enempoint = 0;
-			int enemstone = 0;
 			if (getcoord != null) {
 				for (int[] getary : getcoord) {
 					enempoint += stoneevaluation[getary[0]][getary[1]];
 					int[][] enemoth = copyOth(copyoth);
 					put(getary[0], getary[1], turn ? 1 : 0, enemoth);
-					enemstone += countOuterStone(!turn, enemoth) - outerstone;
+					mystone = countOuterStone(turn, enemoth) - mystone;
+					enemstone = countOuterStone(!turn, enemoth) - enemstone;
 				}
 			}
-			int addpoint = oppennes+ point + (enempoint/-2);
-			
-			
+			int addpoint = oppennes + (point) + (enempoint / -1) + (mystone / 10) + (enemstone / -10);
 			evaluation.add(addpoint);
 
 		}
@@ -712,94 +714,48 @@ public class Othello {
 	public int countOuterStone(boolean turn, int[][] oth) {
 		int color = turn ? 2 : 1;
 		int count = 0;
-		int addcnt = 0;
-		for (int i = 0; i < 8; i++) {
-			if (!(oth[0][i] == 1 || oth[0][i] == 2)) {
-				addcnt = 0;
-				break;
+		for (int index = 0; index < 4; index++) {
+			int addcnt = 0;
+			for (int i = 0; i < 8; i++) {
+				int[] aryY = { 0, i, i, 7 };
+				int[] aryX = { i, 0, 7, i };
+				int y = aryY[index];
+				int x = aryX[index];
+				if (!(oth[y][x] == 1 || oth[y][x] == 2)) {
+					addcnt = 0;
+					break;
+				}
+				if (oth[y][x] == color) {
+					addcnt++;
+				}
 			}
-			if (oth[0][i] == color) {
-				addcnt++;
+			count += addcnt;
+		}
+		int[][] arycoord = { { 0, 0 }, { 0, 7 }, { 7, 0 }, { 7, 7 } };
+		int index = 0;
+		for (int[] coord : arycoord) {
+			if (oth[coord[0]][coord[1]] == color) {
+				count++;
+				for (int i = 1; i < 4; i++) {
+					int[] aryY1 = { 0, 0, 7, 7 };
+					int[] aryX1 = { i, 7 - i, i, 7 - i };
+					if (oth[aryY1[index]][aryX1[index]] == color) {
+						count++;
+					}
+					int[] aryY2 = { i, i, 7 - i, 7 - i };
+					int[] aryX2 = { 0, 7, 0, 7 };
+					if (oth[aryY2[index]][aryX2[index]] == color) {
+						count++;
+					}
+				}
+				index++;
 			}
 		}
-		count += addcnt;
-		for (int i = 0; i < 8; i++) {
-			if (!(oth[i][0] == 1 || oth[i][0] == 2)) {
-				addcnt = 0;
-				break;
-			}
-			if (oth[i][0] == color) {
-				addcnt++;
-			}
-		}
-		count += addcnt;
-		for (int i = 0; i < 8; i++) {
-			if (!(oth[i][7] == 1 || oth[i][7] == 2)) {
-				addcnt = 0;
-				break;
-			}
-			if (oth[i][7] == color) {
-				addcnt++;
-			}
-		}
-		count += addcnt;
-		for (int i = 0; i < 8; i++) {
-			if (!(oth[7][i] == 1 || oth[7][i] == 2)) {
-				addcnt = 0;
-				break;
-			}
-			if (oth[7][i] == color) {
-				addcnt++;
-			}
-		}
-		count += addcnt;
 
-		if (oth[0][0] == color) {
-			count++;
-			for (int i = 1; i < 4; i++) {
-				if (oth[0][i] == color) {
-					count++;
-				}
-				if (oth[i][0] == color) {
-					count++;
-				}
-			}
-		}
-		if (oth[0][7] == color) {
-			count++;
-			for (int i = 1; i < 4; i++) {
-				if (oth[0][7 - i] == color) {
-					count++;
-				}
-				if (oth[i][7] == color) {
-					count++;
-				}
-			}
-		}
-		if (oth[7][0] == color) {
-			count++;
-			for (int i = 1; i < 4; i++) {
-				if (oth[7][i] == color) {
-					count++;
-				}
-				if (oth[7 - i][0] == color) {
-					count++;
-				}
-			}
-		}
-		if (oth[7][7] == color) {
-			count++;
-			for (int i = 1; i < 4; i++) {
-				if (oth[7][7 - i] == color) {
-					count++;
-				}
-				if (oth[7 - i][7] == color) {
-					count++;
-				}
-			}
-		}
 		return count;
 	}
+
+
 
 	int[][] copyOth(int[][] oth) {
 		int[][] copyoth = new int[8][8];
