@@ -13,12 +13,12 @@ public class Othello {
 	int[][] stoneevaluation;
 	int[][] initeva = { 
 			{ 600, -40, 20, 5, 5, 20, -40, 600 }, 
-			{ -40, -200, -1, -1, -1, -1, -200, -40 },
+			{ -40, -100, -1, -1, -1, -1, -100, -40 },
 			{ 20, -1, 5, 1, 1, 5, -1, 20 }, 
 			{ 5, -1, 1, 0, 0, 1, -1, 5 }, 
 			{ 5, -1, 1, 0, 0, 1, -1, 5 },
 			{ 20, -1, 5, 1, 1, 5, -1, 20 }, 
-			{ -40, -20, -1, -1, -1, -1, -200, -40 },
+			{ -40, -100, -1, -1, -1, -1, -100, -40 },
 			{ 600, -40, 20, 5, 5, 20, -40, 600 } };
 	Othello() {
 	}
@@ -627,7 +627,7 @@ public class Othello {
 	public List<Integer> getAIEvaluationRead(List<Integer> evaluation, boolean turn) {
 		search(turn ? 0 : 1, oth);
 		List<int[]> coord = getCoord(oth);
-		if (coord == null || count(oth)[1] + count(oth)[2] < 58) {
+		if (coord == null || count(oth)[1] + count(oth)[2] < 54) {
 			return evaluation;
 		}
 
@@ -754,7 +754,6 @@ public class Othello {
 
 		return count;
 	}
-
 
 
 	int[][] copyOth(int[][] oth) {
