@@ -8,6 +8,7 @@ public class Othello {
 	int oth[][] = new int[8][8];
 	int cnt = 0;
 	boolean game = false;
+	boolean AIread = false;
 	String record = "";
 
 	int[][] stoneevaluation;
@@ -562,6 +563,7 @@ public class Othello {
 	public String getAIEvaluation(boolean turn) {
 		List<Integer> evaluation = othelloAI(turn, copyOth(oth));
 		evaluation = getAIEvaluationRead(evaluation, turn);
+		
 		String mess = null;
 		if (evaluation != null) {
 			mess = "eva,";
@@ -589,7 +591,7 @@ public class Othello {
 		return null;
 	}
 
-	public int readingAI(int[] coordcase, boolean turn) {
+	public int readingAI(int pointcase,int[] coordcase, boolean turn) {
 		int[][] copyOth = copyOth(oth);
 		boolean aiturn = turn;
 		int endcnt = 0, readcnt = 0;
@@ -620,11 +622,10 @@ public class Othello {
 				search(aiturn ? 1 : 0, copyOth);
 				endcnt++;
 			}
-			if (endcnt == 2) {
-				return 0;
-
+			if(endcnt == 2) {
+				return count(copyOth)[turn ? 2 : 1];
 			}
-			if (readcnt > 6) {
+			if (readcnt > 8) {
 				int addpoint = 0;
 				for (int i = 0; i < 8; i++) {
 					for (int n = 0; n < 8; n++) {
@@ -633,9 +634,8 @@ public class Othello {
 						}
 					}
 				}
-				return addpoint - point;
+				return pointcase - addpoint - point;
 			}
-
 		}
 	}
 
@@ -648,8 +648,7 @@ public class Othello {
 
 		int index = 0;
 		for (int[] readCoord : coord) {
-			Integer eva;
-			eva = evaluation.get(index) - readingAI(readCoord, turn);
+			Integer eva = readingAI(evaluation.get(index),readCoord, turn);
 			evaluation.set(index, eva);
 			index++;
 		}
@@ -663,6 +662,7 @@ public class Othello {
 		int mystone = countOuterStone(turn, oth);
 		int enemstone = countOuterStone(!turn, oth);
 		search(turn ? 0 : 1, oth);
+		int stonepoint=0;
 		coord = getCoord(oth);
 		if (coord == null) {
 			return evaluation;
@@ -680,14 +680,24 @@ public class Othello {
 					enempoint += stoneevaluation[getary[0]][getary[1]];
 					int[][] enemoth = copyOth(copyoth);
 					put(getary[0], getary[1], turn ? 1 : 0, enemoth);
+					search(turn ? 1 : 0, enemoth);
 					mystone = countOuterStone(turn, enemoth) - mystone;
 					enemstone = countOuterStone(!turn, enemoth) - enemstone;
+					
+					List<int[]> getstonecoord = getCoord(enemoth);
+					if (getstonecoord != null) {
+						int addpoint=0;
+						for (int[] getstoneary : getstonecoord) {
+							addpoint += stoneevaluation[getstoneary[0]][getstoneary[1]];
+						}
+						stonepoint = addpoint / getcoord.size();
+					}
 					if (count(enemoth)[turn ? 2 : 1] == 0) {
 						enempoint += 1000;
 					}
 				}
 			}
-			int addpoint = oppennes + (point) + (enempoint / -1) + (mystone / 10) + (enemstone / -10);
+			int addpoint = oppennes + (point) + (enempoint / -1) + (mystone / 10) + (enemstone / -10) + (stonepoint / -10);
 			evaluation.add(addpoint);
 
 		}
@@ -774,6 +784,9 @@ public class Othello {
 		return count;
 	}
 
+
+	
+	
 	int[][] copyOth(int[][] oth) {
 		int[][] copyoth = new int[8][8];
 		for (int i = 0; i < 8; i++) {

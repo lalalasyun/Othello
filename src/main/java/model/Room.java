@@ -323,6 +323,7 @@ public class Room {
 	public void getKihuStone(int index) throws Exception {
 		this.stonedata = new ArrayList<>();
 		this.evadata = new ArrayList<>();
+		this.coorddata = new ArrayList<>();
 		stonedataindex = 0;
 		String record = this.record.get(index);
 		Othello game = new Othello();
