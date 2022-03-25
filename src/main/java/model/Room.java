@@ -329,7 +329,7 @@ public class Room {
 		Othello game = new Othello();
 		game.initialize();
 		String stone = game.getStone();
-		String mess = game.getAIEvaluation(!game.getColor());
+		String mess = game.getAIEvaluation(!game.getColor(),true);
 		int[] coord = {9,9};
 		stonedata.add(stone);
 		evadata.add(mess);
@@ -341,13 +341,13 @@ public class Room {
 				int y = Character.getNumericValue(record.charAt(i+1));
 				if(game.getPass()) {
 					stonedata.add(game.getStone());
-					evadata.add(game.getAIEvaluation(game.getColor()));
+					evadata.add(game.getAIEvaluation(game.getColor(),true));
 					coorddata.add(coord);
 				}
 				game.place(x,y);
 				int[] addcoord = {x,y};
 				stonedata.add(game.getStone());
-				evadata.add(game.getAIEvaluation(game.getColor()));
+				evadata.add(game.getAIEvaluation(game.getColor(),true));
 				coorddata.add(addcoord);
 			}catch (java.lang.StringIndexOutOfBoundsException e) {
 				break;

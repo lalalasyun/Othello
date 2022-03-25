@@ -231,6 +231,7 @@ function kihuend() {
 }
 
 function OnLinkClick(index) {
+	userlog.innerHTML = '計算中...';
 	ws.send('kihu,index,' + index);
 }
 
@@ -373,6 +374,7 @@ function connect() {
 					kihubtn.innerHTML = "棋譜データ"
 					gamebtn.hidden = false;
 				} else if (ary[1] == "play") {
+					userlog.innerHTML = "";
 					kihuplaybtn.hidden = false;
 					kihubtn.innerHTML = "棋譜終了"
 					gamebtn.hidden = true;
@@ -449,7 +451,11 @@ function stone(arystone) {
 		if (cntput == 0) {
 			if (cntblack + cntwhite != 64) {
 				gameturn = true;
-				result.innerHTML = "パス<br>パスするには画面を押してください";
+				result.innerHTML = "パス";
+				if(gameturn){
+					result.innerHTML += "<br>パスするには画面を押してください";
+				}
+				
 			} else {
 				winresult();
 			}

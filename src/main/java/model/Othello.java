@@ -11,6 +11,8 @@ public class Othello {
 	boolean AIread = false;
 	String record = "";
 
+	
+	int readlevel=0;
 	int[][] stoneevaluation;
 	int[][] initeva = { { 600, -40, 20, 5, 5, 20, -40, 600 }, { -40, -100, -1, -1, -1, -1, -100, -40 },
 			{ 20, -1, 5, 1, 1, 5, -1, 20 }, { 5, -1, 1, 0, 0, 1, -1, 5 }, { 5, -1, 1, 0, 0, 1, -1, 5 },
@@ -542,8 +544,9 @@ public class Othello {
 	}
 
 	public int[] othelloAIPut(boolean turn) throws Exception {
+		readlevel = 10;
 		List<Integer> evaluation = othelloAI(turn, copyOth(oth));
-		evaluation = getAIEvaluationRead(evaluation, turn);
+		evaluation = getAIEvaluationRead(evaluation, turn,oth,true);
 		if (evaluation != null) {
 			int[] coord = getAICoord(evaluation, oth);
 			if (coord != null) {
@@ -560,9 +563,11 @@ public class Othello {
 		return null;
 	}
 
-	public String getAIEvaluation(boolean turn) {
+	public String getAIEvaluation(boolean turn,boolean level) {
+		
+		readlevel = level?10:1;
 		List<Integer> evaluation = othelloAI(turn, copyOth(oth));
-		evaluation = getAIEvaluationRead(evaluation, turn);
+		evaluation = getAIEvaluationRead(evaluation, turn,oth,level);
 		
 		String mess = null;
 		if (evaluation != null) {
@@ -590,16 +595,18 @@ public class Othello {
 		}
 		return null;
 	}
+	
+	
 
-	public int readingAI(int pointcase,int[] coordcase, boolean turn) {
+	public int readingAI(int pointcase,int[] coordcase, boolean turn,boolean recursive) {
 		int[][] copyOth = copyOth(oth);
 		boolean aiturn = turn;
 		int endcnt = 0, readcnt = 0;
-		int point = 0;
+		int enempoint = 0;
 		for (int i = 0; i < 8; i++) {
 			for (int n = 0; n < 8; n++) {
 				if (copyOth[i][n] == (!turn ? 2 : 1)) {
-					point += stoneevaluation[i][n];
+					enempoint += stoneevaluation[i][n];
 				}
 			}
 		}
@@ -608,6 +615,11 @@ public class Othello {
 		aiturn = !aiturn;
 		while (true) {
 			List<Integer> evaluation = othelloAI(aiturn, copyOth);
+			if(recursive) {
+				recursive = !recursive;
+				evaluation = getAIEvaluationRead(evaluation, aiturn,copyOth,recursive);
+			}
+			
 			if (evaluation.size() != 0) {
 				int[] coord = getAICoord(evaluation, copyOth);
 				if (coord != null) {
@@ -622,10 +634,7 @@ public class Othello {
 				search(aiturn ? 1 : 0, copyOth);
 				endcnt++;
 			}
-			if(endcnt == 2) {
-				return count(copyOth)[turn ? 2 : 1];
-			}
-			if (readcnt > 8) {
+			if (readcnt > readlevel || endcnt == 2) {
 				int addpoint = 0;
 				for (int i = 0; i < 8; i++) {
 					for (int n = 0; n < 8; n++) {
@@ -634,12 +643,17 @@ public class Othello {
 						}
 					}
 				}
-				return pointcase - addpoint - point;
+				int point = addpoint - enempoint;
+				if(endcnt == 2) {
+					int count = count(copyOth)[turn ? 2 : 1]-count(copyOth)[turn ? 1 : 2];
+					return pointcase - point + (count*100);
+				}
+				return pointcase - point;
 			}
 		}
 	}
 
-	public List<Integer> getAIEvaluationRead(List<Integer> evaluation, boolean turn) {
+	public List<Integer> getAIEvaluationRead(List<Integer> evaluation, boolean turn,int[][] oth,boolean recursive) {
 		search(turn ? 0 : 1, oth);
 		List<int[]> coord = getCoord(oth);
 		if (coord == null) {
@@ -648,7 +662,7 @@ public class Othello {
 
 		int index = 0;
 		for (int[] readCoord : coord) {
-			Integer eva = readingAI(evaluation.get(index),readCoord, turn);
+			Integer eva = readingAI(evaluation.get(index),readCoord, turn,recursive);
 			evaluation.set(index, eva);
 			index++;
 		}
