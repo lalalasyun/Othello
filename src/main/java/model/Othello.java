@@ -564,7 +564,7 @@ public class Othello {
 
 	public String getAIEvaluation(boolean turn, boolean level) {
 
-		readlevel = level ? 10 : 1;
+		readlevel = level ? 6 : 1;
 		List<Integer> evaluation = othelloAI(turn, copyOth(oth));
 		evaluation = getAIEvaluationRead(evaluation, turn, oth, level);
 
