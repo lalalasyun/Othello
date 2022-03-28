@@ -641,7 +641,7 @@ public class Othello {
 				}
 				int point=0;
 				if (endcnt == 2) {
-					point= (count(copyOth)[turn ? 2 : 1]-count(copyOth)[!turn ? 2 : 1]);
+					point= (count(copyOth)[turn ? 2 : 1]-count(copyOth)[!turn ? 2 : 1])*50;
 					if(count(oth)[1]+count(oth)[2]>54) {
 						return pointcase + point;
 					}
