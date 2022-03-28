@@ -642,11 +642,11 @@ public class Othello {
 				int point=0;
 				if (endcnt == 2) {
 					point= (count(copyOth)[turn ? 2 : 1]-count(copyOth)[!turn ? 2 : 1]);
-					if(count(oth)[1]+count(oth)[2]>58) {
+					if(count(oth)[1]+count(oth)[2]>54) {
 						return pointcase + point;
 					}
 				}
-				return pointcase + enempoint*2 + point;
+				return pointcase + enempoint*2;
 			}
 		}
 	}
@@ -703,11 +703,8 @@ public class Othello {
 						enempoint += 1000;
 					}
 				}
-				if(count(oth)[1]+count(oth)[2]>20) {
-					enemcount = getcoord.size() * -50;
-				}else {
-					enemcount = 0;
-				}
+				enemcount = getcoord.size() * -50;
+				
 			}
 			int addpoint =point + oppennes + (enemoppens * 50) + (enempoint *-1)  + enemcount + addmyoutercount;
 			evaluation.add(addpoint);
