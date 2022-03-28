@@ -120,6 +120,7 @@ public class WebSocket {
 			room.sendMessage("stone," + stone);
 			room.sendMessage("coord," + x + "," + y);
 			if (room.isAI()) {
+				Thread.sleep(300);
 				int[] coord = game.othelloAIPut(room.isAiturn());
 				stone = game.getStone();
 				room.sendMessage("stone," + stone);
