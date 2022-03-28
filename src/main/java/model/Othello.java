@@ -642,7 +642,9 @@ public class Othello {
 				int point=0;
 				if (endcnt == 2) {
 					point= (count(copyOth)[turn ? 2 : 1]-count(copyOth)[!turn ? 2 : 1]);
-					
+					if(count(oth)[1]+count(oth)[2]>58) {
+						return pointcase + point;
+					}
 				}
 				return pointcase + enempoint*2 + point;
 			}
@@ -681,7 +683,7 @@ public class Othello {
 				point = -1000;
 			}
 			int[][] copyoth = copyOth(oth);
-			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth) * -50;
+			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth) * -100;
 			int addmyoutercount = (countOuterStone(turn, copyoth)-myoutercount);
 			search(turn ? 1 : 0, copyoth);
 			List<int[]> getcoord = getCoord(copyoth);
