@@ -708,6 +708,8 @@ public class Othello {
 				if(count(oth)[1]+count(oth)[2]<30) {
 					enemoppens *= 100;
 				}
+				
+				
 				enempoint *= -1;
 
 			}
