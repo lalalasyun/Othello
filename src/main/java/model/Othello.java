@@ -630,8 +630,9 @@ public class Othello {
 				search(aiturn ? 1 : 0, copyOth);
 				endcnt++;
 			}
-			
-			if (readcnt > readlevel||endcnt == 2) {
+
+			if (readcnt > readlevel || endcnt == 2) {
+				int point = 0;
 				for (int i = 0; i < 8; i++) {
 					for (int n = 0; n < 8; n++) {
 						if (copyOth[i][n] == (!turn ? 2 : 1)) {
@@ -639,16 +640,15 @@ public class Othello {
 						}
 					}
 				}
-				int point=0;
-				if (endcnt == 2) {
-					point= (count(copyOth)[turn ? 2 : 1]-count(copyOth)[!turn ? 2 : 1])*50;
-					if(count(oth)[1]+count(oth)[2]>54) {
-						return pointcase + point;
-					}
+				if(endcnt == 2) {
+					point = (count(copyOth)[turn ? 2 : 1] - count(copyOth)[!turn ? 2 : 1]) * 100;
 				}
-				return pointcase + enempoint*2;
+
+				enempoint *= 2;
+				return pointcase + enempoint + point;
 			}
 		}
+
 	}
 
 	public List<Integer> getAIEvaluationRead(List<Integer> evaluation, boolean turn, int[][] oth) {
@@ -679,34 +679,39 @@ public class Othello {
 		}
 		for (int[] ary : coord) {
 			int point = 0;
-			if(stoneevaluation[ary[0]][ary[1]]==-100) {
+			if (stoneevaluation[ary[0]][ary[1]] == -100) {
 				point = -1000;
 			}
 			int[][] copyoth = copyOth(oth);
 			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth) * -100;
-			int addmyoutercount = (countOuterStone(turn, copyoth)-myoutercount);
+			int addmyoutercount = (countOuterStone(turn, copyoth) - myoutercount);
 			search(turn ? 1 : 0, copyoth);
 			List<int[]> getcoord = getCoord(copyoth);
 
 			int enempoint = 0;
 			int enemcount = 0;
-			int enemoppens = 10;
+			int enemoppens = 0;
 			if (getcoord != null) {
+				enemoppens = 10;
 				for (int[] getary : getcoord) {
 					enempoint += stoneevaluation[getary[0]][getary[1]];
 					int[][] enemoth = copyOth(copyoth);
 					int oppen = put(getary[0], getary[1], turn ? 1 : 0, enemoth);
 					enemoppens = enemoppens > oppen ? oppen : enemoppens;
 					search(turn ? 0 : 1, enemoth);
-					
+
 					if (count(enemoth)[turn ? 2 : 1] == 0) {
 						enempoint += 1000;
 					}
 				}
-				enemcount = getcoord.size() * -50;
-				
+				enemcount = getcoord.size() * -100;
+				if(count(oth)[1]+count(oth)[2]<30) {
+					enemoppens *= 100;
+				}
+				enempoint *= -1;
+
 			}
-			int addpoint =point + oppennes + (enemoppens * 50) + (enempoint *-1)  + enemcount + addmyoutercount;
+			int addpoint = point + oppennes + enemoppens + enempoint + enemcount + addmyoutercount;
 			evaluation.add(addpoint);
 
 		}
