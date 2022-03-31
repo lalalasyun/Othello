@@ -1,4 +1,3 @@
-
 package model;
 
 import java.util.ArrayList;
@@ -571,12 +570,29 @@ public class Othello {
 		evaluation = getAIEvaluationRead(evaluation, turn, oth);
 
 		String mess = null;
-		if (evaluation != null) {
+		
+		List<Integer> easyEva = new ArrayList<>();
+		for(int eva:evaluation) {
+			int addeva =evaluation.size()/-2;
+			for(int search:evaluation) {
+				if(eva > search && eva != search) {
+					addeva++;
+				}
+			}
+			easyEva.add(addeva);
+		}
+		
+		if (easyEva != null) {
 			mess = "eva,";
 			mess += getColor() ? "3" : "4";
 
-			for (int eva : evaluation) {
-				mess += "," + eva;
+			for (int eva : easyEva) {
+				if(eva > -1) {
+					mess += ",+" + eva;
+				}else {
+					mess += "," + eva;
+				}
+				
 			}
 		}
 		return mess;
@@ -609,7 +625,6 @@ public class Othello {
 				}
 			}
 		}
-		int enemstone = countOuterStone(!turn, copyOth);
 		put(coordcase[0], coordcase[1], aiturn ? 0 : 1, copyOth);
 		search(aiturn ? 1 : 0, copyOth);
 		aiturn = !aiturn;
@@ -641,10 +656,9 @@ public class Othello {
 					}
 				}
 				if(endcnt == 2) {
-					point = (count(copyOth)[turn ? 2 : 1] - count(copyOth)[!turn ? 2 : 1]) * 100;
+					point = (count(copyOth)[turn ? 2 : 1] - count(copyOth)[!turn ? 2 : 1]) * 10;
 				}
 
-				enempoint *= 2;
 				return pointcase + enempoint + point;
 			}
 		}
@@ -680,17 +694,21 @@ public class Othello {
 		for (int[] ary : coord) {
 			int point = 0;
 			if (stoneevaluation[ary[0]][ary[1]] == -100) {
-				point = -1000;
+				point = -500;
 			}
 			int[][] copyoth = copyOth(oth);
 			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth) * -100;
-			int addmyoutercount = (countOuterStone(turn, copyoth) - myoutercount);
+			int addmyoutercount = (countOuterStone(turn, copyoth) - myoutercount)*10;
 			search(turn ? 1 : 0, copyoth);
 			List<int[]> getcoord = getCoord(copyoth);
 
 			int enempoint = 0;
 			int enemcount = 0;
 			int enemoppens = 0;
+			
+			if (count(copyoth)[!turn ? 2 : 1] == 0) {
+				enempoint -= 500;
+			}
 			if (getcoord != null) {
 				enemoppens = 10;
 				for (int[] getary : getcoord) {
@@ -698,21 +716,11 @@ public class Othello {
 					int[][] enemoth = copyOth(copyoth);
 					int oppen = put(getary[0], getary[1], turn ? 1 : 0, enemoth);
 					enemoppens = enemoppens > oppen ? oppen : enemoppens;
-					search(turn ? 0 : 1, enemoth);
-
-					if (count(enemoth)[turn ? 2 : 1] == 0) {
-						enempoint += 1000;
-					}
 				}
 				enemcount = getcoord.size() * -100;
-				if(count(oth)[1]+count(oth)[2]<30) {
-					enemoppens *= 100;
-				}
-				
-				
-				enempoint *= -1;
-
+				enemoppens *= 100;
 			}
+			enempoint *= -2;
 			int addpoint = point + oppennes + enemoppens + enempoint + enemcount + addmyoutercount;
 			evaluation.add(addpoint);
 

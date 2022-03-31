@@ -296,7 +296,7 @@ public class Room {
 		while (resultSet.next()) {
 			record.put(resultSet.getInt("gameid"), resultSet.getString("record"));
 		}
-		sql = "select id,result,playdate from result where userid = '" + searchname + "';";
+		sql = "(select id,result,playdate from result where userid = '" + searchname + "' order by id desc limit 15)order by id asc";
 		resultSet = st.executeQuery(sql);
 		while (resultSet.next()) {
 			gameid = resultSet.getInt("id");

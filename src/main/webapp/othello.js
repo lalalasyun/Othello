@@ -618,6 +618,6 @@ function putEva(x, y, type, eva) {
 	context.fillStyle = color;
 	context.font = "12px serif";
 	context.fillText(eva, stonex + fontpositionx, stoney + fontpositiony);
-
+	context.fillText(eva, stonex + fontpositionx, stoney + fontpositiony);
 
 }
