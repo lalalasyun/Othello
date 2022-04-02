@@ -618,19 +618,12 @@ public class Othello {
 		boolean aiturn = turn;
 		int endcnt = 0, readcnt = 0;
 		int enempoint = 0;
-		for (int i = 0; i < 8; i++) {
-			for (int n = 0; n < 8; n++) {
-				if (copyOth[i][n] == (!turn ? 2 : 1)) {
-					enempoint += stoneevaluation[i][n];
-				}
-			}
-		}
+		
 		put(coordcase[0], coordcase[1], aiturn ? 0 : 1, copyOth);
 		search(aiturn ? 1 : 0, copyOth);
 		aiturn = !aiturn;
 		while (true) {
 			List<Integer> evaluation = othelloAI(aiturn, copyOth);
-
 			if (evaluation.size() != 0) {
 				int[] coord = getAICoord(evaluation, copyOth);
 				if (coord != null) {
@@ -655,8 +648,9 @@ public class Othello {
 						}
 					}
 				}
+				enempoint*=2;
 				if(endcnt == 2) {
-					point = (count(copyOth)[turn ? 2 : 1] - count(copyOth)[!turn ? 2 : 1]) * 10;
+					point = (count(copyOth)[turn ? 2 : 1] - count(copyOth)[!turn ? 2 : 1])*10;
 				}
 
 				return pointcase + enempoint + point;
