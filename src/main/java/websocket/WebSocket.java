@@ -93,7 +93,7 @@ public class WebSocket {
 					room.sendMessage("coord," + coord[0] + "," + coord[1]);
 				}
 			}
-			mess = game.getAIEvaluation(!game.getColor(), false);
+			mess = game.getAIEvaluation(!game.getColor());
 			if (mess != null) {
 				room.sendMessage(mess);
 			}
@@ -131,7 +131,7 @@ public class WebSocket {
 					if (!game.getPass() || !game.isGame()) {
 						break;
 					}
-					Thread.sleep(300);
+					Thread.sleep(500);
 				}
 			}
 
@@ -140,7 +140,7 @@ public class WebSocket {
 				room.sendMessage("end");
 				room.sendResult();
 			}
-			mess = game.getAIEvaluation(game.getColor(), false);
+			mess = game.getAIEvaluation(game.getColor());
 			if (mess != null) {
 				room.sendMessage(mess);
 			}
@@ -148,7 +148,7 @@ public class WebSocket {
 		case "ainavi":
 			stone = game.getStone();
 			room.sendMessage("stone," + stone);
-			mess = game.getAIEvaluation(game.getColor(), false);
+			mess = game.getAIEvaluation(game.getColor());
 			if (mess != null) {
 				room.sendMessage(mess);
 			}

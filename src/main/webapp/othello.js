@@ -450,9 +450,7 @@ function stone(arystone) {
 		result.innerHTML = turnmess + "のターン";
 		if (cntput == 0) {
 			if (cntblack + cntwhite != 64) {
-				gameturn = true;
 				result.innerHTML = "パス";
-				
 			} else {
 				winresult();
 			}
