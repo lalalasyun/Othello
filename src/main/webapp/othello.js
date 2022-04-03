@@ -452,9 +452,6 @@ function stone(arystone) {
 			if (cntblack + cntwhite != 64) {
 				gameturn = true;
 				result.innerHTML = "パス";
-				if(gameturn){
-					result.innerHTML += "<br>パスするには画面を押してください";
-				}
 				
 			} else {
 				winresult();

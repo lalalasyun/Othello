@@ -648,12 +648,13 @@ public class Othello {
 						}
 					}
 				}
-				enempoint*=2;
-				if(endcnt == 2) {
+				int turncount = count(oth)[1]+count(oth)[2];
+				if(turncount>40) {
 					point = (count(copyOth)[turn ? 2 : 1] - count(copyOth)[!turn ? 2 : 1])*10;
+					return pointcase + point;
 				}
 
-				return pointcase + enempoint + point;
+				return pointcase + enempoint;
 			}
 		}
 
@@ -677,6 +678,7 @@ public class Othello {
 	}
 
 	public List<Integer> othelloAI(boolean turn, int[][] oth) {
+		int turncount = count(oth)[1]+count(oth)[2];
 		List<int[]> coord = new ArrayList<>();
 		List<Integer> evaluation = new ArrayList<>();
 		search(turn ? 0 : 1, oth);
@@ -690,6 +692,7 @@ public class Othello {
 			if (stoneevaluation[ary[0]][ary[1]] == -100) {
 				point = -500;
 			}
+			
 			int[][] copyoth = copyOth(oth);
 			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth) * -100;
 			int addmyoutercount = (countOuterStone(turn, copyoth) - myoutercount)*10;
@@ -715,6 +718,8 @@ public class Othello {
 				enemoppens *= 100;
 			}
 			enempoint *= -2;
+			
+			
 			int addpoint = point + oppennes + enemoppens + enempoint + enemcount + addmyoutercount;
 			evaluation.add(addpoint);
 
