@@ -678,7 +678,6 @@ public class Othello {
 	}
 
 	public List<Integer> othelloAI(boolean turn, int[][] oth) {
-		int turncount = count(oth)[1]+count(oth)[2];
 		List<int[]> coord = new ArrayList<>();
 		List<Integer> evaluation = new ArrayList<>();
 		search(turn ? 0 : 1, oth);
@@ -691,6 +690,25 @@ public class Othello {
 			int point = 0;
 			if (stoneevaluation[ary[0]][ary[1]] == -100) {
 				point = -500;
+			}
+			if (stoneevaluation[ary[0]][ary[1]] == 600) {
+				point = -1000;
+				int[][] shift = {{1,0},{0,1},{-1,0},{0,-1}};
+				int cnt=0;
+				for(int[] s:shift) {
+					boolean ret1 = ary[0]+s[0]>-1&&ary[0]+s[0]<8;
+					boolean ret2 = ary[1]+s[1]>-1&&ary[1]+s[1]<8;
+					if(ret1 && ret2) {
+						int search = oth[ary[0]+s[0]][ary[1]+s[1]];
+						if(search == 1||search == 2) {
+							cnt++;
+							if(cnt==2) {
+								point = 500;
+								break;
+							}
+						}
+					}
+				}
 			}
 			
 			int[][] copyoth = copyOth(oth);
