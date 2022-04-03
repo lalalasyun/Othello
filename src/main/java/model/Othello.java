@@ -623,8 +623,9 @@ public class Othello {
 					aiturn = !aiturn;
 				}
 			} else {
-				search(aiturn ? 1 : 0, copyOth);
 				aiturn = !aiturn;
+				search(aiturn ? 1 : 0, copyOth);
+				
 				endcnt++;
 			}
 			if (navi && endcnt == 2) {
