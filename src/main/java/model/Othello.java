@@ -642,6 +642,7 @@ public class Othello {
 						}
 					}
 				}
+			
 				
 				int turncount = count(oth)[1] + count(oth)[2];
 				if (turncount > 50) {
