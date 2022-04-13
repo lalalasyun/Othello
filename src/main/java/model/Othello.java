@@ -543,7 +543,7 @@ public class Othello {
 	}
 
 	public int[] othelloAIPut(boolean turn) throws Exception {
-		readlevel = 15;
+		readlevel = 20;
 		List<Integer> evaluation = othelloAI(turn, copyOth(oth));
 		evaluation = getAIEvaluationRead(evaluation, turn, oth, false);
 		if (evaluation != null) {
@@ -564,7 +564,7 @@ public class Othello {
 
 	public String getAIEvaluation(boolean turn) {
 
-		readlevel = 15;
+		readlevel = 20;
 
 		List<Integer> evaluation = othelloAI(turn, copyOth(oth));
 		evaluation = getAIEvaluationRead(evaluation, turn, oth, true);
@@ -643,7 +643,7 @@ public class Othello {
 					}
 				}
 				int turncount = count(oth)[1] + count(oth)[2];
-				if (endcnt == 2) {
+				if (turncount > 50) {
 					point = (count(copyOth)[turn ? 2 : 1] - count(copyOth)[!turn ? 2 : 1]) * 10;
 				}
 
@@ -677,11 +677,10 @@ public class Othello {
 	}
 
 	public List<Integer> othelloAI(boolean turn, int[][] oth) {
-		int turncount = count(oth)[1] + count(oth)[2];
 		List<int[]> coord = new ArrayList<>();
 		List<Integer> evaluation = new ArrayList<>();
+		
 		search(turn ? 0 : 1, oth);
-		int myoutercount = countOuterStone(turn, oth);
 		coord = getCoord(oth);
 		if (coord == null) {
 			return evaluation;
@@ -691,16 +690,18 @@ public class Othello {
 			if (stoneevaluation[ary[0]][ary[1]] == -100) {
 				point = -500;
 			}
-			if (stoneevaluation[ary[0]][ary[1]] == 600 && turncount < 54) {
+			if (stoneevaluation[ary[0]][ary[1]] == 600) {
 				point = -2000;
 				int[][] shift = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
 				int cnt = 0;
 				for (int[] s : shift) {
+					
 					boolean ret1 = ary[0] + s[0] > -1 && ary[0] + s[0] < 8;
 					boolean ret2 = ary[1] + s[1] > -1 && ary[1] + s[1] < 8;
 					if (ret1 && ret2) {
+						search(turn ? 1 : 0, oth);
 						int search = oth[ary[0] + s[0]][ary[1] + s[1]];
-						if (search == 0 || search == 1 || search == 2) {
+						if (search != (!turn?4:3)) {
 							cnt++;
 							if (cnt == 2) {
 								point = 0;
@@ -708,12 +709,11 @@ public class Othello {
 						}
 					}
 				}
-
+				search(turn ? 0 : 1, oth);
 			}
 
 			int[][] copyoth = copyOth(oth);
 			int oppennes = put(ary[0], ary[1], turn ? 0 : 1, copyoth) * -100;
-			int addmyoutercount = (countOuterStone(turn, copyoth) - myoutercount) * 10;
 			search(turn ? 1 : 0, copyoth);
 			List<int[]> getcoord = getCoord(copyoth);
 
@@ -737,7 +737,7 @@ public class Othello {
 			}
 			enempoint *= -2;
 
-			int addpoint = point + oppennes + enemoppens + enempoint + enemcount + addmyoutercount;
+			int addpoint = point + oppennes + enemoppens + enempoint + enemcount;
 			evaluation.add(addpoint);
 
 		}
@@ -822,6 +822,61 @@ public class Othello {
 		}
 
 		return count;
+	}
+	
+	public int ConfirmStone(boolean turn, int[][] oth) {
+		int color = turn ? 2 : 1;
+		
+		boolean[][] confirm = new boolean[8][8];
+		for (int index = 0; index < 4; index++) {
+			int addcnt = 0;
+			List<int []> list = new ArrayList<>();
+			for (int i = 0; i < 8; i++) {
+				int[] aryY = { 0, i, i, 7 };
+				int[] aryX = { i, 0, 7, i };
+				int y = aryY[index];
+				int x = aryX[index];
+				if (!(oth[y][x] == 1 || oth[y][x] == 2)) {
+					addcnt = 0;
+					break;
+				}
+				if (oth[y][x] == color) {
+					addcnt++;
+					int[] addcoord = {y,x};
+					list.add(addcoord);
+				}
+			}
+			if(addcnt != 0) {
+				for(int[] coord:list) {
+					confirm[coord[0]][coord[1]] = true;
+				}
+			}
+		}
+		int[][] arycoord = { { 0, 0 }, { 0, 7 }, { 7, 0 }, { 7, 7 } };
+		int index = 0;
+		for (int[] coord : arycoord) {
+			if (oth[coord[0]][coord[1]] == color) {
+				for (int i = 1; i < 4; i++) {
+					int[] aryY1 = { 0, 0, 7, 7 };
+					int[] aryX1 = { i, 7 - i, i, 7 - i };
+					if (oth[aryY1[index]][aryX1[index]] == color) {
+						confirm[index][aryX1[index]] = true;
+					}
+					int[] aryY2 = { i, i, 7 - i, 7 - i };
+					int[] aryX2 = { 0, 7, 0, 7 };
+					if (oth[aryY2[index]][aryX2[index]] == color) {
+						confirm[aryY2[index]][aryX2[index]] = true;
+					}
+				}
+				index++;
+			}
+		}
+		
+		
+		
+		
+		
+		return 0;
 	}
 
 	int[][] copyOth(int[][] oth) {
